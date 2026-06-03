@@ -15,45 +15,7 @@ body{
   font-family:Arial,sans-serif;
 }
 
-.header{
-  background:#1565c0;
-  color:white;
-  padding:20px;
-  border-radius:15px;
-  text-align:center;
-  font-size:28px;
-  font-weight:bold;
-  margin-bottom:20px;
-}
-
-.jumlah{
-  text-align:center;
-  margin-bottom:20px;
-}
-
-.tanggal-besar{
-  font-size:24px;
-  font-weight:bold;
-  color:#1565c0;
-}
-
-.total{
-  margin-top:10px;
-  font-size:18px;
-  font-weight:bold;
-}
-
-.card{
-  background:white;
-  border-radius:15px;
-  padding:18px;
-  margin-bottom:15px;
-  box-shadow:0 3px 10px rgba(0,0,0,.15);
-  white-space:pre-wrap;
-  line-height:1.7;
-  font-size:16px;
-}
-
+/* LOGIN */
 #loginBox{
   position:fixed;
   top:0;
@@ -93,6 +55,46 @@ body{
   cursor:pointer;
 }
 
+/* HEADER */
+.header{
+  background:#1565c0;
+  color:white;
+  padding:20px;
+  border-radius:15px;
+  text-align:center;
+  font-size:28px;
+  font-weight:bold;
+  margin-bottom:20px;
+}
+
+.jumlah{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.tanggal-besar{
+  font-size:24px;
+  font-weight:bold;
+  color:#1565c0;
+}
+
+.total{
+  margin-top:10px;
+  font-size:18px;
+  font-weight:bold;
+}
+
+.card{
+  background:white;
+  border-radius:15px;
+  padding:18px;
+  margin-bottom:15px;
+  box-shadow:0 3px 10px rgba(0,0,0,.15);
+  white-space:pre-wrap;
+  line-height:1.7;
+  font-size:16px;
+}
+
 </style>
 </head>
 
@@ -112,7 +114,7 @@ body{
 <!-- 📦 CONTENT -->
 <div id="content" style="display:none;">
 
-<div class="header">
+<div class="header" style="text-align:center;padding:15px;">
   <img src="logo.png"
        style="width:120px;height:120px;border-radius:50%;border:4px solid #FFFFFF;object-fit:cover;">
   <h2 style="margin-top:10px;">CEK PENGIRIMAN</h2>
@@ -131,23 +133,22 @@ Memuat data...
 const API_URL =
 "https://script.google.com/macros/s/AKfycbykT2QFJ_BtyUaXbMAlCwPqdQFiS09U3gVUQXRZR4ufbyf8hpj6oZcQ5jTiLthzFBjt/exec";
 
+/* 🔐 PIN dari Google Sheets */
 let correctPIN = "";
-let sheetData = [];
 
-/* 🔥 ambil data + pin */
+/* ambil PIN dulu */
 fetch(API_URL)
 .then(r => r.json())
-.then(res => {
+.then(data => {
 
-  correctPIN = res.pin;
-  sheetData = res.data;
+  correctPIN = data.pin; // dari Google Sheet CONFIG
 
 })
 .catch(err => {
-  console.log("Error ambil API", err);
+  console.log("Gagal ambil PIN", err);
 });
 
-/* 🔐 LOGIN */
+/* LOGIN */
 function login(){
 
   const pin = document.getElementById("pin").value;
@@ -165,14 +166,18 @@ function login(){
 
 }
 
-/* 📦 LOAD DATA */
+/* LOAD DATA SHEET */
 function loadData(){
+
+fetch(API_URL)
+.then(r => r.json())
+.then(data => {
 
   let html = "";
   let total = 0;
   let tanggalPengiriman = "";
 
-  sheetData.forEach(row => {
+  data.forEach(row => {
 
     const isi = row[0];
     if(!isi) return;
@@ -180,7 +185,6 @@ function loadData(){
     total++;
 
     if(!tanggalPengiriman && row[1]){
-
       const tgl = new Date(row[1]);
 
       tanggalPengiriman =
@@ -189,7 +193,6 @@ function loadData(){
           month:"long",
           year:"numeric"
         });
-
     }
 
     html += `
@@ -211,6 +214,12 @@ ${isi}
 `;
 
   document.getElementById("list").innerHTML = html;
+
+})
+.catch(err => {
+  document.getElementById("jumlah").innerHTML = "❌ Gagal mengambil data";
+  console.log(err);
+});
 
 }
 
