@@ -54,12 +54,65 @@ body{
   font-size:16px;
 }
 
+#loginBox{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:#f5f7fa;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+}
+
+.login-card{
+  background:white;
+  padding:25px;
+  border-radius:15px;
+  box-shadow:0 3px 10px rgba(0,0,0,.2);
+  text-align:center;
+}
+
+.login-card input{
+  padding:10px;
+  width:200px;
+  margin-top:10px;
+  border:1px solid #ccc;
+  border-radius:8px;
+}
+
+.login-card button{
+  margin-top:10px;
+  padding:10px 15px;
+  border:none;
+  background:#1565c0;
+  color:white;
+  border-radius:8px;
+  cursor:pointer;
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="header" style="text-align:center;padding:15px;">
+<!-- 🔐 LOGIN -->
+<div id="loginBox">
+  <div class="login-card">
+    <h2>Login PIN</h2>
+    <input type="password" id="pin" placeholder="Masukkan PIN">
+    <br>
+    <button onclick="login()">Masuk</button>
+    <p id="msg" style="color:red;"></p>
+  </div>
+</div>
+
+<!-- 📦 CONTENT -->
+<div id="content" style="display:none;">
+
+<div class="header">
   <img src="logo.png"
        style="width:120px;height:120px;border-radius:50%;border:4px solid #FFFFFF;object-fit:cover;">
   <h2 style="margin-top:10px;">CEK PENGIRIMAN</h2>
@@ -71,23 +124,57 @@ Memuat data...
 
 <div id="list"></div>
 
+</div>
+
 <script>
 
 const API_URL =
 "https://script.google.com/macros/s/AKfycbykT2QFJ_BtyUaXbMAlCwPqdQFiS09U3gVUQXRZR4ufbyf8hpj6oZcQ5jTiLthzFBjt/exec";
 
+let correctPIN = "";
+let sheetData = [];
+
+/* 🔥 ambil data + pin */
 fetch(API_URL)
 .then(r => r.json())
-.then(data => {
+.then(res => {
+
+  correctPIN = res.pin;
+  sheetData = res.data;
+
+})
+.catch(err => {
+  console.log("Error ambil API", err);
+});
+
+/* 🔐 LOGIN */
+function login(){
+
+  const pin = document.getElementById("pin").value;
+
+  if(pin === correctPIN){
+
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("content").style.display = "block";
+
+    loadData();
+
+  } else {
+    document.getElementById("msg").innerText = "PIN salah!";
+  }
+
+}
+
+/* 📦 LOAD DATA */
+function loadData(){
 
   let html = "";
   let total = 0;
   let tanggalPengiriman = "";
 
-  data.forEach(row => {
+  sheetData.forEach(row => {
 
     const isi = row[0];
-
     if(!isi) return;
 
     total++;
@@ -115,27 +202,17 @@ ${isi}
 
   document.getElementById("jumlah").innerHTML = `
   <div class="tanggal-besar">
-    <svg width="18" height="18" viewBox="0 0 24 24" style="vertical-align:middle;">
-      <path fill="#1565c0" d="M7 2v2H5a2 2 0 0 0-2 2v2h18V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm14 8H3v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V10z"/>
-    </svg>
-    ${tanggalPengiriman}
+    📅 ${tanggalPengiriman}
   </div>
 
   <div class="total">
     Total Pengiriman : ${total}
   </div>
 `;
+
   document.getElementById("list").innerHTML = html;
 
-})
-.catch(err => {
-
-  document.getElementById("jumlah").innerHTML =
-  "❌ Gagal mengambil data";
-
-  console.log(err);
-
-});
+}
 
 </script>
 
