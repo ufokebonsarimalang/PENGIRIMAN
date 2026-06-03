@@ -1,23 +1,36 @@
-<!DOCTYPE html><html>
-<head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>Pengiriman Besok</title><style>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Pengiriman Besok</title>
+
+<style>
 
 body{
-  background:#f4f6f9;
-  font-family:Arial,sans-serif;
   margin:0;
   padding:15px;
+  background:#f5f7fa;
+  font-family:Arial,sans-serif;
 }
 
 .header{
   background:#1565c0;
   color:white;
-  text-align:center;
   padding:20px;
   border-radius:15px;
+  text-align:center;
   font-size:28px;
   font-weight:bold;
   margin-bottom:20px;
+}
+
+.jumlah{
+  text-align:center;
+  margin-bottom:15px;
+  font-size:18px;
+  font-weight:bold;
 }
 
 .card{
@@ -35,44 +48,75 @@ body{
   color:#1565c0;
   font-weight:bold;
   margin-bottom:10px;
+  border-bottom:1px solid #ddd;
+  padding-bottom:8px;
 }
 
-</style></head><body><div class="header">
-🚚 PENGIRIMAN 
-</div><div id="list"></div><script>
+</style>
+</head>
+
+<body>
+
+<div class="header">
+🚚 PENGIRIMAN BESOK
+</div>
+
+<div class="jumlah" id="jumlah">
+Memuat data...
+</div>
+
+<div id="list"></div>
+
+<script>
 
 const API_URL =
-"https://script.google.com/macros/s/AKfycbxlbbqeDKUc62ZBy8qY3Jh_hQo1b-xZrr7FkIGVDo5Qt3R7Dh5_jHS59AfIdUCc_yg0/exec";
+"https://script.google.com/macros/s/AKfycbykT2QFJ_BtyUaXbMAlCwPqdQFiS09U3gVUQXRZR4ufbyf8hpj6oZcQ5jTiLthzFBjt/exec";
 
 fetch(API_URL)
-.then(r=>r.json())
-.then(data=>{
+.then(r => r.json())
+.then(data => {
 
-let html = "";
+  let html = "";
+  let total = 0;
 
-data.forEach(row=>{
+  data.forEach(row => {
 
-if(row[0]){
+    if(row[0]){
 
-html += `
-<div class="card">
+      total++;
 
-<div class="tanggal">
-📅 ${row[1]}
-</div>
+      html += `
+      <div class="card">
 
-${row[0]}
+      <div class="tanggal">
+      📅 ${row[1]}
+      </div>
 
-</div>
-`;
+      ${row[0]}
 
-}
+      </div>
+      `;
+    }
+
+  });
+
+  document.getElementById("jumlah").innerHTML =
+    "Total Pengiriman : " + total;
+
+  document.getElementById("list").innerHTML =
+    html;
+
+})
+.catch(err => {
+
+  document.getElementById("jumlah").innerHTML =
+    "❌ Gagal mengambil data";
+
+  console.log(err);
 
 });
 
-document.getElementById("list").innerHTML = html;
+</script>
 
-});
-
-</script></body>
+</body>
 </html>
