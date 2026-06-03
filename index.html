@@ -52,10 +52,8 @@ body{
   white-space:pre-wrap;
   line-height:1.7;
   font-size:16px;
-  border-left:6px solid #ccc;
 }
 
-/* LOGIN */
 #loginBox{
   position:fixed;
   top:0;
@@ -94,20 +92,6 @@ body{
   border-radius:8px;
   cursor:pointer;
 }
-
-/* BUTTON STATUS */
-.btn{
-  margin:5px 3px 0 0;
-  padding:5px 10px;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-  font-size:12px;
-}
-
-.proses{background:#f39c12;color:white;}
-.selesai{background:#2ecc71;color:white;}
-.retur{background:#e74c3c;color:white;}
 
 </style>
 </head>
@@ -181,28 +165,6 @@ function login(){
 
 }
 
-/* 📦 UPDATE STATUS */
-function updateStatus(row, status){
-
-  fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      row: row,
-      status: status
-    })
-  })
-  .then(r => r.text())
-  .then(res => {
-    alert("Status berhasil diupdate!");
-    location.reload();
-  })
-  .catch(err => {
-    alert("Gagal update status");
-    console.log(err);
-  });
-
-}
-
 /* 📦 LOAD DATA */
 function loadData(){
 
@@ -210,26 +172,15 @@ function loadData(){
   let total = 0;
   let tanggalPengiriman = "";
 
-  sheetData.forEach((row, index) => {
+  sheetData.forEach(row => {
 
     const isi = row[0];
-    const status = row[2]; // kolom C
-
     if(!isi) return;
 
     total++;
 
-    let warna = "#ccc";
-
-    if(status === "Selesai"){
-      warna = "#2ecc71";
-    } else if(status === "Retur"){
-      warna = "#e74c3c";
-    } else if(status === "Proses" || !status){
-      warna = "#f39c12";
-    }
-
     if(!tanggalPengiriman && row[1]){
+
       const tgl = new Date(row[1]);
 
       tanggalPengiriman =
@@ -238,22 +189,12 @@ function loadData(){
           month:"long",
           year:"numeric"
         });
+
     }
 
     html += `
-    <div class="card" style="border-left:6px solid ${warna}">
-      <div>${isi}</div>
-
-      <div style="margin-top:10px;font-weight:bold;color:${warna}">
-        Status: ${status || "Proses"}
-      </div>
-
-      <div style="margin-top:8px;">
-        <button class="btn proses" onclick="updateStatus(${index+1}, 'Proses')">Proses</button>
-        <button class="btn selesai" onclick="updateStatus(${index+1}, 'Selesai')">Selesai</button>
-        <button class="btn retur" onclick="updateStatus(${index+1}, 'Retur')">Retur</button>
-      </div>
-
+    <div class="card">
+${isi}
     </div>
     `;
 
