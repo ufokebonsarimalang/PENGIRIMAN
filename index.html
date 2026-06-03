@@ -28,7 +28,17 @@ body{
 
 .jumlah{
   text-align:center;
-  margin-bottom:15px;
+  margin-bottom:20px;
+}
+
+.tanggal-besar{
+  font-size:24px;
+  font-weight:bold;
+  color:#1565c0;
+}
+
+.total{
+  margin-top:10px;
   font-size:18px;
   font-weight:bold;
 }
@@ -40,16 +50,8 @@ body{
   margin-bottom:15px;
   box-shadow:0 3px 10px rgba(0,0,0,.15);
   white-space:pre-wrap;
-  line-height:1.6;
+  line-height:1.7;
   font-size:16px;
-}
-
-.tanggal{
-  color:#1565c0;
-  font-weight:bold;
-  margin-bottom:10px;
-  border-bottom:1px solid #ddd;
-  padding-bottom:8px;
 }
 
 </style>
@@ -61,7 +63,7 @@ body{
 🚚 CEK PENGIRIMAN 
 </div>
 
-<div class="jumlah" id="jumlah">
+<div id="jumlah" class="jumlah">
 Memuat data...
 </div>
 
@@ -78,39 +80,54 @@ fetch(API_URL)
 
   let html = "";
   let total = 0;
+  let tanggalPengiriman = "";
 
   data.forEach(row => {
 
-    if(row[0]){
+    const isi = row[0];
 
-      total++;
+    if(!isi) return;
 
-      html += `
-      <div class="card">
+    total++;
 
-      <div class="tanggal">
-      📅 ${row[1]}
-      </div>
+    if(!tanggalPengiriman && row[1]){
 
-      ${row[0]}
+      const tgl = new Date(row[1]);
 
-      </div>
-      `;
+      tanggalPengiriman =
+        tgl.toLocaleDateString("id-ID",{
+          day:"2-digit",
+          month:"long",
+          year:"numeric"
+        });
+
     }
+
+    html += `
+    <div class="card">
+${isi}
+    </div>
+    `;
 
   });
 
-  document.getElementById("jumlah").innerHTML =
-    "Total Pengiriman : " + total;
+  document.getElementById("jumlah").innerHTML = `
+    <div class="tanggal-besar">
+      📅 ${tanggalPengiriman}
+    </div>
 
-  document.getElementById("list").innerHTML =
-    html;
+    <div class="total">
+      Total Pengiriman : ${total}
+    </div>
+  `;
+
+  document.getElementById("list").innerHTML = html;
 
 })
 .catch(err => {
 
   document.getElementById("jumlah").innerHTML =
-    "❌ Gagal mengambil data";
+  "❌ Gagal mengambil data";
 
   console.log(err);
 
