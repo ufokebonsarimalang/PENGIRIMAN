@@ -1,0 +1,78 @@
+<!DOCTYPE html><html>
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Pengiriman Besok</title><style>
+
+body{
+  background:#f4f6f9;
+  font-family:Arial,sans-serif;
+  margin:0;
+  padding:15px;
+}
+
+.header{
+  background:#1565c0;
+  color:white;
+  text-align:center;
+  padding:20px;
+  border-radius:15px;
+  font-size:28px;
+  font-weight:bold;
+  margin-bottom:20px;
+}
+
+.card{
+  background:white;
+  border-radius:15px;
+  padding:18px;
+  margin-bottom:15px;
+  box-shadow:0 3px 10px rgba(0,0,0,.15);
+  white-space:pre-wrap;
+  line-height:1.6;
+  font-size:16px;
+}
+
+.tanggal{
+  color:#1565c0;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+
+</style></head><body><div class="header">
+🚚 PENGIRIMAN BESOK
+</div><div id="list"></div><script>
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbxlbbqeDKUc62ZBy8qY3Jh_hQo1b-xZrr7FkIGVDo5Qt3R7Dh5_jHS59AfIdUCc_yg0/exec";
+
+fetch(API_URL)
+.then(r=>r.json())
+.then(data=>{
+
+let html = "";
+
+data.forEach(row=>{
+
+if(row[0]){
+
+html += `
+<div class="card">
+
+<div class="tanggal">
+📅 ${row[1]}
+</div>
+
+${row[0]}
+
+</div>
+`;
+
+}
+
+});
+
+document.getElementById("list").innerHTML = html;
+
+});
+
+</script></body>
+</html>
