@@ -84,15 +84,6 @@ color:#6d28d9;
 letter-spacing:2px;
 }
 
-/* LOGIN INFO */
-#loginInfo{
-text-align:center;
-font-size:13px;
-margin-bottom:8px;
-font-weight:600;
-color:#444;
-}
-
 /* STATS */
 .stats{
 display:grid;
@@ -143,6 +134,7 @@ text-decoration:none;
 width:70px;
 }
 
+/* WA ICON */
 .wa-icon{
 width:55px;
 height:55px;
@@ -164,6 +156,7 @@ height:32px;
 fill:#fff;
 }
 
+/* 🔥 TEXT WA (DIKEMBALIKAN) */
 .wa-text{
 font-size:12px;
 margin-top:5px;
@@ -185,8 +178,15 @@ font-weight:700;
 cursor:pointer;
 }
 
-.kirim{background:#1565c0;color:#fff;}
-.sudah{background:#16a34a;color:#fff;}
+.kirim{
+background:#1565c0;
+color:#fff;
+}
+
+.sudah{
+background:#16a34a;
+color:#fff;
+}
 
 </style>
 </head>
@@ -200,8 +200,8 @@ cursor:pointer;
     <h3 style="margin:0;">UFO KEBONSARI MALANG</h3>
     <p style="font-size:12px;color:#777;">Sistem Pengiriman Driver</p>
 
-    <input type="text" id="user" placeholder="Username">
-    <input type="password" id="pass" placeholder="Password">
+    <input type="text" id="user">
+    <input type="password" id="pass">
 
     <button onclick="login()">MASUK</button>
   </div>
@@ -209,8 +209,6 @@ cursor:pointer;
 
 <!-- APP -->
 <div id="app">
-
-<div id="loginInfo"></div>
 
 <div class="header">
   <div class="header-title">CEK PENGIRIMAN</div>
@@ -236,40 +234,15 @@ fetch(API_URL+"?action=login&user="+user+"&pass="+pass)
 .then(res=>{
 
 if(res.status==="OK"){
-
-localStorage.setItem("driver", JSON.stringify({
-user: res.user,
-time: new Date().toLocaleString()
-}));
-
+localStorage.setItem("driver",res.user);
 document.getElementById("loginBox").style.display="none";
 document.getElementById("app").style.display="block";
-
-showLogin();
 loadData();
-
 }else{
 alert("Login gagal!");
 }
 
 });
-
-}
-
-/* SHOW LOGIN */
-function showLogin(){
-
-const data = localStorage.getItem("driver");
-
-if(!data){
-document.getElementById("loginInfo").innerHTML="❌ Belum login";
-return;
-}
-
-const obj = JSON.parse(data);
-
-document.getElementById("loginInfo").innerHTML=
-"👤 " + obj.user + " | 🕒 " + obj.time;
 
 }
 
@@ -284,7 +257,7 @@ const wa=text.match(/08\d{8,13}/g);
 return wa || [];
 }
 
-/* KIRIM */
+/* 🔥 FIX KIRIM + POPUP */
 function kirimStatus(customer,wa){
 
 if(!customer){
@@ -292,12 +265,7 @@ alert("Customer tidak ditemukan");
 return;
 }
 
-let driver="DRIVER";
-const d=localStorage.getItem("driver");
-
-if(d){
-driver=JSON.parse(d).user;
-}
+const driver=localStorage.getItem("driver") || "DRIVER";
 
 fetch(API_URL+
 "?customer="+encodeURIComponent(customer)+
@@ -314,6 +282,9 @@ loadData();
 alert("❌ Gagal kirim: " + res);
 }
 
+})
+.catch(()=>{
+alert("Server error");
 });
 
 }
@@ -387,11 +358,13 @@ ${sudah?'✓ TERKIRIM':'🚚 KIRIM'}
 
 document.getElementById("stats").innerHTML=`
 <div class="stats">
-<div class="boxstat"><div>TOTAL</div><div>${total}</div></div>
-<div class="boxstat"><div>TERKIRIM</div><div>${ok}</div></div>
-<div class="boxstat"><div>BELUM</div><div>${no}</div></div>
+<div class="boxstat"><div class="t">TOTAL</div><div class="v">${total}</div></div>
+<div class="boxstat"><div class="t">TERKIRIM</div><div class="v">${ok}</div></div>
+<div class="boxstat"><div class="t">BELUM</div><div class="v">${no}</div></div>
 </div>
 `;
+
+document.getElementById("list").innerHTML=html;
 
 });
 
