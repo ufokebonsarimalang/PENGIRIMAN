@@ -3,137 +3,372 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>Pengiriman</title>
+<title>CEK PENGIRIMAN</title>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 body{
-  margin:0;
-  padding:15px;
-  background:#f5f7fa;
-  font-family:Arial,sans-serif;
+margin:0;
+font-family:'Inter', Arial, sans-serif;
+background:#f4f6f9;
+color:#111;
 }
 
+/* LOGIN */
+.login{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.box{
+background:#fff;
+padding:20px;
+border-radius:14px;
+box-shadow:0 4px 10px rgba(0,0,0,.08);
+width:280px;
+text-align:center;
+}
+
+.box img{
+width:80px;
+height:80px;
+border-radius:50%;
+border:2px solid #ddd;
+object-fit:cover;
+margin-bottom:8px;
+}
+
+input{
+width:100%;
+padding:10px;
+margin:8px 0;
+border-radius:10px;
+border:1px solid #ddd;
+}
+
+button{
+width:100%;
+padding:10px;
+border:none;
+border-radius:10px;
+background:#1565c0;
+color:#fff;
+font-weight:700;
+cursor:pointer;
+}
+
+/* APP */
+#app{
+display:none;
+padding:10px;
+}
+
+/* HEADER */
 .header{
-  background:#1565c0;
-  color:white;
-  padding:20px;
-  border-radius:15px;
-  text-align:center;
-  font-size:28px;
-  font-weight:bold;
-  margin-bottom:20px;
+background:#fff;
+padding:16px;
+border-radius:14px;
+text-align:center;
+margin-bottom:10px;
+border:2px solid #d4af37;
+box-shadow:0 0 12px rgba(212,175,55,0.4);
 }
 
-.jumlah{
-  text-align:center;
-  margin-bottom:20px;
+.header-title{
+font-size:22px;
+font-weight:900;
+color:#6d28d9;
+letter-spacing:2px;
 }
 
-.tanggal-besar{
-  font-size:24px;
-  font-weight:bold;
-  color:#1565c0;
+/* STATS */
+.stats{
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+gap:8px;
+margin-bottom:10px;
 }
 
-.total{
-  margin-top:10px;
-  font-size:18px;
-  font-weight:bold;
+.boxstat{
+background:#fff;
+padding:10px;
+border-radius:12px;
+text-align:center;
+border:2px solid #6d28d9;
+box-shadow:0 0 10px rgba(109,40,217,0.15);
 }
 
+/* CARD */
 .card{
-  background:white;
-  border-radius:15px;
-  padding:18px;
-  margin-bottom:15px;
-  box-shadow:0 3px 10px rgba(0,0,0,.15);
-  white-space:pre-wrap;
-  line-height:1.7;
-  font-size:16px;
+background:#fff;
+padding:12px;
+margin-bottom:10px;
+border-radius:14px;
+border:2px solid #e5e7eb;
+box-shadow:0 2px 6px rgba(0,0,0,.05);
+font-size:13px;
+line-height:1.5;
+position:relative;
+}
+
+.data{
+white-space:pre-line;
+font-weight:600;
+}
+
+/* WA */
+.wa-group{
+display:flex;
+gap:12px;
+margin-top:10px;
+}
+
+.wa-box{
+display:flex;
+flex-direction:column;
+align-items:center;
+text-decoration:none;
+width:70px;
+}
+
+/* WA ICON */
+.wa-icon{
+width:55px;
+height:55px;
+border-radius:50%;
+background:#25D366;
+display:flex;
+align-items:center;
+justify-content:center;
+box-shadow:0 3px 8px rgba(0,0,0,.2);
+}
+
+.wa2 .wa-icon{
+background:#128C7E;
+}
+
+.wa-icon svg{
+width:32px;
+height:32px;
+fill:#fff;
+}
+
+/* 🔥 TEXT WA (DIKEMBALIKAN) */
+.wa-text{
+font-size:12px;
+margin-top:5px;
+font-weight:700;
+color:#444;
+}
+
+/* BUTTON */
+.aksi{
+margin-top:8px;
+}
+
+.btn{
+width:100%;
+height:42px;
+border:none;
+border-radius:10px;
+font-weight:700;
+cursor:pointer;
+}
+
+.kirim{
+background:#1565c0;
+color:#fff;
+}
+
+.sudah{
+background:#16a34a;
+color:#fff;
 }
 
 </style>
 </head>
 
 <body>
-<div class="header" style="text-align:center;padding:15px;">
-  <img src="logo.png"
-       style="width:120px;height:120px;border-radius:50%;border:4px solid #22c55e;object-fit:cover;">
-  <h2 style="margin-top:10px;">CEK PENGIRIMAN</h2>
+
+<!-- LOGIN -->
+<div class="login" id="loginBox">
+  <div class="box">
+    <img src="logo.png">
+    <h3 style="margin:0;">UFO KEBONSARI MALANG</h3>
+    <p style="font-size:12px;color:#777;">Sistem Pengiriman Driver</p>
+
+    <input type="text" id="user">
+    <input type="password" id="pass">
+
+    <button onclick="login()">MASUK</button>
+  </div>
 </div>
 
+<!-- APP -->
+<div id="app">
 
-<div id="jumlah" class="jumlah">
-Memuat data...
+<div class="header">
+  <div class="header-title">CEK PENGIRIMAN</div>
 </div>
 
+<div id="stats"></div>
 <div id="list"></div>
+
+</div>
 
 <script>
 
-const API_URL =
-"https://script.google.com/macros/s/AKfycbwmXMx6F6-XjjsikpofXZfWJWNsnEEliyQCoFkVCMZzfn9rfAQRaJmdu8niM63p9zEE/exec";
+const API_URL="https://script.google.com/macros/s/AKfycbzjNnwv0gSi1a7OQVhkzJ-xDgJ-WRPhlNvu9WSyR-DhXOTz_DPGCOHu53eN9cOjqLna/exec";
 
-fetch(API_URL)
-.then(r => r.json())
-.then(data => {
+/* LOGIN */
+function login(){
 
-  let html = "";
-  let total = 0;
-  let tanggalPengiriman = "";
+const user=document.getElementById("user").value;
+const pass=document.getElementById("pass").value;
 
-  data.forEach(row => {
+fetch(API_URL+"?action=login&user="+user+"&pass="+pass)
+.then(r=>r.json())
+.then(res=>{
 
-    const isi = row[0];
-
-    if(!isi) return;
-
-    total++;
-
-    if(!tanggalPengiriman && row[1]){
-
-      const tgl = new Date(row[1]);
-
-      tanggalPengiriman =
-        tgl.toLocaleDateString("id-ID",{
-          day:"2-digit",
-          month:"long",
-          year:"numeric"
-        });
-
-    }
-
-    html += `
-    <div class="card">
-${isi}
-    </div>
-    `;
-
-  });
-
-  document.getElementById("jumlah").innerHTML = `
-    <div class="tanggal-besar">
-    🗓️ ${tanggalPengiriman}
-    </div>
-
-    <div class="total">
-      Total Pengiriman : ${total}
-    </div>
-  `;
-
-  document.getElementById("list").innerHTML = html;
-
-})
-.catch(err => {
-
-  document.getElementById("jumlah").innerHTML =
-  "❌ Gagal mengambil data";
-
-  console.log(err);
+if(res.status==="OK"){
+localStorage.setItem("driver",res.user);
+document.getElementById("loginBox").style.display="none";
+document.getElementById("app").style.display="block";
+loadData();
+}else{
+alert("Login gagal!");
+}
 
 });
+
+}
+
+/* PARSE */
+function ambilCustomer(text){
+const m=text.match(/CUSTOMER\s*:\s*([^\n]+)/i);
+return m ? m[1].trim() : "";
+}
+
+function ambilWa(text){
+const wa=text.match(/08\d{8,13}/g);
+return wa || [];
+}
+
+/* 🔥 FIX KIRIM + POPUP */
+function kirimStatus(customer,wa){
+
+if(!customer){
+alert("Customer tidak ditemukan");
+return;
+}
+
+const driver=localStorage.getItem("driver") || "DRIVER";
+
+fetch(API_URL+
+"?customer="+encodeURIComponent(customer)+
+"&driver="+encodeURIComponent(driver)+
+"&wa="+encodeURIComponent(wa)
+)
+.then(r=>r.text())
+.then(res=>{
+
+if(res.trim()==="OK"){
+alert("✅ Berhasil dikirim: " + customer);
+loadData();
+}else{
+alert("❌ Gagal kirim: " + res);
+}
+
+})
+.catch(()=>{
+alert("Server error");
+});
+
+}
+
+/* LOAD */
+function loadData(){
+
+fetch(API_URL)
+.then(r=>r.json())
+.then(data=>{
+
+const orders=data.orders || [];
+const terkirim=data.terkirim || {};
+
+let html="";
+let total=0,ok=0,no=0;
+
+orders.forEach(row=>{
+
+const isi=row[0] || "";
+if(!isi) return;
+
+total++;
+
+const customer=ambilCustomer(isi);
+const key=customer.toLowerCase();
+const wa=ambilWa(isi);
+const sudah=terkirim[key]===true;
+
+if(sudah) ok++; else no++;
+
+html+=`
+<div class="card">
+
+<div class="data">${isi}</div>
+
+<div class="wa-group">
+
+${wa[0] ? `
+<a class="wa-box" href="https://wa.me/62${wa[0].substring(1)}" target="_blank">
+<div class="wa-icon">
+<svg viewBox="0 0 32 32">
+<path d="M19.11 17.53c-.28-.14-1.64-.81-1.9-.9-.26-.09-.45-.14-.64.14-.19.28-.73.9-.9 1.09-.17.19-.33.21-.61.07-.28-.14-1.18-.43-2.25-1.37-.83-.74-1.39-1.66-1.55-1.94-.16-.28-.02-.43.12-.57.12-.12.28-.33.42-.49.14-.16.19-.28.28-.46.09-.19.05-.35-.02-.49-.07-.14-.64-1.55-.88-2.12-.23-.55-.47-.48-.64-.49h-.55c-.19 0-.49.07-.74.35-.26.28-1 1-1 2.44s1.02 2.83 1.16 3.03c.14.19 2.02 3.09 4.89 4.33.68.29 1.21.46 1.63.59.68.22 1.3.19 1.79.12.55-.08 1.64-.67 1.87-1.32.23-.65.23-1.21.16-1.32-.07-.11-.26-.19-.54-.33z"/>
+</svg>
+</div>
+<div class="wa-text">WA 1</div>
+</a>` : ""}
+
+${wa[1] ? `
+<a class="wa-box" href="https://wa.me/62${wa[1].substring(1)}" target="_blank">
+<div class="wa-icon">
+<svg viewBox="0 0 32 32">
+<path d="M19.11 17.53c-.28-.14-1.64-.81-1.9-.9-.26-.09-.45-.14-.64.14-.19.28-.73.9-.9 1.09-.17.19-.33.21-.61.07-.28-.14-1.18-.43-2.25-1.37-.83-.74-1.39-1.66-1.55-1.94-.16-.28-.02-.43.12-.57.12-.12.28-.33.42-.49.14-.16.19-.28.28-.46.09-.19.05-.35-.02-.49-.07-.14-.64-1.55-.88-2.12-.23-.55-.47-.48-.64-.49h-.55c-.19 0-.49.07-.74.35-.26.28-1 1-1 2.44s1.02 2.83 1.16 3.03c.14.19 2.02 3.09 4.89 4.33.68.29 1.21.46 1.63.59.68.22 1.3.19 1.79.12.55-.08 1.64-.67 1.87-1.32.23-.65.23-1.21.16-1.32-.07-.11-.26-.19-.54-.33z"/>
+</svg>
+</div>
+<div class="wa-text">WA 2</div>
+</a>` : ""}
+
+</div>
+
+<div class="aksi">
+<button class="btn ${sudah?'sudah':'kirim'}"
+onclick="kirimStatus(\`${customer}\`,\`${wa[0]||''}\`)">
+${sudah?'✓ TERKIRIM':'🚚 KIRIM'}
+</button>
+</div>
+
+</div>
+`;
+});
+
+document.getElementById("stats").innerHTML=`
+<div class="stats">
+<div class="boxstat"><div class="t">TOTAL</div><div class="v">${total}</div></div>
+<div class="boxstat"><div class="t">TERKIRIM</div><div class="v">${ok}</div></div>
+<div class="boxstat"><div class="t">BELUM</div><div class="v">${no}</div></div>
+</div>
+`;
+
+document.getElementById("list").innerHTML=html;
+
+});
+
+}
 
 </script>
 
