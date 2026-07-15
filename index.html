@@ -402,7 +402,7 @@ function bukaModal(judul, pesan, jenis, callback = null) {
   document.getElementById("customModal").classList.add("aktif");
 }
 
-/* PROSES GAMBAR JADI BASE64 + DIKOMPRES AGAR TIDAK LEMOT */
+/* PROSES GAMBAR JADI BASE64 + KOMPRES MAKSIMAL (SANGAT RINGAN UNTUK GET) */
 function prosesGambar(input) {
   const file = input.files[0];
   if (file) {
@@ -411,19 +411,20 @@ function prosesGambar(input) {
       const img = new Image();
       img.src = e.target.result;
       img.onload = function() {
-        // Kompres gambar otomatis agar upload cepat & tidak melebihi limit kuota server
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
-        const max_width = 800; // Kompres lebar maksimal ke 800px
+        
+        // Kompres resolusi gambar ke ukuran kecil (lebar 450px saja, sudah cukup jelas untuk bukti)
+        const max_width = 450; 
         const scale = max_width / img.width;
         canvas.width = max_width;
         canvas.height = img.height * scale;
         
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         
-        // Simpan hasil kompres dengan kualitas 70%
-        const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
-        dataFotoBase64 = dataUrl.split(",")[1]; // Ambil data Base64 murni
+        // Kompres kualitas ke 40% (Sangat ringan, ukuran file hanya belasan KB!)
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.4);
+        dataFotoBase64 = dataUrl.split(",")[1]; // Ambil string base64 murni
 
         // Munculkan preview di modal
         const preview = document.getElementById("previewKamera");
@@ -434,6 +435,61 @@ function prosesGambar(input) {
     };
     reader.readAsDataURL(file);
   }
+}
+
+/* KIRIM STATUS PENGIRIMAN + FOTO BUKTI VIA GET (ANTI-BLOCKED) */
+function kirimStatus(customer, wa, idx) {
+  bukaModal(
+    "Konfirmasi Pengiriman", 
+    "Silakan ambil foto bukti pengiriman terlebih dahulu sebelum menekan tombol konfirmasi.", 
+    "confirm", 
+    () => {
+      // Validasi wajib foto
+      if (!dataFotoBase64) {
+        setTimeout(() => {
+          bukaModal("Gagal Kirim", "Maaf Bos, driver wajib mengambil foto bukti pengiriman sebagai bukti sah!", "alert");
+        }, 100);
+        return;
+      }
+
+      const driver = localStorage.getItem("driver") || "DRIVER";
+      
+      const btn = document.getElementById("btn-" + idx);
+      const spinner = document.getElementById("spin-" + idx);
+      const text = document.getElementById("txt-" + idx);
+
+      btn.disabled = true;
+      spinner.style.display = "block";
+      text.innerText = "MENGIRIM...";
+
+      // Kirim via GET dengan melampirkan teks foto di URL (Lebih stabil dan pasti diizinkan Google)
+      const urlKirim = API_URL + 
+                       "?customer=" + encodeURIComponent(customer) +
+                       "&driver=" + encodeURIComponent(driver) +
+                       "&wa=" + encodeURIComponent(wa) +
+                       "&foto=" + encodeURIComponent(dataFotoBase64);
+
+      fetch(urlKirim)
+      .then(r => r.text())
+      .then(res => {
+        if(res.trim() === "OK"){
+          bukaModal("Berhasil!", "Status pengiriman untuk " + customer + " sukses diperbarui beserta bukti foto.", "alert");
+          loadData();
+        } else {
+          bukaModal("Gagal", "Respon server bermasalah: " + res, "alert");
+          btn.disabled = false;
+          spinner.style.display = "none";
+          text.innerText = "🚚 KIRIM";
+        }
+      })
+      .catch(() => {
+        bukaModal("Error", "Gagal mengirim data. Coba beberapa saat lagi.", "alert");
+        btn.disabled = false;
+        spinner.style.display = "none";
+        text.innerText = "🚚 KIRIM";
+      });
+    }
+  );
 }
 
 function tutupModal() {
