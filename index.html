@@ -47,17 +47,46 @@ padding:10px;
 margin:8px 0;
 border-radius:10px;
 border:1px solid #ddd;
+box-sizing: border-box;
+}
+
+/* 🔥 SPINNER LOADING STYLE */
+.btn-isi {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+}
+
+.spinner {
+width: 18px;
+height: 18px;
+border: 2px solid rgba(255,255,255,0.3);
+border-radius: 50%;
+border-top-color: #fff;
+animation: putar 0.6s linear infinite;
+display: none; /* Sembunyikan default */
+}
+
+@keyframes putar {
+to { transform: rotate(360deg); }
 }
 
 button{
 width:100%;
-padding:10px;
+padding:12px;
 border:none;
 border-radius:10px;
 background:#1565c0;
 color:#fff;
 font-weight:700;
 cursor:pointer;
+font-size: 14px;
+}
+
+button:disabled {
+background: #a1a1a1 !important;
+cursor: not-allowed;
 }
 
 /* APP */
@@ -82,6 +111,20 @@ font-size:22px;
 font-weight:900;
 color:#6d28d9;
 letter-spacing:2px;
+}
+
+/* 🔥 PENCARIAN */
+.search-container {
+margin-bottom: 10px;
+}
+.search-input {
+width: 100%;
+padding: 12px;
+border-radius: 12px;
+border: 2px solid #6d28d9;
+font-size: 14px;
+font-weight: 600;
+box-shadow: 0 2px 6px rgba(0,0,0,.05);
 }
 
 /* STATS */
@@ -135,37 +178,34 @@ text-decoration:none;
 width:70px;
 }
 
-/* 🔥 UPDATE: ICON WA DIKEMBANGKAN MIRIP ASLI ANDROID HP */
+/* ICON WA MIRIP ASLI ANDROID HP */
 .wa-icon{
-width:58px; /* Diperbesar sedikit agar mantap */
+width:58px; 
 height:58px;
 border-radius:50%;
-background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); /* Efek gradasi khas WA */
+background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
 display:flex;
 align-items:center;
 justify-content:center;
-box-shadow: 0 4px 10px rgba(18, 140, 126, 0.4); /* Bayangan hijau timbul */
+box-shadow: 0 4px 10px rgba(18, 140, 126, 0.4);
 transition: transform 0.1s ease;
 }
 
-/* WA 2 menggunakan warna hijau khas sekunder */
 .wa2 .wa-icon{
 background: linear-gradient(135deg, #128C7E 0%, #075E54 100%);
 box-shadow: 0 4px 10px rgba(7, 94, 84, 0.4);
 }
 
 .wa-box:active .wa-icon {
-transform: scale(0.92); /* Efek membal saat ditekan driver di HP */
+transform: scale(0.92);
 }
 
-/* Logo SVG diperbesar skalanya agar mengisi lingkaran dengan pas */
 .wa-icon svg{
 width:36px;
 height:36px;
 fill:#fff;
 }
 
-/* 🔥 TEXT WA */
 .wa-text{
 font-size:11px;
 margin-top:6px;
@@ -181,7 +221,7 @@ margin-top:12px;
 
 .btn{
 width:100%;
-height:42px;
+height:44px;
 border:none;
 border-radius:10px;
 font-weight:700;
@@ -210,29 +250,37 @@ color:#fff;
     <h3 style="margin:0;">UFO KEBONSARI MALANG</h3>
     <p style="font-size:12px;color:#777;">Sistem Pengiriman Driver</p>
 
-   <div style="text-align:left;font-size:12px;margin-top:10px;font-weight:600;">
-Username
-</div>
-<input type="text" id="user" placeholder="">
+    <div style="text-align:left;font-size:12px;margin-top:10px;font-weight:600;">Username</div>
+    <input type="text" id="user" placeholder="">
 
-<div style="text-align:left;font-size:12px;margin-top:10px;font-weight:600;">
-Password
-</div>
-<input type="password" id="pass" placeholder="">
+    <div style="text-align:left;font-size:12px;margin-top:10px;font-weight:600;">Password</div>
+    <input type="password" id="pass" placeholder="">
 
-    <button onclick="login()">MASUK</button>
+    <!-- 🔥 SEKARANG ADA LOADING DI TOMBOL LOGIN -->
+    <button id="btnLogin" onclick="login()">
+      <div class="btn-isi">
+        <span id="textLogin">MASUK</span>
+        <div class="spinner" id="login-spinner"></div>
+      </div>
+    </button>
   </div>
 </div>
 
 <!-- APP -->
 <div id="app">
 
-<div class="header">
-  <div class="header-title">CEK PENGIRIMAN</div>
-</div>
+  <div class="header">
+    <div class="header-title">CEK PENGIRIMAN</div>
+  </div>
 
-<div id="stats"></div>
-<div id="list"></div>
+  <div id="stats"></div>
+
+  <!-- 🔥 TOMBOL PENCARIAN LIVE FILTER -->
+  <div class="search-container">
+    <input type="text" id="cariCustomer" class="search-input" placeholder="🔍 Cari nama customer..." onkeyup="filterCustomer()">
+  </div>
+
+  <div id="list"></div>
 
 </div>
 
@@ -242,150 +290,187 @@ const API_URL="https://script.google.com/macros/s/AKfycbzjNnwv0gSi1a7OQVhkzJ-xDg
 
 /* LOGIN */
 function login(){
+  const user = document.getElementById("user").value;
+  const pass = document.getElementById("pass").value;
+  
+  const btn = document.getElementById("btnLogin");
+  const spinner = document.getElementById("login-spinner");
+  const text = document.getElementById("textLogin");
 
-const user=document.getElementById("user").value;
-const pass=document.getElementById("pass").value;
+  if(!user || !pass) {
+    alert("Username dan Password harus diisi!");
+    return;
+  }
 
-fetch(API_URL+"?action=login&user="+user+"&pass="+pass)
-.then(r=>r.json())
-.then(res=>{
+  // 🔄 Aktifkan Loading Login
+  btn.disabled = true;
+  spinner.style.display = "block";
+  text.innerText = "MEMPROSES...";
 
-if(res.status==="OK"){
-localStorage.setItem("driver",res.user);
-document.getElementById("loginBox").style.display="none";
-document.getElementById("app").style.display="block";
-loadData();
-}else{
-alert("Login gagal!");
-}
-
-});
-
+  fetch(API_URL+"?action=login&user="+user+"&pass="+pass)
+  .then(r=>r.json())
+  .then(res=>{
+    if(res.status==="OK"){
+      localStorage.setItem("driver",res.user);
+      document.getElementById("loginBox").style.display="none";
+      document.getElementById("app").style.display="block";
+      loadData();
+    }else{
+      alert("Login gagal! Periksa kembali username & password.");
+      // 🔄 Kembalikan Tombol jika gagal
+      btn.disabled = false;
+      spinner.style.display = "none";
+      text.innerText = "MASUK";
+    }
+  })
+  .catch(()=>{
+    alert("Koneksi bermasalah!");
+    btn.disabled = false;
+    spinner.style.display = "none";
+    text.innerText = "MASUK";
+  });
 }
 
 /* PARSE */
 function ambilCustomer(text){
-const m=text.match(/CUSTOMER\s*:\s*([^\n]+)/i);
-return m ? m[1].trim() : "";
+  const m=text.match(/CUSTOMER\s*:\s*([^\n]+)/i);
+  return m ? m[1].trim() : "";
 }
 
 function ambilWa(text){
-const wa=text.match(/08\d{8,13}/g);
-return wa || [];
+  const wa=text.match(/08\d{8,13}/g);
+  return wa || [];
 }
 
-/* 🔥 FIX KIRIM + POPUP */
-function kirimStatus(customer,wa){
+/* 🔥 FIX KIRIM + POPUP DENGAN SPINNER & KONFIRMASI */
+function kirimStatus(customer, wa, idx){
+  
+  // 1. Konfirmasi dulu agar tidak sengaja tersenggol
+  const yakin = confirm(`Apakah Anda yakin barang untuk "${customer}" sudah dikirim?`);
+  if (!yakin) return;
 
-if(!customer){
-alert("Customer tidak ditemukan");
-return;
-}
+  const driver = localStorage.getItem("driver") || "DRIVER";
+  
+  const btn = document.getElementById("btn-" + idx);
+  const spinner = document.getElementById("spin-" + idx);
+  const text = document.getElementById("txt-" + idx);
 
-const driver=localStorage.getItem("driver") || "DRIVER";
+  // 🔄 Aktifkan Loading di Card Terkait
+  btn.disabled = true;
+  spinner.style.display = "block";
+  text.innerText = "MENGIRIM...";
 
-fetch(API_URL+
-"?customer="+encodeURIComponent(customer)+
-"&driver="+encodeURIComponent(driver)+
-"&wa="+encodeURIComponent(wa)
-)
-.then(r=>r.text())
-.then(res=>{
-
-if(res.trim()==="OK"){
-alert("✅ Berhasil dikirim: " + customer);
-loadData();
-}else{
-alert("❌ Gagal kirim: " + res);
-}
-
-})
-.catch(()=>{
-alert("Server error");
-});
-
+  fetch(API_URL+
+    "?customer="+encodeURIComponent(customer)+
+    "&driver="+encodeURIComponent(driver)+
+    "&wa="+encodeURIComponent(wa)
+  )
+  .then(r=>r.text())
+  .then(res=>{
+    if(res.trim()==="OK"){
+      alert("✅ Berhasil dikirim: " + customer);
+      loadData();
+    }else{
+      alert("❌ Gagal kirim: " + res);
+      // Reset tombol jika gagal
+      btn.disabled = false;
+      spinner.style.display = "none";
+      text.innerText = "🚚 KIRIM";
+    }
+  })
+  .catch(()=>{
+    alert("Server error, coba lagi.");
+    btn.disabled = false;
+    spinner.style.display = "none";
+    text.innerText = "🚚 KIRIM";
+  });
 }
 
 /* LOAD */
 function loadData(){
+  fetch(API_URL)
+  .then(r=>r.json())
+  .then(data=>{
+    const orders=data.orders || [];
+    const terkirim=data.terkirim || {};
 
-fetch(API_URL)
-.then(r=>r.json())
-.then(data=>{
+    let html="";
+    let total=0,ok=0,no=0;
 
-const orders=data.orders || [];
-const terkirim=data.terkirim || {};
+    orders.forEach((row, index)=>{
+      const isi=row[0] || "";
+      if(!isi) return;
 
-let html="";
-let total=0,ok=0,no=0;
+      total++;
+      const customer=ambilCustomer(isi);
+      const key=customer.toLowerCase();
+      const wa=ambilWa(isi);
+      const sudah=terkirim[key]===true;
 
-orders.forEach(row=>{
+      if(sudah) ok++; else no++;
 
-const isi=row[0] || "";
-if(!isi) return;
+      html+=`
+      <div class="card" data-customer="${key}">
+        <div class="data">${isi}</div>
 
-total++;
+        <div class="wa-group">
+          ${wa[0] ? `
+          <a class="wa-box" href="https://wa.me/62${wa[0].substring(1)}" target="_blank">
+            <div class="wa-icon">
+              <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.528 1.981 14.062.96 11.43.96c-5.44 0-9.866 4.372-9.87 9.802 0 1.689.445 3.339 1.287 4.792l-.999 3.649 3.739-.968zm11.341-7.713c-.26-.13-1.534-.757-1.772-.842-.238-.085-.411-.13-.583.13-.172.26-.666.842-.817 1.013-.151.17-.301.19-.561.06-.26-.13-1.1-.405-2.096-1.294-.775-.69-1.299-1.543-1.451-1.802-.152-.258-.016-.399.114-.529.117-.117.26-.302.39-.453.13-.151.173-.258.26-.43.086-.172.043-.322-.022-.453-.064-.13-.583-1.403-.799-1.924-.211-.507-.426-.438-.583-.446-.151-.008-.323-.009-.495-.009-.172 0-.452.065-.689.322-.237.258-.904.883-.904 2.153 0 1.27.925 2.5 1.054 2.671.129.172 1.82 2.779 4.41 3.897.616.265 1.096.424 1.471.543.619.197 1.183.169 1.629.103.497-.074 1.534-.627 1.749-1.233.215-.607.215-1.127.151-1.233-.064-.108-.236-.172-.496-.302z"/></svg>
+            </div>
+            <div class="wa-text">WA 1</div>
+          </a>` : ""}
 
-const customer=ambilCustomer(isi);
-const key=customer.toLowerCase();
-const wa=ambilWa(isi);
-const sudah=terkirim[key]===true;
+          ${wa[1] ? `
+          <a class="wa-box wa2" href="https://wa.me/62${wa[1].substring(1)}" target="_blank">
+            <div class="wa-icon">
+              <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.528 1.981 14.062.96 11.43.96c-5.44 0-9.866 4.372-9.87 9.802 0 1.689.445 3.339 1.287 4.792l-.999 3.649 3.739-.968zm11.341-7.713c-.26-.13-1.534-.757-1.772-.842-.238-.085-.411-.13-.583.13-.172.26-.666.842-.817 1.013-.151.17-.301.19-.561.06-.26-.13-1.1-.405-2.096-1.294-.775-.69-1.299-1.543-1.451-1.802-.152-.258-.016-.399.114-.529.117-.117.26-.302.39-.453.13-.151.173-.258.26-.43.086-.172.043-.322-.022-.453-.064-.13-.583-1.403-.799-1.924-.211-.507-.426-.438-.583-.446-.151-.008-.323-.009-.495-.009-.172 0-.452.065-.689.322-.237.258-.904.883-.904 2.153 0 1.27.925 2.5 1.054 2.671.129.172 1.82 2.779 4.41 3.897.616.265 1.096.424 1.471.543.619.197 1.183.169 1.629.103.497-.074 1.534-.627 1.749-1.233.215-.607.215-1.127.151-1.233-.064-.108-.236-.172-.496-.302z"/></svg>
+            </div>
+            <div class="wa-text">WA 2</div>
+          </a>` : ""}
+        </div>
 
-if(sudah) ok++; else no++;
+        <div class="aksi">
+          <button class="btn ${sudah?'sudah':'kirim'}" id="btn-${index}" ${sudah?'disabled':''}
+            onclick="kirimStatus(\`${customer}\`,\`${wa[0]||''}\`, ${index})">
+            <div class="btn-isi">
+              <span id="txt-${index}">${sudah?'✓ TERKIRIM':'🚚 KIRIM'}</span>
+              <div class="spinner" id="spin-${index}"></div>
+            </div>
+          </button>
+        </div>
+      </div>
+      `;
+    });
 
-html+=`
-<div class="card">
+    document.getElementById("stats").innerHTML=`
+      <div class="stats">
+        <div class="boxstat"><div class="t">TOTAL</div><div class="v" style="font-weight:700;font-size:16px;">${total}</div></div>
+        <div class="boxstat"><div class="t">TERKIRIM</div><div class="v" style="font-weight:700;font-size:16px;color:#16a34a;">${ok}</div></div>
+        <div class="boxstat"><div class="t">BELUM</div><div class="v" style="font-weight:700;font-size:16px;color:#1565c0;">${no}</div></div>
+      </div>
+    `;
 
-<div class="data">${isi}</div>
+    document.getElementById("list").innerHTML=html;
+    // Panggil ulang filter jika saat load data driver sedang mengetik sesuatu
+    filterCustomer();
+  });
+}
 
-<div class="wa-group">
-
-${wa[0] ? `
-<a class="wa-box" href="https://wa.me/62${wa[0].substring(1)}" target="_blank">
-<div class="wa-icon">
-<!-- Menggunakan bentuk SVG asli Logo WhatsApp yang lebih presisi & tebal -->
-<svg viewBox="0 0 24 24">
-<path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.528 1.981 14.062.96 11.43.96c-5.44 0-9.866 4.372-9.87 9.802 0 1.689.445 3.339 1.287 4.792l-.999 3.649 3.739-.968zm11.341-7.713c-.26-.13-1.534-.757-1.772-.842-.238-.085-.411-.13-.583.13-.172.26-.666.842-.817 1.013-.151.17-.301.19-.561.06-.26-.13-1.1-.405-2.096-1.294-.775-.69-1.299-1.543-1.451-1.802-.152-.258-.016-.399.114-.529.117-.117.26-.302.39-.453.13-.151.173-.258.26-.43.086-.172.043-.322-.022-.453-.064-.13-.583-1.403-.799-1.924-.211-.507-.426-.438-.583-.446-.151-.008-.323-.009-.495-.009-.172 0-.452.065-.689.322-.237.258-.904.883-.904 2.153 0 1.27.925 2.5 1.054 2.671.129.172 1.82 2.779 4.41 3.897.616.265 1.096.424 1.471.543.619.197 1.183.169 1.629.103.497-.074 1.534-.627 1.749-1.233.215-.607.215-1.127.151-1.233-.064-.108-.236-.172-.496-.302z"/>
-</svg>
-</div>
-<div class="wa-text">WA 1</div>
-</a>` : ""}
-
-${wa[1] ? `
-<a class="wa-box wa2" href="https://wa.me/62${wa[1].substring(1)}" target="_blank">
-<div class="wa-icon">
-<svg viewBox="0 0 24 24">
-<path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.528 1.981 14.062.96 11.43.96c-5.44 0-9.866 4.372-9.87 9.802 0 1.689.445 3.339 1.287 4.792l-.999 3.649 3.739-.968zm11.341-7.713c-.26-.13-1.534-.757-1.772-.842-.238-.085-.411-.13-.583.13-.172.26-.666.842-.817 1.013-.151.17-.301.19-.561.06-.26-.13-1.1-.405-2.096-1.294-.775-.69-1.299-1.543-1.451-1.802-.152-.258-.016-.399.114-.529.117-.117.26-.302.39-.453.13-.151.173-.258.26-.43.086-.172.043-.322-.022-.453-.064-.13-.583-1.403-.799-1.924-.211-.507-.426-.438-.583-.446-.151-.008-.323-.009-.495-.009-.172 0-.452.065-.689.322-.237.258-.904.883-.904 2.153 0 1.27.925 2.5 1.054 2.671.129.172 1.82 2.779 4.41 3.897.616.265 1.096.424 1.471.543.619.197 1.183.169 1.629.103.497-.074 1.534-.627 1.749-1.233.215-.607.215-1.127.151-1.233-.064-.108-.236-.172-.496-.302z"/>
-</svg>
-</div>
-<div class="wa-text">WA 2</div>
-</a>` : ""}
-
-</div>
-
-<div class="aksi">
-<button class="btn ${sudah?'sudah':'kirim'}"
-onclick="kirimStatus(\`${customer}\`,\`${wa[0]||''}\`)">
-${sudah?'✓ TERKIRIM':'🚚 KIRIM'}
-</button>
-</div>
-
-</div>
-`;
-});
-
-document.getElementById("stats").innerHTML=`
-<div class="stats">
-<div class="boxstat"><div class="t">TOTAL</div><div class="v">${total}</div></div>
-<div class="boxstat"><div class="t">TERKIRIM</div><div class="v">${ok}</div></div>
-<div class="boxstat"><div class="t">BELUM</div><div class="v">${no}</div></div>
-</div>
-`;
-
-document.getElementById("list").innerHTML=html;
-
-});
-
+/* 🔥 FUNGSI LIVE SEARCH FILTER */
+function filterCustomer() {
+  const keyword = document.getElementById("cariCustomer").value.toLowerCase();
+  const cards = document.querySelectorAll(".card");
+  
+  cards.forEach(card => {
+    const namaCustomer = card.getAttribute("data-customer");
+    if (namaCustomer.includes(keyword)) {
+      card.style.display = "block";
+    } else {
+      card.style.display = "none";
+    }
+  });
 }
 
 </script>
