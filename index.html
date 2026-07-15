@@ -346,7 +346,7 @@ function bukaModal(judul, pesan, jenis, callback = null) {
     containerTombol.innerHTML = '<button type="button" class="btn-modal btn-oke" onclick="tutupModal()">TUTUP</button>';
   } else if (jenis === "confirm") {
     fungsiCallbackKonfirmasi = callback;
-    containerTombol.innerHTML = '<button type="button" class="btn-modal btn-batal" onclick="tutupModal()">BATAL</button><button type="button" class="btn-modal btn-oke" onclick="eksekusiKonfirmasi()">YA, YAKIN</button>';
+    containerTombol.innerHTML = '<button type="button" class="btn-batal btn-modal" onclick="tutupModal()">BATAL</button><button type="button" class="btn-oke btn-modal" onclick="eksekusiKonfirmasi()">YA, YAKIN</button>';
   }
 
   document.getElementById("customModal").classList.add("aktif");
@@ -389,4 +389,151 @@ function login() {
       const docEl = document.documentElement;
       if (docEl.requestFullscreen) {
         docEl.requestFullscreen();
-      } else if (docEl.
+      } else if (docEl.webkitRequestFullscreen) {
+        docEl.webkitRequestFullscreen();
+      } else if (docEl.msRequestFullscreen) {
+        docEl.msRequestFullscreen();
+      }
+
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("app").style.display = "block";
+      loadData();
+    } else {
+      bukaModal("Login Gagal", "Username atau Password salah. Periksa kembali!", "alert");
+      btn.disabled = false;
+      spinner.style.display = "none";
+      text.innerText = "MASUK";
+    }
+  })
+  .catch(() => {
+    bukaModal("Koneksi Error", "Gagal terhubung ke server. Periksa internet Anda.", "alert");
+    btn.disabled = false;
+    spinner.style.display = "none";
+    text.innerText = "MASUK";
+  });
+}
+
+/* PARSE NAMA CUSTOMER */
+function ambilCustomer(text) {
+  const m = text.match(/CUSTOMER\s*:\s*([^\n]+)/i);
+  return m ? m[1].trim() : "";
+}
+
+/* PARSE NOMOR WA */
+function ambilWa(text) {
+  const wa = text.match(/08\d{8,13}/g);
+  return wa || [];
+}
+
+/* KIRIM STATUS PENGIRIMAN */
+function kirimStatus(customer, wa, idx) {
+  bukaModal(
+    "Konfirmasi Pengiriman", 
+    "Apakah Anda yakin barang untuk \"" + customer + "\" benar-benar sudah dikirim?", 
+    "confirm", 
+    () => {
+      const driver = localStorage.getItem("driver") || "DRIVER";
+      
+      const btn = document.getElementById("btn-" + idx);
+      const spinner = document.getElementById("spin-" + idx);
+      const text = document.getElementById("txt-" + idx);
+
+      btn.disabled = true;
+      spinner.style.display = "block";
+      text.innerText = "MENGIRIM...";
+
+      const urlKirim = API_URL +
+        "?customer=" + encodeURIComponent(customer) +
+        "&driver=" + encodeURIComponent(driver) +
+        "&wa=" + encodeURIComponent(wa);
+
+      fetch(urlKirim, { redirect: "follow" })
+      .then(r => r.json()) // Respon dari Apps Script baru berupa JSON {status: "OK"}
+      .then(res => {
+        if(res.status === "OK"){
+          bukaModal("Berhasil!", "Status pengiriman untuk " + customer + " sukses diperbarui.", "alert");
+          loadData();
+        } else {
+          bukaModal("Gagal", "Respon server bermasalah.", "alert");
+          btn.disabled = false;
+          spinner.style.display = "none";
+          text.innerText = "🚚 KIRIM";
+        }
+      })
+      .catch(() => {
+        bukaModal("Error", "Gagal mengirim data. Coba beberapa saat lagi.", "alert");
+        btn.disabled = false;
+        spinner.style.display = "none";
+        text.innerText = "🚚 KIRIM";
+      });
+    }
+  );
+}
+
+/* LOAD DATA DARI SHEET */
+function loadData() {
+  fetch(API_URL)
+  .then(r => r.json())
+  .then(data => {
+    const orders = data.orders || [];
+    const terkirim = data.terkirim || {};
+
+    let html = "";
+    let total = 0, ok = 0, no = 0;
+
+    orders.forEach((row, index) => {
+      const isi = row[0] || "";
+      if(!isi) return;
+
+      total++;
+      const customer = ambilCustomer(isi);
+      const key = customer.toLowerCase();
+      const wa = ambilWa(isi);
+      const sudah = terkirim[key] === true;
+
+      if(sudah) ok++; else no++;
+
+      html += '<div class="card" data-customer="' + key + '">';
+      html += '<div class="data">' + isi + '</div>';
+      html += '<div class="wa-group">';
+      
+      if(wa[0]) {
+        html += '<a class="wa-box" href="https://wa.me/62' + wa[0].substring(1) + '" target="_blank"><div class="wa-icon"><svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.528 1.981 14.062.96 11.43.96c-5.44 0-9.866 4.372-9.87 9.802 0 1.689.445 3.339 1.287 4.792l-.999 3.649 3.739-.968zm11.341-7.713c-.26-.13-1.534-.757-1.772-.842-.238-.085-.411-.13-.583.13-.172.26-.666.842-.817 1.013-.151.17-.301.19-.561.06-.26-.13-1.1-.405-2.096-1.294-.775-.69-1.299-1.543-1.451-1.802-.152-.258-.016-.399.114-.529.117-.117.26-.302.39-.453.13-.151.173-.258.26-.43.086-.172.043-.322-.022-.453-.064-.13-.583-1.403-.799-1.924-.211-.507-.426-.438-.583-.446-.151-.008-.323-.009-.495-.009-.172 0-.452.065-.689.322-.237.258-.904.883-.904 2.153 0 1.27.925 2.5 1.054 2.671.129.172 1.82 2.779 4.41 3.897.616.265 1.096.424 1.471.543.619.197 1.183.169 1.629.103.497-.074 1.534-.627 1.749-1.233.215-.607.215-1.127.151-1.233-.064-.108-.236-.172-.496-.302z"/></svg></div><div class="wa-text">WA 1</div></a>';
+      }
+      if(wa[1]) {
+        html += '<a class="wa-box wa2" href="https://wa.me/62' + wa[1].substring(1) + '" target="_blank"><div class="wa-icon"><svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.528 1.981 14.062.96 11.43.96c-5.44 0-9.866 4.372-9.87 9.802 0 1.689.445 3.339 1.287 4.792l-.999 3.649 3.739-.968zm11.341-7.713c-.26-.13-1.534-.757-1.772-.842-.238-.085-.411-.13-.583.13-.172.26-.666.842-.817 1.013-.151.17-.301.19-.561.06-.26-.13-1.1-.405-2.096-1.294-.775-.69-1.299-1.543-1.451-1.802-.152-.258-.016-.399.114-.529.117-.117.26-.302.39-.453.13-.151.173-.258.26-.43.086-.172.043-.322-.022-.453-.064-.13-.583-1.403-.799-1.924-.211-.507-.426-.438-.583-.446-.151-.008-.323-.009-.495-.009-.172 0-.452.065-.689.322-.237.258-.904.883-.904 2.153 0 1.27.925 2.5 1.054 2.671.129.172 1.82 2.779 4.41 3.897.616.265 1.096.424 1.471.543.619.197 1.183.169 1.629.103.497-.074 1.534-.627 1.749-1.233.215-.607.215-1.127.151-1.233-.064-.108-.236-.172-.496-.302z"/></svg></div><div class="wa-text">WA 2</div></a>';
+      }
+
+      html += '</div>';
+      html += '<div class="aksi">';
+      html += '<button type="button" class="btn ' + (sudah ? 'sudah' : 'kirim') + '" id="btn-' + index + '" ' + (sudah ? 'disabled' : '') + ' onclick="kirimStatus(\'' + customer + '\',\'' + (wa[0] || '') + '\', ' + index + ')">';
+      html += '<div class="btn-isi"><span id="txt-' + index + '">' + (sudah ? '✓ TERKIRIM' : '🚚 KIRIM') + '</span><div class="spinner" id="spin-' + index + '"></div></div>';
+      html += '</button>';
+      html += '</div>';
+      html += '</div>';
+    });
+
+    document.getElementById("stats").innerHTML = '<div class="stats"><div class="boxstat"><div class="t">TOTAL</div><div class="v" style="font-weight:700;font-size:16px;">' + total + '</div></div><div class="boxstat"><div class="t">TERKIRIM</div><div class="v" style="font-weight:700;font-size:16px;color:#16a34a;">' + ok + '</div></div><div class="boxstat"><div class="t">BELUM</div><div class="v" style="font-weight:700;font-size:16px;color:#1565c0;">' + no + '</div></div></div>';
+
+    document.getElementById("list").innerHTML = html;
+    filterCustomer();
+  });
+}
+
+/* FUNGSI LIVE SEARCH FILTER */
+function filterCustomer() {
+  const keyword = document.getElementById("cariCustomer").value.toLowerCase();
+  const cards = document.querySelectorAll(".card");
+  
+  cards.forEach(card => {
+    const namaCustomer = card.getAttribute("data-customer");
+    if (namaCustomer.includes(keyword)) {
+      card.style.display = "block";
+    } else {
+      card.style.display = "none";
+    }
+  });
+}
+</script>
+</body>
+</html>
