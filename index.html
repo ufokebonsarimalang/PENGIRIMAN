@@ -437,7 +437,6 @@ function prosesGambar(input) {
   }
 }
 
-/* KIRIM STATUS PENGIRIMAN + FOTO BUKTI VIA GET (ANTI-BLOCKED) */
 function kirimStatus(customer, wa, idx) {
   bukaModal(
     "Konfirmasi Pengiriman", 
@@ -462,14 +461,16 @@ function kirimStatus(customer, wa, idx) {
       spinner.style.display = "block";
       text.innerText = "MENGIRIM...";
 
-      // Kirim via GET dengan melampirkan teks foto di URL (Lebih stabil dan pasti diizinkan Google)
-      const urlKirim = API_URL + 
-                       "?customer=" + encodeURIComponent(customer) +
-                       "&driver=" + encodeURIComponent(driver) +
-                       "&wa=" + encodeURIComponent(wa) +
-                       "&foto=" + encodeURIComponent(dataFotoBase64);
-
-      fetch(urlKirim)
+      // Mengirimkan data via POST Payload agar muat foto ukuran besar sekalipun
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          customer: customer,
+          driver: driver,
+          wa: wa,
+          foto: dataFotoBase64
+        })
+      })
       .then(r => r.text())
       .then(res => {
         if(res.trim() === "OK"){
