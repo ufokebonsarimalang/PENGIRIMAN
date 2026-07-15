@@ -50,7 +50,7 @@ border:1px solid #ddd;
 box-sizing: border-box;
 }
 
-/* 🔥 SPINNER LOADING STYLE */
+/* SPINNER LOADING STYLE */
 .btn-isi {
 display: flex;
 align-items: center;
@@ -65,7 +65,7 @@ border: 2px solid rgba(255,255,255,0.3);
 border-radius: 50%;
 border-top-color: #fff;
 animation: putar 0.6s linear infinite;
-display: none; /* Sembunyikan default */
+display: none;
 }
 
 @keyframes putar {
@@ -113,7 +113,7 @@ color:#6d28d9;
 letter-spacing:2px;
 }
 
-/* 🔥 PENCARIAN */
+/* PENCARIAN */
 .search-container {
 margin-bottom: 10px;
 }
@@ -238,6 +238,51 @@ background:#16a34a;
 color:#fff;
 }
 
+/* 🔥 STYLE BARU: MODAL CUSTOM ELEGAN */
+.modal-overlay {
+position: fixed;
+top: 0; left: 0; width: 100%; height: 100%;
+background: rgba(0, 0, 0, 0.5);
+display: flex; justify-content: center; align-items: center;
+z-index: 9999; opacity: 0; pointer-events: none;
+transition: opacity 0.2s ease;
+}
+
+.modal-overlay.aktif {
+opacity: 1; pointer-events: auto;
+}
+
+.modal-content {
+background: #fff; padding: 24px 20px;
+border-radius: 16px; width: 290px; text-align: center;
+box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+transform: scale(0.8); transition: transform 0.2s ease;
+}
+
+.modal-overlay.aktif .modal-content {
+transform: scale(1);
+}
+
+.modal-title {
+font-size: 18px; font-weight: 700; margin-bottom: 8px; color: #111;
+}
+
+.modal-text {
+font-size: 14px; color: #555; line-height: 1.4; margin-bottom: 20px;
+}
+
+.modal-buttons {
+display: flex; gap: 10px; justify-content: center;
+}
+
+.btn-modal {
+padding: 10px 16px; border: none; border-radius: 8px;
+font-weight: 700; cursor: pointer; font-size: 13px; width: auto; flex: 1;
+}
+
+.btn-batal { background: #e2e8f0; color: #475569; }
+.btn-oke { background: #1565c0; color: #fff; }
+
 </style>
 </head>
 
@@ -256,7 +301,6 @@ color:#fff;
     <div style="text-align:left;font-size:12px;margin-top:10px;font-weight:600;">Password</div>
     <input type="password" id="pass" placeholder="">
 
-    <!-- 🔥 SEKARANG ADA LOADING DI TOMBOL LOGIN -->
     <button id="btnLogin" onclick="login()">
       <div class="btn-isi">
         <span id="textLogin">MASUK</span>
@@ -268,25 +312,67 @@ color:#fff;
 
 <!-- APP -->
 <div id="app">
-
   <div class="header">
     <div class="header-title">CEK PENGIRIMAN</div>
   </div>
 
   <div id="stats"></div>
 
-  <!-- 🔥 TOMBOL PENCARIAN LIVE FILTER -->
   <div class="search-container">
     <input type="text" id="cariCustomer" class="search-input" placeholder="🔍 Cari nama customer..." onkeyup="filterCustomer()">
   </div>
 
   <div id="list"></div>
+</div>
 
+<!-- 🔥 STRUKTUR HTML MODAL CUSTOM (NOTIFIKASI & KONFIRMASI) -->
+<div id="customModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-title" id="mTitle">Notifikasi</div>
+    <div class="modal-text" id="mText">Isi pesan di sini...</div>
+    <div class="modal-buttons" id="mButtons">
+      <!-- Tombol akan di-inject dinamis lewat JS -->
+    </div>
+  </div>
 </div>
 
 <script>
 
 const API_URL="https://script.google.com/macros/s/AKfycbzjNnwv0gSi1a7OQVhkzJ-xDgJ-WRPhlNvu9WSyR-DhXOTz_DPGCOHu53eN9cOjqLna/exec";
+
+// 🔥 FUNGSI REKAYASA POPUP MODAL CUSTOM (PENGGANTI ALERT & CONFIRM)
+let fungsiCallbackKonfirmasi = null;
+
+function bukaModal(judul, pesan, jenis, callback = null) {
+  document.getElementById("mTitle").innerText = judul;
+  document.getElementById("mText").innerText = pesan;
+  
+  const containerTombol = document.getElementById("mButtons");
+  containerTombol.innerHTML = ""; // Bersihkan tombol lama
+
+  if (jenis === "alert") {
+    containerTombol.innerHTML = `<button class="btn-modal btn-oke" onclick="tutupModal()">TUTUP</button>`;
+  } else if (jenis === "confirm") {
+    fungsiCallbackKonfirmasi = callback;
+    containerTombol.innerHTML = `
+      <button class="btn-modal btn-batal" onclick="tutupModal()">BATAL</button>
+      <button class="btn-modal btn-oke" onclick="eksekusiKonfirmasi()">YA, YAKIN</button>
+    `;
+  }
+
+  document.getElementById("customModal").classList.add("aktif");
+}
+
+function tutupModal() {
+  document.getElementById("customModal").classList.remove("aktif");
+  fungsiCallbackKonfirmasi = null;
+}
+
+function eksekusiKonfirmasi() {
+  if (fungsiCallbackKonfirmasi) fungsiCallbackKonfirmasi();
+  tutupModal();
+}
+
 
 /* LOGIN */
 function login(){
@@ -298,11 +384,10 @@ function login(){
   const text = document.getElementById("textLogin");
 
   if(!user || !pass) {
-    alert("Username dan Password harus diisi!");
+    bukaModal("Data Kurang", "Username dan Password harus diisi!", "alert");
     return;
   }
 
-  // 🔄 Aktifkan Loading Login
   btn.disabled = true;
   spinner.style.display = "block";
   text.innerText = "MEMPROSES...";
@@ -316,15 +401,14 @@ function login(){
       document.getElementById("app").style.display="block";
       loadData();
     }else{
-      alert("Login gagal! Periksa kembali username & password.");
-      // 🔄 Kembalikan Tombol jika gagal
+      bukaModal("Login Gagal", "Username atau Password salah. Periksa kembali!", "alert");
       btn.disabled = false;
       spinner.style.display = "none";
       text.innerText = "MASUK";
     }
   })
   .catch(()=>{
-    alert("Koneksi bermasalah!");
+    bukaModal("Koneksi Error", "Gagal terhubung ke server. Periksa internet Anda.", "alert");
     btn.disabled = false;
     spinner.style.display = "none";
     text.innerText = "MASUK";
@@ -342,48 +426,51 @@ function ambilWa(text){
   return wa || [];
 }
 
-/* 🔥 FIX KIRIM + POPUP DENGAN SPINNER & KONFIRMASI */
+/* FIX KIRIM DENGAN MODAL CUSTOM & SPINNER */
 function kirimStatus(customer, wa, idx){
   
-  // 1. Konfirmasi dulu agar tidak sengaja tersenggol
-  const yakin = confirm(`Apakah Anda yakin barang untuk "${customer}" sudah dikirim?`);
-  if (!yakin) return;
+  // Memakai pop-up konfirmasi custom yang anggun
+  bukaModal(
+    "Konfirmasi Pengiriman", 
+    `Apakah Anda yakin barang untuk "${customer}" benar-benar sudah dikirim?`, 
+    "confirm", 
+    () => {
+      // Kode di bawah ini hanya berjalan jika driver klik "YA, YAKIN"
+      const driver = localStorage.getItem("driver") || "DRIVER";
+      
+      const btn = document.getElementById("btn-" + idx);
+      const spinner = document.getElementById("spin-" + idx);
+      const text = document.getElementById("txt-" + idx);
 
-  const driver = localStorage.getItem("driver") || "DRIVER";
-  
-  const btn = document.getElementById("btn-" + idx);
-  const spinner = document.getElementById("spin-" + idx);
-  const text = document.getElementById("txt-" + idx);
+      btn.disabled = true;
+      spinner.style.display = "block";
+      text.innerText = "MENGIRIM...";
 
-  // 🔄 Aktifkan Loading di Card Terkait
-  btn.disabled = true;
-  spinner.style.display = "block";
-  text.innerText = "MENGIRIM...";
-
-  fetch(API_URL+
-    "?customer="+encodeURIComponent(customer)+
-    "&driver="+encodeURIComponent(driver)+
-    "&wa="+encodeURIComponent(wa)
-  )
-  .then(r=>r.text())
-  .then(res=>{
-    if(res.trim()==="OK"){
-      alert("✅ Berhasil dikirim: " + customer);
-      loadData();
-    }else{
-      alert("❌ Gagal kirim: " + res);
-      // Reset tombol jika gagal
-      btn.disabled = false;
-      spinner.style.display = "none";
-      text.innerText = "🚚 KIRIM";
+      fetch(API_URL+
+        "?customer="+encodeURIComponent(customer)+
+        "&driver="+encodeURIComponent(driver)+
+        "&wa="+encodeURIComponent(wa)
+      )
+      .then(r=>r.text())
+      .then(res=>{
+        if(res.trim()==="OK"){
+          bukaModal("Berhasil!", `Status pengiriman untuk ${customer} sukses diperbarui.`, "alert");
+          loadData();
+        }else{
+          bukaModal("Gagal", "Respon server bermasalah: " + res, "alert");
+          btn.disabled = false;
+          spinner.style.display = "none";
+          text.innerText = "🚚 KIRIM";
+        }
+      })
+      .catch(()=>{
+        bukaModal("Error", "Gagal mengirim data. Coba beberapa saat lagi.", "alert");
+        btn.disabled = false;
+        spinner.style.display = "none";
+        text.innerText = "🚚 KIRIM";
+      });
     }
-  })
-  .catch(()=>{
-    alert("Server error, coba lagi.");
-    btn.disabled = false;
-    spinner.style.display = "none";
-    text.innerText = "🚚 KIRIM";
-  });
+  );
 }
 
 /* LOAD */
@@ -453,12 +540,11 @@ function loadData(){
     `;
 
     document.getElementById("list").innerHTML=html;
-    // Panggil ulang filter jika saat load data driver sedang mengetik sesuatu
     filterCustomer();
   });
 }
 
-/* 🔥 FUNGSI LIVE SEARCH FILTER */
+/* FUNGSI LIVE SEARCH FILTER */
 function filterCustomer() {
   const keyword = document.getElementById("cariCustomer").value.toLowerCase();
   const cards = document.querySelectorAll(".card");
