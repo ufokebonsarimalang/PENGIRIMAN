@@ -6,7 +6,7 @@
 <title>CEK PENGIRIMAN</title>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 body{
 margin:0;
@@ -282,7 +282,6 @@ font-weight: 700; cursor: pointer; font-size: 13px; width: auto; flex: 1;
 
 .btn-batal { background: #e2e8f0; color: #475569; }
 .btn-oke { background: #1565c0; color: #fff; }
-
 </style>
 </head>
 
@@ -290,7 +289,7 @@ font-weight: 700; cursor: pointer; font-size: 13px; width: auto; flex: 1;
 
 <div class="login" id="loginBox">
   <div class="box">
-    <img src="logo.png">
+    <img src="logo.png" alt="Logo">
     <h3 style="margin:0;">UFO KEBONSARI MALANG</h3>
     <p style="font-size:12px;color:#777;">Sistem Pengiriman Driver</p>
 
@@ -332,5 +331,72 @@ font-weight: 700; cursor: pointer; font-size: 13px; width: auto; flex: 1;
 </div>
 
 <script>
+const API_URL = "https://script.google.com/macros/s/AKfycbzjNnwv0gSi1a7OQVhkzJ-xDgJ-WRPhlNvu9WSyR-DhXOTz_DPGCOHu53eN9cOjqLna/exec";
 
-const API_URL="
+let fungsiCallbackKonfirmasi = null;
+
+function bukaModal(judul, pesan, jenis, callback = null) {
+  document.getElementById("mTitle").innerText = judul;
+  document.getElementById("mText").innerText = pesan;
+  
+  const containerTombol = document.getElementById("mButtons");
+  containerTombol.innerHTML = "";
+
+  if (jenis === "alert") {
+    containerTombol.innerHTML = `<button class="btn-modal btn-oke" onclick="tutupModal()">TUTUP</button>`;
+  } else if (jenis === "confirm") {
+    fungsiCallbackKonfirmasi = callback;
+    containerTombol.innerHTML = `
+      <button class="btn-modal btn-batal" onclick="tutupModal()">BATAL</button>
+      <button class="btn-modal btn-oke" onclick="eksekusiKonfirmasi()">YA, YAKIN</button>
+    `;
+  }
+
+  document.getElementById("customModal").classList.add("aktif");
+}
+
+function tutupModal() {
+  document.getElementById("customModal").classList.remove("aktif");
+  fungsiCallbackKonfirmasi = null;
+}
+
+function eksekusiKonfirmasi() {
+  if (fungsiCallbackKonfirmasi) fungsiCallbackKonfirmasi();
+  tutupModal();
+}
+
+/* LOGIN DENGAN AUTO FULLSCREEN */
+function login() {
+  const user = document.getElementById("user").value;
+  const pass = document.getElementById("pass").value;
+  
+  const btn = document.getElementById("btnLogin");
+  const spinner = document.getElementById("login-spinner");
+  const text = document.getElementById("textLogin");
+
+  if(!user || !pass) {
+    bukaModal("Data Kurang", "Username dan Password harus diisi!", "alert");
+    return;
+  }
+
+  btn.disabled = true;
+  spinner.style.display = "block";
+  text.innerText = "MEMPROSES...";
+
+  fetch(API_URL + "?action=login&user=" + encodeURIComponent(user) + "&pass=" + encodeURIComponent(pass))
+  .then(r => r.json())
+  .then(res => {
+    if(res.status === "OK"){
+      localStorage.setItem("driver", res.user);
+      
+      const docEl = document.documentElement;
+      if (docEl.requestFullscreen) {
+        docEl.requestFullscreen();
+      } else if (docEl.webkitRequestFullscreen) {
+        docEl.webkitRequestFullscreen();
+      } else if (docEl.msRequestFullscreen) {
+        docEl.msRequestFullscreen();
+      }
+
+      document.getElementById("loginBox").style.display = "none";
+      document
