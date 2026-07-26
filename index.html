@@ -6,13 +6,14 @@
 <title>CEK PENGIRIMAN</title>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 body{
 margin:0;
 font-family:'Inter', Arial, sans-serif;
 background:#f4f6f9;
 color:#111;
+-webkit-font-smoothing: antialiased;
 }
 
 /* LOGIN */
@@ -25,10 +26,10 @@ align-items:center;
 
 .box{
 background:#fff;
-padding:20px;
-border-radius:14px;
-box-shadow:0 4px 10px rgba(0,0,0,.08);
-width:280px;
+padding:24px 20px;
+border-radius:18px;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+width:290px;
 text-align:center;
 }
 
@@ -41,13 +42,22 @@ object-fit:cover;
 margin-bottom:8px;
 }
 
-input{
+input[type="text"], input[type="password"]{
 width:100%;
-padding:10px;
+padding:12px;
 margin:8px 0;
 border-radius:10px;
 border:1px solid #ddd;
 box-sizing: border-box;
+font-size: 14px;
+font-weight: 500;
+outline: none;
+transition: all 0.2s;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+border-color: #6d28d9;
+box-shadow: 0 0 0 3px rgba(109,40,217,0.15);
 }
 
 /* SPINNER LOADING STYLE */
@@ -61,7 +71,7 @@ gap: 8px;
 .spinner {
 width: 18px;
 height: 18px;
-border: 2px solid rgba(255,255,255,0.3);
+border: 2.5px solid rgba(255,255,255,0.3);
 border-radius: 50%;
 border-top-color: #fff;
 animation: putar 0.6s linear infinite;
@@ -82,49 +92,59 @@ color:#fff;
 font-weight:700;
 cursor:pointer;
 font-size: 14px;
+transition: transform 0.1s ease, background 0.2s;
+}
+
+button:active {
+transform: scale(0.98);
 }
 
 button:disabled {
 background: #a1a1a1 !important;
 cursor: not-allowed;
+transform: none !important;
 }
 
 /* APP */
 #app{
 display:none;
-padding:10px;
+padding:12px;
+max-width: 480px;
+margin: 0 auto;
 }
 
 /* HEADER */
 .header{
 background:#fff;
 padding:16px;
-border-radius:14px;
+border-radius:16px;
 text-align:center;
-margin-bottom:10px;
+margin-bottom:12px;
 border:2px solid #d4af37;
-box-shadow:0 0 12px rgba(212,175,55,0.4);
+box-shadow:0 4px 16px rgba(212,175,55,0.25);
 }
 
 .header-title{
-font-size:22px;
+font-size:20px;
 font-weight:900;
 color:#6d28d9;
-letter-spacing:2px;
+letter-spacing:1.5px;
 }
 
 /* PENCARIAN */
 .search-container {
-margin-bottom: 10px;
+margin-bottom: 12px;
 }
 .search-input {
 width: 100%;
-padding: 12px;
+padding: 12px 16px;
 border-radius: 12px;
 border: 2px solid #6d28d9;
 font-size: 14px;
 font-weight: 600;
-box-shadow: 0 2px 6px rgba(0,0,0,.05);
+box-shadow: 0 2px 8px rgba(109,40,217,0.08);
+box-sizing: border-box;
+outline: none;
 }
 
 /* STATS */
@@ -132,26 +152,33 @@ box-shadow: 0 2px 6px rgba(0,0,0,.05);
 display:grid;
 grid-template-columns:1fr 1fr 1fr;
 gap:8px;
-margin-bottom:10px;
+margin-bottom:12px;
 }
 
 .boxstat{
 background:#fff;
-padding:10px;
+padding:10px 6px;
 border-radius:12px;
 text-align:center;
 border:2px solid #6d28d9;
-box-shadow:0 0 10px rgba(109,40,217,0.15);
+box-shadow:0 2px 8px rgba(109,40,217,0.1);
 }
 
-/* CARD */
+.boxstat .t {
+font-size: 10px;
+font-weight: 700;
+color: #64748b;
+letter-spacing: 0.5px;
+}
+
+/* CARD ORDER */
 .card{
 background:#fff;
-padding:12px;
-margin-bottom:10px;
-border-radius:14px;
-border:2px solid #e5e7eb;
-box-shadow:0 2px 6px rgba(0,0,0,.05);
+padding:14px;
+margin-bottom:12px;
+border-radius:16px;
+border:1.5px solid #e2e8f0;
+box-shadow:0 4px 12px rgba(0,0,0,.03);
 font-size:13px;
 line-height:1.5;
 position:relative;
@@ -160,33 +187,114 @@ position:relative;
 .data{
 white-space:pre-line;
 font-weight:600;
+color: #1e293b;
 }
 
-/* INPUT FOTO BUKTI */
-.foto-container {
-margin-top: 10px;
-padding: 10px;
+/* ========================================= */
+/* TAMPILAN CUSTOM UPLOAD FOTO BUKTI MODERN  */
+/* ========================================= */
+.foto-upload-card {
+margin-top: 12px;
+padding: 12px;
 background: #f8fafc;
-border: 1px dashed #cbd5e1;
-border-radius: 10px;
+border: 2px dashed #cbd5e1;
+border-radius: 14px;
+text-align: center;
+transition: all 0.2s ease;
+position: relative;
 }
 
-.foto-label {
-font-size: 11px;
+.foto-upload-card:hover {
+border-color: #6d28d9;
+background: #f5f3ff;
+}
+
+.foto-upload-card.has-photo {
+border-style: solid;
+border-color: #10b981;
+background: #ecfdf5;
+padding: 10px;
+}
+
+.foto-input-hidden {
+display: none;
+}
+
+.foto-placeholder-btn {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 6px;
+cursor: pointer;
+padding: 8px 0;
+}
+
+.camera-icon-badge {
+width: 44px;
+height: 44px;
+background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+color: #fff;
+box-shadow: 0 4px 10px rgba(109, 40, 217, 0.3);
+}
+
+.camera-icon-badge svg {
+width: 22px;
+height: 22px;
+fill: currentColor;
+}
+
+.foto-prompt-text {
+font-size: 12px;
 font-weight: 700;
-color: #475569;
-margin-bottom: 6px;
-display: block;
+color: #4c1d95;
+}
+
+.foto-subprompt-text {
+font-size: 10px;
+color: #64748b;
+font-weight: 500;
+}
+
+.preview-wrapper {
+display: none;
+position: relative;
+width: 100%;
+border-radius: 10px;
+overflow: hidden;
+box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .preview-foto {
 width: 100%;
-max-height: 150px;
+max-height: 180px;
 object-fit: cover;
+display: block;
+border-radius: 10px;
+}
+
+.btn-ganti-foto {
+position: absolute;
+top: 8px;
+right: 8px;
+background: rgba(15, 23, 42, 0.75);
+color: #fff;
+border: none;
+padding: 6px 10px;
 border-radius: 8px;
-margin-top: 8px;
-display: none;
-border: 1px solid #ddd;
+font-size: 10px;
+font-weight: 700;
+backdrop-filter: blur(4px);
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 4px;
+width: auto;
+box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 /* WA GROUP */
@@ -206,20 +314,20 @@ width:70px;
 }
 
 .wa-icon{
-width:58px; 
-height:58px;
+width:52px; 
+height:52px;
 border-radius:50%;
 background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
 display:flex;
 align-items:center;
 justify-content:center;
-box-shadow: 0 4px 10px rgba(18, 140, 126, 0.4);
+box-shadow: 0 4px 10px rgba(18, 140, 126, 0.35);
 transition: transform 0.1s ease;
 }
 
 .wa2 .wa-icon{
 background: linear-gradient(135deg, #128C7E 0%, #075E54 100%);
-box-shadow: 0 4px 10px rgba(7, 94, 84, 0.4);
+box-shadow: 0 4px 10px rgba(7, 94, 84, 0.35);
 }
 
 .wa-box:active .wa-icon {
@@ -227,20 +335,20 @@ transform: scale(0.92);
 }
 
 .wa-icon svg{
-width:36px;
-height:36px;
+width:30px;
+height:30px;
 fill:#fff;
 }
 
 .wa-text{
-font-size:11px;
-margin-top:6px;
+font-size:10px;
+margin-top:5px;
 font-weight:700;
-color:#555;
+color:#64748b;
 letter-spacing: 0.5px;
 }
 
-/* BUTTON */
+/* BUTTON AKSI */
 .aksi{
 margin-top:12px;
 }
@@ -249,26 +357,30 @@ margin-top:12px;
 width:100%;
 height:44px;
 border:none;
-border-radius:10px;
-font-weight:700;
+border-radius:12px;
+font-weight:800;
 cursor:pointer;
+letter-spacing: 0.5px;
 }
 
 .kirim{
-background:#1565c0;
+background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
 color:#fff;
+box-shadow: 0 4px 12px rgba(21, 101, 192, 0.3);
 }
 
 .sudah{
-background:#16a34a;
+background:#10b981;
 color:#fff;
+box-shadow: none;
 }
 
 /* MODAL */
 .modal-overlay {
 position: fixed;
 top: 0; left: 0; width: 100%; height: 100%;
-background: rgba(0, 0, 0, 0.5);
+background: rgba(15, 23, 42, 0.65);
+backdrop-filter: blur(4px);
 display: flex; justify-content: center; align-items: center;
 z-index: 9999; opacity: 0; pointer-events: none;
 transition: opacity 0.2s ease;
@@ -280,9 +392,9 @@ opacity: 1; pointer-events: auto;
 
 .modal-content {
 background: #fff; padding: 24px 20px;
-border-radius: 16px; width: 290px; text-align: center;
-box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-transform: scale(0.8); transition: transform 0.2s ease;
+border-radius: 18px; width: 290px; text-align: center;
+box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+transform: scale(0.85); transition: transform 0.2s ease;
 }
 
 .modal-overlay.aktif .modal-content {
@@ -290,11 +402,11 @@ transform: scale(1);
 }
 
 .modal-title {
-font-size: 18px; font-weight: 700; margin-bottom: 8px; color: #111;
+font-size: 18px; font-weight: 800; margin-bottom: 8px; color: #0f172a;
 }
 
 .modal-text {
-font-size: 14px; color: #555; line-height: 1.4; margin-bottom: 20px;
+font-size: 13px; color: #475569; line-height: 1.4; margin-bottom: 20px;
 }
 
 .modal-buttons {
@@ -302,12 +414,12 @@ display: flex; gap: 10px; justify-content: center;
 }
 
 .btn-modal {
-padding: 10px 16px; border: none; border-radius: 8px;
+padding: 10px 16px; border: none; border-radius: 10px;
 font-weight: 700; cursor: pointer; font-size: 13px; width: auto; flex: 1;
 }
 
-.btn-batal { background: #e2e8f0; color: #475569; }
-.btn-oke { background: #1565c0; color: #fff; }
+.btn-batal { background: #f1f5f9; color: #475569; }
+.btn-oke { background: #6d28d9; color: #fff; }
 </style>
 </head>
 
@@ -316,16 +428,16 @@ font-weight: 700; cursor: pointer; font-size: 13px; width: auto; flex: 1;
 <div class="login" id="loginBox">
   <div class="box">
     <img src="logo.png" alt="Logo">
-    <h3 style="margin:0;">UFO KEBONSARI MALANG</h3>
-    <p style="font-size:12px;color:#777;">Sistem Pengiriman Driver</p>
+    <h3 style="margin:0; font-size: 16px; font-weight: 800; color:#0f172a;">UFO KEBONSARI MALANG</h3>
+    <p style="font-size:12px;color:#64748b; margin-top:2px;">Sistem Pengiriman Driver</p>
 
-    <div style="text-align:left;font-size:12px;margin-top:10px;font-weight:600;">Username</div>
-    <input type="text" id="user" placeholder="">
+    <div style="text-align:left;font-size:11px;margin-top:14px;font-weight:700;color:#475569;text-transform:uppercase;">Username</div>
+    <input type="text" id="user" placeholder="Masukkan Username">
 
-    <div style="text-align:left;font-size:12px;margin-top:10px;font-weight:600;">Password</div>
-    <input type="password" id="pass" placeholder="">
+    <div style="text-align:left;font-size:11px;margin-top:8px;font-weight:700;color:#475569;text-transform:uppercase;">Password</div>
+    <input type="password" id="pass" placeholder="Masukkan Password">
 
-    <button type="button" id="btnLogin" onclick="login()">
+    <button type="button" id="btnLogin" onclick="login()" style="margin-top:12px; background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%);">
       <div class="btn-isi">
         <span id="textLogin">MASUK</span>
         <div class="spinner" id="login-spinner"></div>
@@ -449,16 +561,25 @@ function ambilWa(text) {
   return wa || [];
 }
 
-/* PREVIEW & KOMPRESI FOTO LOKAL */
+/* PREVIEW & UTILITY AMBIL FOTO */
+function triggerKamera(idx) {
+  document.getElementById('input-foto-' + idx).click();
+}
+
 function previewFoto(idx) {
   const fileInput = document.getElementById('input-foto-' + idx);
   const imgPreview = document.getElementById('preview-' + idx);
+  const placeholder = document.getElementById('placeholder-' + idx);
+  const previewWrapper = document.getElementById('preview-wrapper-' + idx);
+  const cardBox = document.getElementById('foto-card-' + idx);
   
   if (fileInput.files && fileInput.files[0]) {
     const reader = new FileReader();
     reader.onload = function(e) {
       imgPreview.src = e.target.result;
-      imgPreview.style.display = 'block';
+      placeholder.style.display = 'none';
+      previewWrapper.style.display = 'block';
+      cardBox.classList.add('has-photo');
     }
     reader.readAsDataURL(fileInput.files[0]);
   }
@@ -488,7 +609,6 @@ function kirimStatus(customer, wa, idx) {
       spinner.style.display = "block";
       text.innerText = "UPLOADING...";
 
-      // KOMPRESI GAMBAR SEBELUM DIKIRIM (Agar tidak berat di HP)
       const file = fileInput.files[0];
       const reader = new FileReader();
       
@@ -497,7 +617,7 @@ function kirimStatus(customer, wa, idx) {
         img.src = e.target.result;
         img.onload = function() {
           const canvas = document.createElement('canvas');
-          const max_size = 800; // Resize resolusi ke maks 800px
+          const max_size = 800; // Resize resolusi agar tidak berat
           let width = img.width;
           let height = img.height;
 
@@ -518,10 +638,8 @@ function kirimStatus(customer, wa, idx) {
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
           
-          // Konversi ke base64 (Kualitas 0.7)
           const base64Image = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
 
-          // Payload data JSON
           const payload = {
             customer: customer,
             driver: driver,
@@ -529,7 +647,6 @@ function kirimStatus(customer, wa, idx) {
             image: base64Image
           };
 
-          // POST data ke Google Apps Script
           fetch(API_URL, {
             method: 'POST',
             body: JSON.stringify(payload)
@@ -537,7 +654,7 @@ function kirimStatus(customer, wa, idx) {
           .then(r => r.json())
           .then(res => {
             if(res.status === "OK"){
-              bukaModal("Berhasil!", "Status & Foto pengiriman " + customer + " sukses tersimpan di Drive.", "alert");
+              bukaModal("Berhasil!", "Status & Foto pengiriman " + customer + " sukses tersimpan.", "alert");
               loadData();
             } else {
               bukaModal("Gagal", "Server Error: " + res.message, "alert");
@@ -585,12 +702,24 @@ function loadData() {
       html += '<div class="card" data-customer="' + key + '">';
       html += '<div class="data">' + isi + '</div>';
       
-      // JIKA BELUM DIKIRIM -> TAMPILKAN INPUT FOTO KAMERA
+      // JIKA BELUM DIKIRIM -> CUSTOM MODERN PHOTO PICKER CARD
       if(!sudah) {
-        html += '<div class="foto-container">';
-        html += '<label class="foto-label">📷 Ambil Foto Bukti Penerimaan:</label>';
-        html += '<input type="file" id="input-foto-' + index + '" accept="image/*" capture="environment" onchange="previewFoto(' + index + ')">';
-        html += '<img id="preview-' + index + '" class="preview-foto" src="" alt="Preview">';
+        html += '<div class="foto-upload-card" id="foto-card-' + index + '">';
+        html += '<input type="file" id="input-foto-' + index + '" class="foto-input-hidden" accept="image/*" capture="environment" onchange="previewFoto(' + index + ')">';
+        
+        // Placeholder (Tampilan Sebelum Foto Diambil)
+        html += '<div class="foto-placeholder-btn" id="placeholder-' + index + '" onclick="triggerKamera(' + index + ')">';
+        html += '<div class="camera-icon-badge"><svg viewBox="0 0 24 24"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2m8 3a5 5 0 0 0-5 5a5 5 0 0 0 5 5a5 5 0 0 0 5-5a5 5 0 0 0-5-5m0 2a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3Z"/></svg></div>';
+        html += '<span class="foto-prompt-text">Ambil Foto Bukti Penerimaan</span>';
+        html += '<span class="foto-subprompt-text">Sentuh di sini untuk membuka kamera HP</span>';
+        html += '</div>';
+
+        // Preview Wrapper (Tampilan Setelah Foto Diambil)
+        html += '<div class="preview-wrapper" id="preview-wrapper-' + index + '">';
+        html += '<button type="button" class="btn-ganti-foto" onclick="triggerKamera(' + index + ')">🔄 Ganti Foto</button>';
+        html += '<img id="preview-' + index + '" class="preview-foto" src="" alt="Preview Foto">';
+        html += '</div>';
+
         html += '</div>';
       }
 
@@ -611,7 +740,7 @@ function loadData() {
       html += '</div>';
     });
 
-    document.getElementById("stats").innerHTML = '<div class="stats"><div class="boxstat"><div class="t">TOTAL</div><div class="v" style="font-weight:700;font-size:16px;">' + total + '</div></div><div class="boxstat"><div class="t">TERKIRIM</div><div class="v" style="font-weight:700;font-size:16px;color:#16a34a;">' + ok + '</div></div><div class="boxstat"><div class="t">BELUM</div><div class="v" style="font-weight:700;font-size:16px;color:#1565c0;">' + no + '</div></div></div>';
+    document.getElementById("stats").innerHTML = '<div class="stats"><div class="boxstat"><div class="t">TOTAL</div><div class="v" style="font-weight:800;font-size:16px;">' + total + '</div></div><div class="boxstat"><div class="t">TERKIRIM</div><div class="v" style="font-weight:800;font-size:16px;color:#10b981;">' + ok + '</div></div><div class="boxstat"><div class="t">BELUM</div><div class="v" style="font-weight:800;font-size:16px;color:#1565c0;">' + no + '</div></div></div>';
 
     document.getElementById("list").innerHTML = html;
     filterCustomer();
