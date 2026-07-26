@@ -162,6 +162,33 @@ white-space:pre-line;
 font-weight:600;
 }
 
+/* INPUT FOTO BUKTI */
+.foto-container {
+margin-top: 10px;
+padding: 10px;
+background: #f8fafc;
+border: 1px dashed #cbd5e1;
+border-radius: 10px;
+}
+
+.foto-label {
+font-size: 11px;
+font-weight: 700;
+color: #475569;
+margin-bottom: 6px;
+display: block;
+}
+
+.preview-foto {
+width: 100%;
+max-height: 150px;
+object-fit: cover;
+border-radius: 8px;
+margin-top: 8px;
+display: none;
+border: 1px solid #ddd;
+}
+
 /* WA GROUP */
 .wa-group{
 display:flex;
@@ -178,7 +205,6 @@ text-decoration:none;
 width:70px;
 }
 
-/* ICON WA MIRIP ASLI ANDROID HP */
 .wa-icon{
 width:58px; 
 height:58px;
@@ -238,7 +264,7 @@ background:#16a34a;
 color:#fff;
 }
 
-/* STYLE MODAL CUSTOM ELEGAN */
+/* MODAL */
 .modal-overlay {
 position: fixed;
 top: 0; left: 0; width: 100%; height: 100%;
@@ -362,7 +388,7 @@ function eksekusiKonfirmasi() {
   tutupModal();
 }
 
-/* LOGIN DENGAN AUTO FULLSCREEN */
+/* LOGIN */
 function login() {
   const user = document.getElementById("user").value;
   const pass = document.getElementById("pass").value;
@@ -413,20 +439,40 @@ function login() {
   });
 }
 
-/* PARSE NAMA CUSTOMER */
 function ambilCustomer(text) {
   const m = text.match(/CUSTOMER\s*:\s*([^\n]+)/i);
   return m ? m[1].trim() : "";
 }
 
-/* PARSE NOMOR WA */
 function ambilWa(text) {
   const wa = text.match(/08\d{8,13}/g);
   return wa || [];
 }
 
-/* KIRIM STATUS PENGIRIMAN */
+/* PREVIEW & KOMPRESI FOTO LOKAL */
+function previewFoto(idx) {
+  const fileInput = document.getElementById('input-foto-' + idx);
+  const imgPreview = document.getElementById('preview-' + idx);
+  
+  if (fileInput.files && fileInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      imgPreview.src = e.target.result;
+      imgPreview.style.display = 'block';
+    }
+    reader.readAsDataURL(fileInput.files[0]);
+  }
+}
+
+/* KIRIM STATUS & UPLOAD FOTO DRIVE */
 function kirimStatus(customer, wa, idx) {
+  const fileInput = document.getElementById('input-foto-' + idx);
+
+  if (!fileInput || !fileInput.files[0]) {
+    bukaModal("Foto Wajib", "Harap ambil foto bukti penerimaan barang terlebih dahulu!", "alert");
+    return;
+  }
+
   bukaModal(
     "Konfirmasi Pengiriman", 
     "Apakah Anda yakin barang untuk \"" + customer + "\" benar-benar sudah dikirim?", 
@@ -440,32 +486,75 @@ function kirimStatus(customer, wa, idx) {
 
       btn.disabled = true;
       spinner.style.display = "block";
-      text.innerText = "MENGIRIM...";
+      text.innerText = "UPLOADING...";
 
-      const urlKirim = API_URL +
-        "?customer=" + encodeURIComponent(customer) +
-        "&driver=" + encodeURIComponent(driver) +
-        "&wa=" + encodeURIComponent(wa);
+      // KOMPRESI GAMBAR SEBELUM DIKIRIM (Agar tidak berat di HP)
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const max_size = 800; // Resize resolusi ke maks 800px
+          let width = img.width;
+          let height = img.height;
 
-      fetch(urlKirim, { redirect: "follow" })
-      .then(r => r.json()) // Respon dari Apps Script baru berupa JSON {status: "OK"}
-      .then(res => {
-        if(res.status === "OK"){
-          bukaModal("Berhasil!", "Status pengiriman untuk " + customer + " sukses diperbarui.", "alert");
-          loadData();
-        } else {
-          bukaModal("Gagal", "Respon server bermasalah.", "alert");
-          btn.disabled = false;
-          spinner.style.display = "none";
-          text.innerText = "🚚 KIRIM";
+          if (width > height) {
+            if (width > max_size) {
+              height *= max_size / width;
+              width = max_size;
+            }
+          } else {
+            if (height > max_size) {
+              width *= max_size / height;
+              height = max_size;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Konversi ke base64 (Kualitas 0.7)
+          const base64Image = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
+
+          // Payload data JSON
+          const payload = {
+            customer: customer,
+            driver: driver,
+            wa: wa,
+            image: base64Image
+          };
+
+          // POST data ke Google Apps Script
+          fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+          })
+          .then(r => r.json())
+          .then(res => {
+            if(res.status === "OK"){
+              bukaModal("Berhasil!", "Status & Foto pengiriman " + customer + " sukses tersimpan di Drive.", "alert");
+              loadData();
+            } else {
+              bukaModal("Gagal", "Server Error: " + res.message, "alert");
+              btn.disabled = false;
+              spinner.style.display = "none";
+              text.innerText = "🚚 KIRIM";
+            }
+          })
+          .catch(() => {
+            bukaModal("Error", "Gagal mengirim data. Coba beberapa saat lagi.", "alert");
+            btn.disabled = false;
+            spinner.style.display = "none";
+            text.innerText = "🚚 KIRIM";
+          });
         }
-      })
-      .catch(() => {
-        bukaModal("Error", "Gagal mengirim data. Coba beberapa saat lagi.", "alert");
-        btn.disabled = false;
-        spinner.style.display = "none";
-        text.innerText = "🚚 KIRIM";
-      });
+      }
+      reader.readAsDataURL(file);
     }
   );
 }
@@ -495,8 +584,17 @@ function loadData() {
 
       html += '<div class="card" data-customer="' + key + '">';
       html += '<div class="data">' + isi + '</div>';
-      html += '<div class="wa-group">';
       
+      // JIKA BELUM DIKIRIM -> TAMPILKAN INPUT FOTO KAMERA
+      if(!sudah) {
+        html += '<div class="foto-container">';
+        html += '<label class="foto-label">📷 Ambil Foto Bukti Penerimaan:</label>';
+        html += '<input type="file" id="input-foto-' + index + '" accept="image/*" capture="environment" onchange="previewFoto(' + index + ')">';
+        html += '<img id="preview-' + index + '" class="preview-foto" src="" alt="Preview">';
+        html += '</div>';
+      }
+
+      html += '<div class="wa-group">';
       if(wa[0]) {
         html += '<a class="wa-box" href="https://wa.me/62' + wa[0].substring(1) + '" target="_blank"><div class="wa-icon"><svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.528 1.981 14.062.96 11.43.96c-5.44 0-9.866 4.372-9.87 9.802 0 1.689.445 3.339 1.287 4.792l-.999 3.649 3.739-.968zm11.341-7.713c-.26-.13-1.534-.757-1.772-.842-.238-.085-.411-.13-.583.13-.172.26-.666.842-.817 1.013-.151.17-.301.19-.561.06-.26-.13-1.1-.405-2.096-1.294-.775-.69-1.299-1.543-1.451-1.802-.152-.258-.016-.399.114-.529.117-.117.26-.302.39-.453.13-.151.173-.258.26-.43.086-.172.043-.322-.022-.453-.064-.13-.583-1.403-.799-1.924-.211-.507-.426-.438-.583-.446-.151-.008-.323-.009-.495-.009-.172 0-.452.065-.689.322-.237.258-.904.883-.904 2.153 0 1.27.925 2.5 1.054 2.671.129.172 1.82 2.779 4.41 3.897.616.265 1.096.424 1.471.543.619.197 1.183.169 1.629.103.497-.074 1.534-.627 1.749-1.233.215-.607.215-1.127.151-1.233-.064-.108-.236-.172-.496-.302z"/></svg></div><div class="wa-text">WA 1</div></a>';
       }
@@ -520,7 +618,6 @@ function loadData() {
   });
 }
 
-/* FUNGSI LIVE SEARCH FILTER */
 function filterCustomer() {
   const keyword = document.getElementById("cariCustomer").value.toLowerCase();
   const cards = document.querySelectorAll(".card");
