@@ -635,10 +635,32 @@ function ambilWa(text) {
 
 /* PREVIEW & KAMERA */
 function triggerKamera(idx) {
+  // Jika ini adalah kartu manual (susulan), wajibkan isi nama customer terlebih dahulu!
+  if (idx === 'manual') {
+    const customerName = document.getElementById('manualCustomer').value.trim();
+    if (!customerName) {
+      bukaModal("Data Kurang", "Harap masukkan Nama Customer / No. INVOICE terlebih dahulu sebelum memilih foto dari galeri!", "alert");
+      document.getElementById('manualCustomer').focus();
+      return; // Batalkan buka galeri/kamera jika nama masih kosong
+    }
+  }
+
   document.getElementById('input-foto-' + idx).click();
 }
 
 function previewFoto(idx) {
+  // Validasi ganda pengaman
+  if (idx === 'manual') {
+    const customerName = document.getElementById('manualCustomer').value.trim();
+    if (!customerName) {
+      bukaModal("Data Kurang", "Harap masukkan Nama Customer / No. INVOICE terlebih dahulu!", "alert");
+      document.getElementById('manualCustomer').focus();
+      // Reset input file agar bersih kembali
+      document.getElementById('input-foto-manual').value = "";
+      return;
+    }
+  }
+
   const fileInput = document.getElementById('input-foto-' + idx);
   const imgPreview = document.getElementById('preview-' + idx);
   const placeholder = document.getElementById('placeholder-' + idx);
@@ -656,7 +678,6 @@ function previewFoto(idx) {
     reader.readAsDataURL(fileInput.files[0]);
   }
 }
-
 /* UPLOAD MANUAL / SUSULAN */
 function kirimStatusManual() {
   const customerName = document.getElementById('manualCustomer').value.trim();
