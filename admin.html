@@ -431,19 +431,19 @@
       });
     }
 
-    // Fungsi Tambah Order Grosir / Manual
-  // Fungsi Tambah Order Grosir / Manual yang Disesuaikan
+    // Fungsi Tambah Order Grosir (Disederhanakan untuk keperluan rolling rute)
     function tambahOrderGrosir() {
-      let detail = document.getElementById("grosirDetail").value.trim();
+      let namaToko = document.getElementById("grosirDetail").value.trim();
       let maps = document.getElementById("grosirMaps").value.trim();
 
-      if (!detail) {
-        bukaModal("Data Kurang", "Nama toko / detail grosir wajib diisi!", "alert");
+      if (!namaToko) {
+        bukaModal("Data Kurang", "Nama toko wajib diisi!", "alert");
         return;
       }
 
-      // Format otomatis agar bentuknya rapi ke bawah seperti order biasa
-      let formatGrosir = `ORDER PENGIRIMAN\nCUSTOMER : ${detail.toUpperCase()}`;
+      // Kita buat format minimal agar sistem bagi rute tetap bisa membaca nama toko tersebut
+      // Kita tambahkan tanda [GROSIR] agar admin dan driver tahu ini adalah item untuk rolling
+      let formatGrosir = `ORDER PENGIRIMAN\nCUSTOMER : ${namaToko.toUpperCase()} [GROSIR]`;
 
       fetch(API_URL, {
         method: "POST",
@@ -458,10 +458,10 @@
         if (res.status === "OK") {
           document.getElementById("grosirDetail").value = "";
           document.getElementById("grosirMaps").value = "";
-          bukaModal("Berhasil", "Order grosir berhasil ditambahkan!", "alert");
+          bukaModal("Berhasil", "Toko " + namaToko + " telah masuk antrian rute!", "alert");
           muatDataAdmin(); 
         } else {
-          bukaModal("Gagal", "Gagal menambahkan grosir.", "alert");
+          bukaModal("Gagal", "Gagal menambahkan toko.", "alert");
         }
       });
     }
