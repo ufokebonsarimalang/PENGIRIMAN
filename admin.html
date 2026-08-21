@@ -157,7 +157,20 @@
 
   <div class="container">
     
-    <!-- CARD 1: PANEL ATUR DRIVER & EKSEKUSI RUTE -->
+    <!-- KARTU 1: TAMBAH ORDER GROSIR / MANUAL -->
+    <div class="card" style="border: 2px dashed #6d28d9; background: #fcfbff;">
+      <h3>Tambah Order Grosir / Manual</h3>
+      <p>Untuk pelanggan grosir yang tidak isi Google Form, ketik nama toko dan paste link maps-nya di sini.</p>
+      
+      <div style="margin-bottom: 10px;">
+        <input type="text" id="grosirDetail" placeholder="Nama Toko / Detail Pesanan Grosir" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px; font-size:12px; box-sizing:border-box; margin-bottom:8px;">
+        <input type="text" id="grosirMaps" placeholder="Paste Link Google Maps..." style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px; font-size:12px; box-sizing:border-box;">
+      </div>
+
+      <button type="button" onclick="tambahOrderGrosir()" style="background:#059669; box-shadow:0 4px 12px rgba(5,150,105,0.3);">+ TAMBAHKAN KE DAFTAR KIRIMAN</button>
+    </div>
+
+    <!-- KARTU 2: PANEL ATUR DRIVER & EKSEKUSI RUTE -->
     <div class="card">
       <h3>Panel Eksekusi Rute</h3>
       <p>Centang driver yang masuk hari ini. Pastikan link maps sudah di-paste di bawah, lalu klik tombol untuk merapikan rute secara otomatis.</p>
@@ -170,7 +183,7 @@
       <div id="logStatus"></div>
     </div>
 
-    <!-- CARD 2: PANTAU DATA & PASTE LINK MAPS -->
+    <!-- KARTU 3: PANTAU DATA & PASTE LINK MAPS -->
     <div class="card">
       <h3>Daftar Order Masuk & Input Link Maps</h3>
       <p>Masukkan link Google Maps / share loc WhatsApp menyusul dari customer pada kolom yang disediakan.</p>
@@ -251,6 +264,37 @@
                             </label>`;
           });
           document.getElementById("driverCheckboxList").innerHTML = htmlDrivers;
+        }
+      });
+    }
+
+    // Fungsi Tambah Order Grosir / Manual
+    function tambahOrderGrosir() {
+      let detail = document.getElementById("grosirDetail").value.trim();
+      let maps = document.getElementById("grosirMaps").value.trim();
+
+      if (!detail) {
+        alert("Nama toko / detail grosir wajib diisi!");
+        return;
+      }
+
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "tambahGrosir",
+          detail: "GROSIR: " + detail,
+          link: maps
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.status === "OK") {
+          document.getElementById("grosirDetail").value = "";
+          document.getElementById("grosirMaps").value = "";
+          alert("Order grosir berhasil ditambahkan!");
+          muatDataAdmin(); 
+        } else {
+          alert("Gagal menambahkan grosir.");
         }
       });
     }
