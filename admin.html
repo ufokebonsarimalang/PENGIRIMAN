@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -110,7 +110,7 @@
     }
 
     .data {
-      white-space: pre-line; /* Membuat teks baris baru (ikon & rincian) tersusun rapi ke bawah */
+      white-space: pre-line;
       font-weight: 600;
       font-size: 13px;
       color: #1e293b;
@@ -336,7 +336,6 @@
           let isSutoyo = detailPesanan.toLowerCase().includes("sutoyo");
           let badgeDriver = namaDriver ? `<span class="badge-driver">👤 ${namaDriver}</span>` : `<span class="badge-none">Belum dibagi</span>`;
           
-          // Membersihkan dan memformat teks agar otomatis turun ke bawah per baris dengan rapi
           let cleanText = detailPesanan
             .replace(/PROMOTOR\s*:/gi, '<br><br><b>PROMOTOR :</b>')
             .replace(/CUSTOMER\s*:/gi, '<br><b>CUSTOMER :</b>')
@@ -358,10 +357,8 @@
                 ${badgeDriver}
               </div>
 
-              <!-- Teks yang sudah diformat rapi ke bawah -->
               <div class="data" style="font-size: 13px; line-height: 1.6;">${cleanText}</div>
 
-              <!-- Kotak Input Maps Admin -->
               <div class="maps-action-wrapper">
                 <input type="text" id="maps-input-${rowNum}" class="input-maps" value="${linkMaps}" placeholder="Paste Link Google Maps...">
                 <button type="button" class="btn-simpan-row" onclick="simpanLinkRow(${rowNum})">💾 SIMPAN</button>
@@ -378,7 +375,6 @@
         filterCustomer();
       });
 
-      // Tarik List Driver
       fetch(API_URL + "?action=getDrivers")
       .then(res => res.json())
       .then(res => {
@@ -395,7 +391,6 @@
       });
     }
 
-    // Fungsi Simpan Link Maps per Baris
     function simpanLinkRow(rowNum) {
       let inputEl = document.getElementById("maps-input-" + rowNum);
       if (!inputEl) return;
@@ -431,7 +426,6 @@
       });
     }
 
-    // Fungsi Tambah Order Grosir (Disederhanakan untuk keperluan rolling rute)
     function tambahOrderGrosir() {
       let namaToko = document.getElementById("grosirDetail").value.trim();
       let maps = document.getElementById("grosirMaps").value.trim();
@@ -441,8 +435,6 @@
         return;
       }
 
-      // Kita buat format minimal agar sistem bagi rute tetap bisa membaca nama toko tersebut
-      // Kita tambahkan tanda [GROSIR] agar admin dan driver tahu ini adalah item untuk rolling
       let formatGrosir = `ORDER PENGIRIMAN\nCUSTOMER : ${namaToko.toUpperCase()} [GROSIR]`;
 
       fetch(API_URL, {
@@ -466,7 +458,6 @@
       });
     }
 
-    // Tombol Eksekusi Rute
     function eksekusiBagiRute() {
       let checkboxes = document.querySelectorAll('#driverCheckboxList input[type="checkbox"]:checked');
       let driverAktif = Array.from(checkboxes).map(cb => cb.value);
@@ -506,7 +497,6 @@
       });
     }
 
-    // Filter Pencarian
     function filterCustomer() {
       const keyword = document.getElementById("cariCustomer").value.toLowerCase();
       const cards = document.querySelectorAll(".card");
