@@ -94,7 +94,7 @@
 
     /* Table Order */
     .table-container {
-      max-height: 320px;
+      max-height: 400px;
       overflow-y: auto;
       border-radius: 10px;
       border: 1px solid #e2e8f0;
@@ -108,7 +108,7 @@
     }
 
     th, td {
-      padding: 10px;
+      padding: 12px 10px;
       border-bottom: 1px solid #f1f5f9;
       vertical-align: middle;
     }
@@ -119,6 +119,7 @@
       color: #475569;
       position: sticky;
       top: 0;
+      z-index: 10;
     }
 
     .maps-wrapper {
@@ -128,7 +129,7 @@
 
     input.input-maps {
       flex: 1;
-      padding: 6px 8px;
+      padding: 8px;
       border: 1px solid #cbd5e1;
       border-radius: 6px;
       font-size: 11px;
@@ -139,7 +140,7 @@
       background: #2563eb;
       color: #fff;
       border: none;
-      padding: 6px 10px;
+      padding: 8px 12px;
       border-radius: 6px;
       font-size: 10px;
       font-weight: 700;
@@ -155,15 +156,27 @@
     .badge-driver {
       background: #e0e7ff;
       color: #3730a3;
-      padding: 3px 8px;
+      padding: 4px 8px;
       border-radius: 6px;
       font-weight: 700;
       font-size: 11px;
+      display: inline-block;
     }
 
     .badge-none {
       color: #94a3b8;
       font-style: italic;
+    }
+
+    .badge-sutoyo {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-left: 6px;
+      display: inline-block;
     }
 
     #logStatus {
@@ -241,27 +254,34 @@
         let htmlTable = "";
         let countOrder = 0;
 
+        // Membaca seluruh data baris dari awal sampai akhir tanpa terpotong
         for (let i = 1; i < orders.length; i++) {
           let row = orders[i];
           let detailPesanan = row[0] || "";
           let namaDriver = row[2] || ""; 
           let linkMaps = row[3] || ""; // Kolom D untuk Link Maps
 
-          if (detailPesanan.trim() !== "") {
-            countOrder++;
-            let badge = namaDriver ? `<span class="badge-driver">${namaDriver}</span>` : `<span class="badge-none">Belum dibagi</span>`;
-            
-            htmlTable += `<tr>
-                            <td>${detailPesanan}</td>
-                            <td>
-                              <div class="maps-wrapper">
-                                <input type="text" id="maps-input-${i + 1}" class="input-maps" value="${linkMaps}" placeholder="Paste link maps...">
-                                <button type="button" class="btn-simpan-row" onclick="simpanLinkRow(${i + 1})">SIMPAN</button>
-                              </div>
-                            </td>
-                            <td>${badge}</td>
-                          </tr>`;
-          }
+          // Lewati baris kosong tapi lanjutkan terus sampai akhir baris
+          if (detailPesanan.toString().trim() === "") continue;
+
+          countOrder++;
+          let rowNum = i + 1; // Nomor baris akurat di Google Sheets
+          let isSutoyo = detailPesanan.toLowerCase().includes("sutoyo");
+          let badge = namaDriver ? `<span class="badge-driver">${namaDriver}</span>` : `<span class="badge-none">Belum dibagi</span>`;
+          
+          htmlTable += `<tr>
+                          <td>
+                            ${detailPesanan}
+                            ${isSutoyo ? '<span class="badge-sutoyo">SUTOYO</span>' : ''}
+                          </td>
+                          <td>
+                            <div class="maps-wrapper">
+                              <input type="text" id="maps-input-${rowNum}" class="input-maps" value="${linkMaps}" placeholder="Paste link maps...">
+                              <button type="button" class="btn-simpan-row" onclick="simpanLinkRow(${rowNum})">SIMPAN</button>
+                            </div>
+                          </td>
+                          <td>${badge}</td>
+                        </tr>`;
         }
 
         if (countOrder === 0) {
@@ -297,8 +317,10 @@
 
     // Fungsi Simpan Link Maps per Baris saat tombol SIMPAN diklik
     function simpanLinkRow(rowNum) {
-      let linkValue = document.getElementById("maps-input-" + rowNum).value.trim();
+      let inputEl = document.getElementById("maps-input-" + rowNum);
+      if (!inputEl) return;
       
+      let linkValue = inputEl.value.trim();
       let btn = event.target;
       let oldText = btn.innerText;
       btn.disabled = true;
