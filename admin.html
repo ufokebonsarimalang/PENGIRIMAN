@@ -323,7 +323,6 @@
         let htmlCards = "";
         let countOrder = 0;
 
-        // Membaca seluruh data baris dari awal sampai akhir tanpa terpotong (400+ baris)
         for (let i = 1; i < orders.length; i++) {
           let row = orders[i];
           let detailPesanan = row[0] || "";
@@ -337,6 +336,19 @@
           let isSutoyo = detailPesanan.toLowerCase().includes("sutoyo");
           let badgeDriver = namaDriver ? `<span class="badge-driver">👤 ${namaDriver}</span>` : `<span class="badge-none">Belum dibagi</span>`;
           
+          // Membersihkan dan memformat teks agar otomatis turun ke bawah per baris dengan rapi
+          let cleanText = detailPesanan
+            .replace(/PROMOTOR\s*:/gi, '<br><br><b>PROMOTOR :</b>')
+            .replace(/CUSTOMER\s*:/gi, '<br><b>CUSTOMER :</b>')
+            .replace(/ALAMAT\s*:/gi, '<br><b>ALAMAT :</b>')
+            .replace(/WA\s*1\s*:/gi, '<br><b>WA 1 :</b>')
+            .replace(/WA\s*2\s*:/gi, '<br><b>WA 2 :</b>')
+            .replace(/BARANG\s*:/gi, '<br><b>BARANG :</b>')
+            .replace(/TANGGAL\s*KIRIM\s*:/gi, '<br><b>TANGGAL KIRIM :</b>')
+            .replace(/OPTIONAL\s*:/gi, '<br><b>OPTIONAL :</b>')
+            .replace(/CATATAN\s*:/gi, '<br><b>CATATAN :</b>')
+            .replace(/FEE\s*JASA\s*:/gi, '<br><b>FEE JASA :</b>');
+
           htmlCards += `
             <div class="card" data-customer="${detailPesanan.toLowerCase()}">
               ${isSutoyo ? '<div><span class="badge-sutoyo">📍 JALUR SUTOYO</span></div>' : ''}
@@ -346,8 +358,8 @@
                 ${badgeDriver}
               </div>
 
-              <!-- Teks Pesanan Rapi Berbaris ke Bawah ala Driver -->
-              <div class="data">${detailPesanan}</div>
+              <!-- Teks yang sudah diformat rapi ke bawah -->
+              <div class="data" style="font-size: 13px; line-height: 1.6;">${cleanText}</div>
 
               <!-- Kotak Input Maps Admin -->
               <div class="maps-action-wrapper">
