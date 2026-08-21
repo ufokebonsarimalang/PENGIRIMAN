@@ -494,7 +494,6 @@ font-weight: 700; cursor: pointer; font-size: 13px; width: auto; flex: 1;
     
     <label class="step-label">2. Ambil Foto Bukti Pengiriman:</label>
     <div class="foto-upload-card" id="foto-card-manual">
-      <!-- Dihapus capture="environment" agar driver bisa pilih Galeri/Kamera -->
       <input type="file" id="input-foto-manual" class="foto-input-hidden" accept="image/*" onchange="previewFoto('manual')">
       
       <div class="foto-placeholder-btn" id="placeholder-manual" onclick="triggerKamera('manual')">
@@ -536,7 +535,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbzH4e2dQErvrU5m_1Q-s66g
 
 let fungsiCallbackKonfirmasi = null;
 
-// Cek otomatis jika driver sudah pernah login
 window.onload = function() {
   const driverAktif = localStorage.getItem("driver");
   if(driverAktif) {
@@ -635,27 +633,23 @@ function ambilWa(text) {
 
 /* PREVIEW & KAMERA */
 function triggerKamera(idx) {
-  // Jika ini adalah kartu manual (susulan), wajibkan isi nama customer terlebih dahulu!
   if (idx === 'manual') {
     const customerName = document.getElementById('manualCustomer').value.trim();
     if (!customerName) {
-      bukaModal("Data Kurang", "Harap masukkan Nama Customer / No. INVOICE terlebih dahulu sebelum memilih foto dari galeri!", "alert");
+      bukaModal("Data Kurang", "Harap masukkan Nama Customer / No. INVOICE terlebih dahulu sebelum memilih foto!", "alert");
       document.getElementById('manualCustomer').focus();
-      return; // Batalkan buka galeri/kamera jika nama masih kosong
+      return;
     }
   }
-
   document.getElementById('input-foto-' + idx).click();
 }
 
 function previewFoto(idx) {
-  // Validasi ganda pengaman
   if (idx === 'manual') {
     const customerName = document.getElementById('manualCustomer').value.trim();
     if (!customerName) {
       bukaModal("Data Kurang", "Harap masukkan Nama Customer / No. INVOICE terlebih dahulu!", "alert");
       document.getElementById('manualCustomer').focus();
-      // Reset input file agar bersih kembali
       document.getElementById('input-foto-manual').value = "";
       return;
     }
@@ -678,6 +672,7 @@ function previewFoto(idx) {
     reader.readAsDataURL(fileInput.files[0]);
   }
 }
+
 /* UPLOAD MANUAL / SUSULAN */
 function kirimStatusManual() {
   const customerName = document.getElementById('manualCustomer').value.trim();
@@ -736,7 +731,7 @@ function prosesUpload(customer, wa, idx, jenis) {
     img.src = e.target.result;
     img.onload = function() {
       const canvas = document.createElement('canvas');
-      const max_size = 800; // Kompresi gambar agar ringan
+      const max_size = 800;
       let width = img.width;
       let height = img.height;
 
@@ -805,9 +800,12 @@ function prosesUpload(customer, wa, idx, jenis) {
   reader.readAsDataURL(file);
 }
 
-/* LOAD DATA DARI SHEET */
+/* LOAD DATA DARI SHEET (DENGAN FILTER DRIVER LOGIN & TOMBOL MAPS) */
 function loadData() {
-  fetch(API_URL)
+  const driverAktif = localStorage.getItem("driver") || "";
+
+  // Kirim parameter driver agar backend hanya meload orderan milik driver tersebut
+  fetch(API_URL + "?driver=" + encodeURIComponent(driverAktif))
   .then(r => r.json())
   .then(data => {
     const orders = data.orders || [];
@@ -818,6 +816,7 @@ function loadData() {
 
     orders.forEach((row, index) => {
       const isi = row[0] || "";
+      const linkMaps = row[3] || ""; // Kolom D: Link Google Maps dari Admin
       if(!isi) return;
 
       total++;
@@ -831,9 +830,17 @@ function loadData() {
       html += '<div class="card" data-customer="' + key + '">';
       html += '<div class="data">' + isi + '</div>';
       
+      // 📍 TOMBOL GOOGLE MAPS (Hanya muncul jika admin sudah mengisi link di Kolom D)
+      if (linkMaps.trim() !== "") {
+        html += '<div style="margin-top: 10px;">';
+        html += '<a href="' + linkMaps + '" target="_blank" style="display: block; text-align: center; background: #2563eb; color: #fff; padding: 10px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 13px; box-shadow: 0 2px 6px rgba(37,99,235,0.3);">📍 BUKA GOOGLE MAPS</a>';
+        html += '</div>';
+      } else {
+        html += '<div style="margin-top: 8px; font-size: 11px; color: #94a3b8; font-style: italic; text-align: center;">Link Maps belum disiapkan admin</div>';
+      }
+
       if(!sudah) {
         html += '<div class="foto-upload-card" id="foto-card-' + index + '">';
-        // Dihapus capture="environment" agar driver bisa pilih Galeri/Kamera
         html += '<input type="file" id="input-foto-' + index + '" class="foto-input-hidden" accept="image/*" onchange="previewFoto(' + index + ')">';
         
         html += '<div class="foto-placeholder-btn" id="placeholder-' + index + '" onclick="triggerKamera(' + index + ')">';
