@@ -6,102 +6,505 @@
   <title>Admin Panel - Rute Pengiriman UFO Kebonsari</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;850&display=swap');
-    body { font-family: 'Inter', Arial, sans-serif; background: #f4f6f9; color: #111; margin: 0; padding: 16px; }
-    .container { max-width: 650px; margin: 0 auto; }
-    .card { background: #fff; padding: 20px; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); margin-bottom: 16px; border: 1px solid #e2e8f0; }
-    h3 { margin-top: 0; font-size: 16px; font-weight: 850; color: #6d28d9; text-transform: uppercase; margin-bottom: 12px; }
-    p { font-size: 12px; color: #64748b; margin-bottom: 12px; }
-    .driver-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
-    .driver-label { display: flex; align-items: center; gap: 8px; background: #f8fafc; padding: 10px 12px; border-radius: 10px; border: 1px solid #cbd5e1; font-size: 13px; font-weight: 600; cursor: pointer; }
-    button { width: 100%; padding: 14px; border: none; border-radius: 12px; background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%); color: #fff; font-weight: 800; font-size: 14px; cursor: pointer; }
-    .table-container { max-height: 400px; overflow-y: auto; border-radius: 10px; border: 1px solid #e2e8f0; }
-    table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
-    th, td { padding: 12px 10px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
-    th { background: #f8fafc; font-weight: 700; color: #475569; position: sticky; top: 0; }
-    .input-maps { flex: 1; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 11px; }
-    .btn-simpan-row { background: #2563eb; color: #fff; border: none; padding: 8px 12px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; }
-    .badge-driver { background: #e0e7ff; color: #3730a3; padding: 4px 8px; border-radius: 6px; font-weight: 700; font-size: 11px; }
-    .badge-none { color: #94a3b8; font-style: italic; }
-    .badge-sutoyo { background: #fee2e2; color: #991b1b; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; margin-left: 6px; }
+    
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      background: #f4f6f9;
+      color: #111;
+      margin: 0;
+      padding: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: #fff;
+      padding: 16px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      margin-bottom: 16px;
+      border: 1.5px solid #e2e8f0;
+      position: relative;
+    }
+
+    h3 {
+      margin-top: 0;
+      font-size: 15px;
+      font-weight: 850;
+      color: #6d28d9;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 12px;
+    }
+
+    /* Driver Checkbox List */
+    .driver-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .driver-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f8fafc;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .driver-label input {
+      accent-color: #6d28d9;
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Button Utama */
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%);
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(109, 40, 217, 0.3);
+    }
+
+    button:disabled {
+      background: #94a3b8 !important;
+      cursor: not-allowed;
+    }
+
+    /* --- GAYA KARTU PESANAN (PERSIS TAMPILAN DRIVER) --- */
+    .order-container {
+      max-height: 500px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .order-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 8px;
+    }
+
+    .data {
+      white-space: pre-line; /* Membuat teks baris baru (ikon & rincian) tersusun rapi ke bawah */
+      font-weight: 600;
+      font-size: 13px;
+      color: #1e293b;
+      line-height: 1.5;
+    }
+
+    .badge-driver {
+      background: #e0e7ff;
+      color: #3730a3;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 11px;
+    }
+
+    .badge-none {
+      background: #f1f5f9;
+      color: #94a3b8;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-style: italic;
+      font-size: 11px;
+    }
+
+    .badge-sutoyo {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+
+    /* Bagian Input Maps di dalam Kartu */
+    .maps-action-wrapper {
+      display: flex;
+      gap: 6px;
+      margin-top: 12px;
+      background: #f8fafc;
+      padding: 8px;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+    }
+
+    input.input-maps {
+      flex: 1;
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 11px;
+      box-sizing: border-box;
+      background: #fff;
+    }
+
+    .btn-simpan-row {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      width: auto;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-simpan-row:hover {
+      background: #1d4ed8;
+    }
+
+    #logStatus {
+      margin-top: 12px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 13px;
+      color: #059669;
+    }
+
+    /* Pencarian */
+    .search-input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 2px solid #6d28d9;
+      font-size: 13px;
+      font-weight: 600;
+      box-sizing: border-box;
+      margin-bottom: 14px;
+      outline: none;
+      background: #fff;
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 9999; opacity: 0; pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .modal-overlay.aktif { opacity: 1; pointer-events: auto; }
+    .modal-content {
+      background: #fff; padding: 24px 20px;
+      border-radius: 18px; width: 290px; text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+      transform: scale(0.85); transition: transform 0.2s ease;
+    }
+    .modal-overlay.aktif .modal-content { transform: scale(1); }
+    .modal-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; color: #0f172a; }
+    .modal-text { font-size: 13px; color: #475569; line-height: 1.4; margin-bottom: 20px; }
+    .modal-buttons { display: flex; gap: 10px; justify-content: center; }
+    .btn-modal { padding: 10px 16px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; flex: 1; }
+    .btn-batal { background: #f1f5f9; color: #475569; }
+    .btn-oke { background: #6d28d9; color: #fff; }
   </style>
 </head>
 <body>
+
   <div class="container">
+    
+    <!-- KARTU 1: TAMBAH ORDER GROSIR / MANUAL -->
     <div class="card" style="border: 2px dashed #6d28d9; background: #fcfbff;">
       <h3>Tambah Order Grosir / Manual</h3>
-      <input type="text" id="grosirDetail" placeholder="Nama Toko" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px; margin-bottom:8px; box-sizing:border-box;">
-      <input type="text" id="grosirMaps" placeholder="Link Maps" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px; margin-bottom:8px; box-sizing:border-box;">
-      <button onclick="tambahOrderGrosir()">+ TAMBAHKAN</button>
+      <p>Untuk pelanggan grosir yang tidak isi Google Form, ketik detail pesanan dan paste link maps-nya di sini.</p>
+      
+      <div style="margin-bottom: 10px;">
+        <input type="text" id="grosirDetail" placeholder="Detail Pesanan Grosir" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px; font-size:12px; box-sizing:border-box; margin-bottom:8px;">
+        <input type="text" id="grosirMaps" placeholder="Paste Link Google Maps..." style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px; font-size:12px; box-sizing:border-box;">
+      </div>
+
+      <button type="button" onclick="tambahOrderGrosir()" style="background:#059669; box-shadow:0 4px 12px rgba(5,150,105,0.3);">+ TAMBAHKAN KE DAFTAR</button>
     </div>
 
+    <!-- KARTU 2: PANEL ATUR DRIVER & EKSEKUSI RUTE -->
     <div class="card">
       <h3>Panel Eksekusi Rute</h3>
-      <div class="driver-grid" id="driverCheckboxList"></div>
+      <p>Centang driver yang masuk hari ini, lalu klik tombol untuk membagi rute secara otomatis.</p>
+      
+      <div class="driver-grid" id="driverCheckboxList">
+        <div style="grid-column: span 2; text-align:center; color:#64748b; padding:10px;">Memuat data driver...</div>
+      </div>
+
       <button id="btnBagi" onclick="eksekusiBagiRute()">BAGI RUTE OTOMATIS SEARAH</button>
-      <div id="logStatus" style="margin-top:10px; text-align:center; font-weight:700; font-size:12px; color:#059669;"></div>
+      <div id="logStatus"></div>
     </div>
 
-    <div class="card">
-      <h3>Daftar Order Masuk</h3>
-      <div class="table-container">
-        <table id="tabelOrder">
-          <tr><th>Detail Pesanan</th><th>Link Maps</th><th>Driver</th></tr>
-        </table>
-      </div>
+    <!-- PENCARIAN -->
+    <input type="text" id="cariCustomer" class="search-input" placeholder="🔍 Cari nama customer / promotor..." onkeyup="filterCustomer()">
+
+    <!-- KARTU 3: DAFTAR KARTU PESANAN (GAYA PERSIS DRIVER) -->
+    <div class="order-container" id="listOrderContainer">
+      <div style="text-align:center; color:#64748b; padding:20px; background:#fff; border-radius:16px;">Memuat data pesanan...</div>
+    </div>
+
+  </div>
+
+  <!-- MODAL -->
+  <div id="customModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-title" id="mTitle">Notifikasi</div>
+      <div class="modal-text" id="mText">Isi pesan di sini...</div>
+      <div class="modal-buttons" id="mButtons"></div>
     </div>
   </div>
 
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbzH4e2dQErvrU5m_1Q-s66gxG68JaKFae2foTcOrTUHiZT42sqY0xYHV4Cv04_Dowgi/exec";
 
+    let fungsiCallbackKonfirmasi = null;
+
+    window.onload = function() {
+      muatDataAdmin();
+    };
+
+    function bukaModal(judul, pesan, jenis, callback = null) {
+      document.getElementById("mTitle").innerText = judul;
+      document.getElementById("mText").innerText = pesan;
+      const containerTombol = document.getElementById("mButtons");
+      containerTombol.innerHTML = "";
+
+      if (jenis === "alert") {
+        containerTombol.innerHTML = '<button type="button" class="btn-modal btn-oke" onclick="tutupModal()">TUTUP</button>';
+      } else if (jenis === "confirm") {
+        fungsiCallbackKonfirmasi = callback;
+        containerTombol.innerHTML = '<button type="button" class="btn-batal btn-modal" onclick="tutupModal()">BATAL</button><button type="button" class="btn-oke btn-modal" onclick="eksekusiKonfirmasi()">YA, YAKIN</button>';
+      }
+      document.getElementById("customModal").classList.add("aktif");
+    }
+
+    function tutupModal() {
+      document.getElementById("customModal").classList.remove("aktif");
+      fungsiCallbackKonfirmasi = null;
+    }
+
+    function eksekusiKonfirmasi() {
+      if (fungsiCallbackKonfirmasi) fungsiCallbackKonfirmasi();
+      tutupModal();
+    }
+
     function muatDataAdmin() {
       fetch(API_URL)
       .then(res => res.json())
       .then(data => {
         const orders = data.orders || [];
-        let htmlTable = "";
-        // Looping full 100% tanpa batas, melewatkan baris kosong
+        let htmlCards = "";
+        let countOrder = 0;
+
+        // Membaca seluruh data baris dari awal sampai akhir tanpa terpotong (400+ baris)
         for (let i = 1; i < orders.length; i++) {
           let row = orders[i];
-          if (!row[0] || row[0].toString().trim() === "") continue;
+          let detailPesanan = row[0] || "";
+          let namaDriver = row[2] || ""; 
+          let linkMaps = row[3] || ""; 
+
+          if (detailPesanan.toString().trim() === "") continue;
+
+          countOrder++;
+          let rowNum = i + 1; 
+          let isSutoyo = detailPesanan.toLowerCase().includes("sutoyo");
+          let badgeDriver = namaDriver ? `<span class="badge-driver">👤 ${namaDriver}</span>` : `<span class="badge-none">Belum dibagi</span>`;
           
-          let rowNum = i + 1;
-          let isSutoyo = row[0].toLowerCase().includes("sutoyo");
-          htmlTable += `<tr>
-            <td>${row[0]} ${isSutoyo ? '<span class="badge-sutoyo">SUTOYO</span>' : ''}</td>
-            <td><div style="display:flex; gap:5px;"><input type="text" id="maps-input-${rowNum}" class="input-maps" value="${row[3] || ''}"><button class="btn-simpan-row" onclick="simpanLinkRow(${rowNum})">SIMPAN</button></div></td>
-            <td><span class="${row[2] ? 'badge-driver' : 'badge-none'}">${row[2] || 'Belum dibagi'}</span></td>
-          </tr>`;
+          htmlCards += `
+            <div class="card" data-customer="${detailPesanan.toLowerCase()}">
+              ${isSutoyo ? '<div><span class="badge-sutoyo">📍 JALUR SUTOYO</span></div>' : ''}
+              
+              <div class="order-card-header">
+                <span style="font-size:11px; font-weight:800; color:#64748b;">BARIS #${rowNum}</span>
+                ${badgeDriver}
+              </div>
+
+              <!-- Teks Pesanan Rapi Berbaris ke Bawah ala Driver -->
+              <div class="data">${detailPesanan}</div>
+
+              <!-- Kotak Input Maps Admin -->
+              <div class="maps-action-wrapper">
+                <input type="text" id="maps-input-${rowNum}" class="input-maps" value="${linkMaps}" placeholder="Paste Link Google Maps...">
+                <button type="button" class="btn-simpan-row" onclick="simpanLinkRow(${rowNum})">💾 SIMPAN</button>
+              </div>
+            </div>
+          `;
         }
-        document.getElementById("tabelOrder").innerHTML = `<tr><th>Detail Pesanan</th><th>Link Maps</th><th>Driver</th></tr>` + htmlTable;
+
+        if (countOrder === 0) {
+          htmlCards = `<div style="text-align:center; color:#64748b; padding:20px; background:#fff; border-radius:16px;">Belum ada pesanan masuk.</div>`;
+        }
+
+        document.getElementById("listOrderContainer").innerHTML = htmlCards;
+        filterCustomer();
       });
 
+      // Tarik List Driver
       fetch(API_URL + "?action=getDrivers")
       .then(res => res.json())
       .then(res => {
-        let htmlD = "";
-        res.drivers.forEach(d => htmlD += `<label class="driver-label"><input type="checkbox" value="${d.name}" checked> ${d.name}</label>`);
-        document.getElementById("driverCheckboxList").innerHTML = htmlD;
+        if(res.status === "OK" && res.drivers) {
+          let htmlDrivers = "";
+          res.drivers.forEach(d => {
+            let checked = d.status.toLowerCase() === 'aktif' ? 'checked' : '';
+            htmlDrivers += `<label class="driver-label">
+                              <input type="checkbox" value="${d.name}" ${checked}> ${d.name}
+                            </label>`;
+          });
+          document.getElementById("driverCheckboxList").innerHTML = htmlDrivers;
+        }
       });
     }
 
-    function simpanLinkRow(n) {
-      let val = document.getElementById("maps-input-" + n).value;
-      fetch(API_URL, {method:"POST", body:JSON.stringify({action:"updateMaps", row:n, link:val})}).then(() => alert("Tersimpan!"));
+    // Fungsi Simpan Link Maps per Baris
+    function simpanLinkRow(rowNum) {
+      let inputEl = document.getElementById("maps-input-" + rowNum);
+      if (!inputEl) return;
+      
+      let linkValue = inputEl.value.trim();
+      let btn = event.target;
+      let oldText = btn.innerText;
+      btn.disabled = true;
+      btn.innerText = "...";
+
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "updateMaps",
+          row: rowNum,
+          link: linkValue
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        btn.disabled = false;
+        btn.innerText = oldText;
+        if(res.status === "OK") {
+          bukaModal("Berhasil", "Link maps berhasil disimpan!", "alert");
+        } else {
+          bukaModal("Gagal", "Gagal menyimpan link maps.", "alert");
+        }
+      })
+      .catch(() => {
+        btn.disabled = false;
+        btn.innerText = oldText;
+        bukaModal("Koneksi Error", "Koneksi ke server gagal.", "alert");
+      });
     }
 
-    function eksekusiBagiRute() {
-      let d = Array.from(document.querySelectorAll('#driverCheckboxList input:checked')).map(cb => cb.value);
-      fetch(API_URL, {method:"POST", body:JSON.stringify({action:"bagiRute", drivers:d})}).then(r=>r.json()).then(res => {alert(res.message); muatDataAdmin();});
-    }
-
+    // Fungsi Tambah Order Grosir / Manual
     function tambahOrderGrosir() {
-      let d = document.getElementById("grosirDetail").value;
-      let m = document.getElementById("grosirMaps").value;
-      fetch(API_URL, {method:"POST", body:JSON.stringify({action:"tambahGrosir", detail:d, link:m})}).then(() => {alert("Berhasil!"); muatDataAdmin();});
+      let detail = document.getElementById("grosirDetail").value.trim();
+      let maps = document.getElementById("grosirMaps").value.trim();
+
+      if (!detail) {
+        bukaModal("Data Kurang", "Detail pesanan grosir wajib diisi!", "alert");
+        return;
+      }
+
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "tambahGrosir",
+          detail: "ORDER PENGIRIMAN\nCUSTOMER : " + detail,
+          link: maps
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.status === "OK") {
+          document.getElementById("grosirDetail").value = "";
+          document.getElementById("grosirMaps").value = "";
+          bukaModal("Berhasil", "Order berhasil ditambahkan!", "alert");
+          muatDataAdmin(); 
+        } else {
+          bukaModal("Gagal", "Gagal menambahkan order.", "alert");
+        }
+      });
     }
 
-    window.onload = muatDataAdmin;
+    // Tombol Eksekusi Rute
+    function eksekusiBagiRute() {
+      let checkboxes = document.querySelectorAll('#driverCheckboxList input[type="checkbox"]:checked');
+      let driverAktif = Array.from(checkboxes).map(cb => cb.value);
+
+      if (driverAktif.length === 0) {
+        bukaModal("Data Kurang", "Pilih minimal 1 driver yang aktif!", "alert");
+        return;
+      }
+
+      const btn = document.getElementById("btnBagi");
+      const log = document.getElementById("logStatus");
+
+      btn.disabled = true;
+      btn.innerText = "MEMPROSES RUTE...";
+      log.innerText = "";
+
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "bagiRute",
+          drivers: driverAktif
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        btn.disabled = false;
+        btn.innerText = "BAGI RUTE OTOMATIS SEARAH";
+        
+        if (res.status === "OK") {
+          log.style.color = "#059669";
+          log.innerText = res.message;
+          muatDataAdmin();
+        } else {
+          log.style.color = "#dc2626";
+          log.innerText = "Gagal: " + res.message;
+        }
+      });
+    }
+
+    // Filter Pencarian
+    function filterCustomer() {
+      const keyword = document.getElementById("cariCustomer").value.toLowerCase();
+      const cards = document.querySelectorAll(".card");
+      
+      cards.forEach(card => {
+        const textData = card.innerText.toLowerCase();
+        if (textData.includes(keyword)) {
+          card.style.display = "block";
+        } else {
+          card.style.display = "none";
+        }
+      });
+    }
   </script>
+
 </body>
 </html>
