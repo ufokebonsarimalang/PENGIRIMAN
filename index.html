@@ -804,7 +804,6 @@ function prosesUpload(customer, wa, idx, jenis) {
 function loadData() {
   const driverAktif = localStorage.getItem("driver") || "";
 
-  // Kirim parameter driver agar backend hanya meload orderan milik driver tersebut
   fetch(API_URL + "?driver=" + encodeURIComponent(driverAktif))
   .then(r => r.json())
   .then(data => {
@@ -814,10 +813,12 @@ function loadData() {
     let html = "";
     let total = 0, ok = 0, no = 0;
 
-    orders.forEach((row, index) => {
+    // Membaca seluruh data baris dari indeks 0 (baris pertama sheet) tanpa terpotong
+    for (let index = 0; index < orders.length; index++) {
+      let row = orders[index];
       const isi = row[0] || "";
-      const linkMaps = row[3] || ""; // Kolom D: Link Google Maps dari Admin
-      if(!isi) return;
+      const linkMaps = row[3] || ""; 
+      if(!isi.toString().trim()) continue;
 
       total++;
       const customer = ambilCustomer(isi);
@@ -827,10 +828,28 @@ function loadData() {
 
       if(sudah) ok++; else no++;
 
+      // Memformat teks agar rapi berbaris ke bawah
+      let cleanText = isi
+        .replace(/PROMOTOR\s*:/gi, '<br><br><b>PROMOTOR :</b>')
+        .replace(/CUSTOMER\s*:/gi, '<br><b>CUSTOMER :</b>')
+        .replace(/ALAMAT\s*:/gi, '<br><b>ALAMAT :</b>')
+        .replace(/WA\s*1\s*:/gi, '<br><b>WA 1 :</b>')
+        .replace(/WA\s*2\s*:/gi, '<br><b>WA 2 :</b>')
+        .replace(/BARANG\s*:/gi, '<br><b>BARANG :</b>')
+        .replace(/TANGGAL\s*KIRIM\s*:/gi, '<br><b>TANGGAL KIRIM :</b>')
+        .replace(/OPTIONAL\s*:/gi, '<br><b>OPTIONAL :</b>')
+        .replace(/CATATAN\s*:/gi, '<br><b>CATATAN :</b>')
+        .replace(/FES\s*JASA\s*:/gi, '<br><b>FEE JASA :</b>');
+
+      let isSutoyo = isi.toLowerCase().includes("sutoyo");
+
       html += '<div class="card" data-customer="' + key + '">';
-      html += '<div class="data">' + isi + '</div>';
+      if (isSutoyo) {
+        html += '<div><span style="background:#fee2e2; color:#991b1b; padding:3px 8px; border-radius:6px; font-size:10px; font-weight:800; display:inline-block; margin-bottom:6px;">📍 JALUR SUTOYO</span></div>';
+      }
       
-      // 📍 TOMBOL GOOGLE MAPS (Hanya muncul jika admin sudah mengisi link di Kolom D)
+      html += '<div class="data" style="font-size: 13px; line-height: 1.6;">' + cleanText + '</div>';
+      
       if (linkMaps.trim() !== "") {
         html += '<div style="margin-top: 10px;">';
         html += '<a href="' + linkMaps + '" target="_blank" style="display: block; text-align: center; background: #2563eb; color: #fff; padding: 10px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 13px; box-shadow: 0 2px 6px rgba(37,99,235,0.3);">📍 BUKA GOOGLE MAPS</a>';
@@ -872,7 +891,7 @@ function loadData() {
       html += '</button>';
       html += '</div>';
       html += '</div>';
-    });
+    }
 
     document.getElementById("stats").innerHTML = '<div class="stats"><div class="boxstat"><div class="t">TOTAL</div><div class="v" style="font-weight:800;font-size:16px;">' + total + '</div></div><div class="boxstat"><div class="t">TERKIRIM</div><div class="v" style="font-weight:800;font-size:16px;color:#10b981;">' + ok + '</div></div><div class="boxstat"><div class="t">BELUM</div><div class="v" style="font-weight:800;font-size:16px;color:#1565c0;">' + no + '</div></div></div>';
 
