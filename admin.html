@@ -93,7 +93,7 @@
       cursor: not-allowed;
     }
 
-    /* --- GAYA KARTU PESANAN (BERSIH TANPA EMOJI) --- */
+    /* --- GAYA KARTU PESANAN (BERSIH TANPA ICON) --- */
     .order-container {
       max-height: 500px;
       overflow-y: auto;
@@ -283,7 +283,7 @@
     <!-- PENCARIAN -->
     <input type="text" id="cariCustomer" class="search-input" placeholder="Cari nama customer / promotor..." onkeyup="filterCustomer()">
 
-    <!-- DAFTAR KARTU PESANAN (BERSIH TANPA ICON) -->
+    <!-- DAFTAR KARTU PESANAN -->
     <div class="order-container" id="listOrderContainer">
       <div style="text-align:center; color:#64748b; padding:20px; background:#fff; border-radius:16px;">Memuat data pesanan...</div>
     </div>
@@ -369,7 +369,6 @@
           if (!driverStats[drvKey]) driverStats[drvKey] = 0;
           driverStats[drvKey]++;
 
-          // Badge driver bersih tanpa icon
           let badgeDriver = namaDriver ? `<span class="badge-driver">${namaDriver}</span>` : `<span class="badge-none">Belum dibagi</span>`;
           
           let cleanText = detailPesanan
