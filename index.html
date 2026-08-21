@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
-<title>CEK PENGIRIMAN</title>
+<title>Admin Panel - Rute Pengiriman</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
@@ -14,162 +14,98 @@ font-family:'Inter', Arial, sans-serif;
 background:#f4f6f9;
 color:#111;
 -webkit-font-smoothing: antialiased;
+padding: 12px;
 }
 
-/* LOGIN */
-.login{
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-}
-
-.box{
-background:#fff;
-padding:24px 20px;
-border-radius:18px;
-box-shadow:0 10px 25px rgba(0,0,0,.08);
-width:290px;
-text-align:center;
-}
-
-.box img{
-width:80px;
-height:80px;
-border-radius:50%;
-border:2px solid #ddd;
-object-fit:cover;
-margin-bottom:8px;
-}
-
-input[type="text"], input[type="password"]{
-width:100%;
-padding:12px;
-margin:6px 0 10px 0;
-border-radius:10px;
-border:1px solid #ddd;
-box-sizing: border-box;
-font-size: 14px;
-font-weight: 500;
-outline: none;
-transition: all 0.2s;
-}
-
-input[type="text"]:focus, input[type="password"]:focus {
-border-color: #6d28d9;
-box-shadow: 0 0 0 3px rgba(109,40,217,0.15);
-}
-
-/* SPINNER LOADING */
-.btn-isi {
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 8px;
-}
-
-.spinner {
-width: 18px;
-height: 18px;
-border: 2.5px solid rgba(255,255,255,0.3);
-border-radius: 50%;
-border-top-color: #fff;
-animation: putar 0.6s linear infinite;
-display: none;
-}
-
-@keyframes putar {
-to { transform: rotate(360deg); }
-}
-
-button{
-width:100%;
-padding:12px;
-border:none;
-border-radius:10px;
-background:#1565c0;
-color:#fff;
-font-weight:700;
-cursor:pointer;
-font-size: 14px;
-transition: transform 0.1s ease, background 0.2s;
-}
-
-button:active {
-transform: scale(0.98);
-}
-
-button:disabled {
-background: #a1a1a1 !important;
-cursor: not-allowed;
-transform: none !important;
-}
-
-/* APP CONTAINER */
-#app{
-display:none;
-padding:12px;
+.container{
 max-width: 480px;
 margin: 0 auto;
 }
 
-/* HEADER WITH LOGOUT BUTTON */
+/* HEADER */
 .header{
 background:#fff;
 padding:12px 16px;
 border-radius:16px;
 margin-bottom:12px;
-border:2px solid #d4af37;
-box-shadow:0 4px 16px rgba(212,175,55,0.25);
+border:2px solid #6d28d9;
+box-shadow:0 4px 16px rgba(109,40,217,0.15);
 display: flex;
 justify-content: space-between;
 align-items: center;
 }
 
 .header-title{
-font-size:18px;
+font-size:16px;
 font-weight:900;
 color:#6d28d9;
-letter-spacing:1px;
+letter-spacing:0.5px;
+text-transform: uppercase;
 }
 
-.btn-logout {
-background: #ef4444;
-color: #fff;
-border: none;
-padding: 8px 12px;
-border-radius: 10px;
-font-size: 11px;
-font-weight: 800;
-cursor: pointer;
-width: auto;
-box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
-}
-
-/* CARD UPLOAD BUKTI SUSULAN */
-.card-manual {
-background: linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%);
-padding: 14px;
-margin-bottom: 14px;
+/* KARTU KONTROL PANEL */
+.card-panel {
+background: #fff;
+padding: 16px;
 border-radius: 16px;
-border: 2px solid #6d28d9;
-box-shadow: 0 4px 14px rgba(109, 40, 217, 0.15);
+border: 1.5px solid #e2e8f0;
+box-shadow: 0 4px 12px rgba(0,0,0,.03);
+margin-bottom: 12px;
 }
 
-.card-manual-title {
+.card-title {
 font-size: 13px;
 font-weight: 900;
 color: #6d28d9;
 margin-bottom: 10px;
-letter-spacing: 0.5px;
+text-transform: uppercase;
 }
 
-.step-label {
-font-size: 11px; 
-font-weight: 700; 
-color: #475569; 
-display: block; 
-margin-bottom: 4px;
+/* Driver Checkbox List */
+.driver-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 8px;
+margin-bottom: 12px;
+}
+
+.driver-label {
+display: flex;
+align-items: center;
+gap: 8px;
+background: #f8fafc;
+padding: 8px 10px;
+border-radius: 10px;
+border: 1px solid #cbd5e1;
+font-size: 12px;
+font-weight: 600;
+cursor: pointer;
+}
+
+.driver-label input {
+accent-color: #6d28d9;
+width: 14px;
+height: 14px;
+}
+
+/* BUTTON UTAMA */
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%);
+color:#fff;
+font-weight:800;
+cursor:pointer;
+font-size: 13px;
+box-shadow: 0 4px 12px rgba(109, 40, 217, 0.3);
+}
+
+button:disabled {
+background: #a1a1a1 !important;
+cursor: not-allowed;
+box-shadow: none;
 }
 
 /* PENCARIAN */
@@ -188,31 +124,7 @@ box-sizing: border-box;
 outline: none;
 }
 
-/* STATS */
-.stats{
-display:grid;
-grid-template-columns:1fr 1fr 1fr;
-gap:8px;
-margin-bottom:12px;
-}
-
-.boxstat{
-background:#fff;
-padding:10px 6px;
-border-radius:12px;
-text-align:center;
-border:2px solid #6d28d9;
-box-shadow:0 2px 8px rgba(109,40,217,0.1);
-}
-
-.boxstat .t {
-font-size: 10px;
-font-weight: 700;
-color: #64748b;
-letter-spacing: 0.5px;
-}
-
-/* CARD ORDER */
+/* KARTU ORDER (MIRIP HALAMAN DRIVER) */
 .card{
 background:#fff;
 padding:14px;
@@ -229,658 +141,318 @@ position:relative;
 white-space:pre-line;
 font-weight:600;
 color: #1e293b;
+margin-bottom: 8px;
 }
 
-/* UPLOAD FOTO COMPONENT */
-.foto-upload-card {
-margin-top: 8px;
-padding: 12px;
-background: #f8fafc;
-border: 2px dashed #cbd5e1;
-border-radius: 14px;
-text-align: center;
-transition: all 0.2s ease;
-position: relative;
-}
-
-.foto-upload-card:hover {
-border-color: #6d28d9;
-background: #f5f3ff;
-}
-
-.foto-upload-card.has-photo {
-border-style: solid;
-border-color: #10b981;
-background: #ecfdf5;
-padding: 10px;
-}
-
-.foto-input-hidden {
-display: none;
-}
-
-.foto-placeholder-btn {
+/* BADGE DRIVER & SUTOYO */
+.card-header-row {
 display: flex;
-flex-direction: column;
+justify-content: space-between;
 align-items: center;
-justify-content: center;
-gap: 6px;
-cursor: pointer;
-padding: 6px 0;
+margin-bottom: 8px;
 }
 
-.camera-icon-badge {
-width: 40px;
-height: 40px;
-background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%);
-border-radius: 50%;
-display: flex;
-align-items: center;
-justify-content: center;
-color: #fff;
-box-shadow: 0 4px 10px rgba(109, 40, 217, 0.3);
+.badge-driver {
+background: #e0e7ff;
+color: #3730a3;
+padding: 4px 8px;
+border-radius: 6px;
+font-weight: 800;
+font-size: 11px;
 }
 
-.camera-icon-badge svg {
-width: 20px;
-height: 20px;
-fill: currentColor;
+.badge-none {
+background: #f1f5f9;
+color: #94a3b8;
+padding: 4px 8px;
+border-radius: 6px;
+font-style: italic;
+font-size: 11px;
 }
 
-.foto-prompt-text {
-font-size: 12px;
-font-weight: 700;
-color: #4c1d95;
-}
-
-.foto-subprompt-text {
+.badge-sutoyo {
+background: #fee2e2;
+color: #991b1b;
+padding: 3px 8px;
+border-radius: 6px;
 font-size: 10px;
-color: #64748b;
-font-weight: 500;
+font-weight: 800;
+letter-spacing: 0.3px;
+display: inline-block;
+margin-bottom: 6px;
 }
 
-.preview-wrapper {
-display: none;
-position: relative;
-width: 100%;
-border-radius: 10px;
-overflow: hidden;
-box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+/* INPUT MAPS ADMIN DALAM KARTU */
+.maps-action-wrapper {
+display: flex;
+gap: 6px;
+margin-top: 10px;
 }
 
-.preview-foto {
-width: 100%;
-max-height: 180px;
-object-fit: cover;
-display: block;
-border-radius: 10px;
+.input-maps {
+flex: 1;
+padding: 8px 10px;
+border: 1px solid #cbd5e1;
+border-radius: 8px;
+font-size: 11px;
+box-sizing: border-box;
+outline: none;
 }
 
-.btn-ganti-foto {
-position: absolute;
-top: 8px;
-right: 8px;
-background: rgba(15, 23, 42, 0.75);
+.btn-simpan-row {
+background: #2563eb;
 color: #fff;
 border: none;
-padding: 6px 10px;
+padding: 8px 12px;
 border-radius: 8px;
-font-size: 10px;
-font-weight: 700;
-backdrop-filter: blur(4px);
+font-size: 11px;
+font-weight: 800;
 cursor: pointer;
-display: flex;
-align-items: center;
-gap: 4px;
 width: auto;
-box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+white-space: nowrap;
+box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
 }
 
-/* WA GROUP */
-.wa-group{
-display:flex;
-gap:16px;
-margin-top:12px;
-margin-bottom:4px;
+.btn-simpan-row:hover {
+background: #1d4ed8;
 }
 
-.wa-box{
-display:flex;
-flex-direction:column;
-align-items:center;
-text-decoration:none;
-width:70px;
+#logStatus {
+margin-top: 10px;
+text-align: center;
+font-weight: 700;
+font-size: 12px;
+color: #059669;
 }
-
-.wa-icon{
-width:48px; 
-height:48px;
-border-radius:50%;
-background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-display:flex;
-align-items:center;
-justify-content:center;
-box-shadow: 0 4px 10px rgba(18, 140, 126, 0.35);
-}
-
-.wa2 .wa-icon{
-background: linear-gradient(135deg, #128C7E 0%, #075E54 100%);
-box-shadow: 0 4px 10px rgba(7, 94, 84, 0.35);
-}
-
-.wa-icon svg{
-width:26px;
-height:26px;
-fill:#fff;
-}
-
-.wa-text{
-font-size:10px;
-margin-top:4px;
-font-weight:700;
-color:#64748b;
-}
-
-/* BUTTON AKSI */
-.aksi{
-margin-top:12px;
-}
-
-.btn{
-width:100%;
-height:44px;
-border:none;
-border-radius:12px;
-font-weight:800;
-cursor:pointer;
-}
-
-.kirim{
-background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
-color:#fff;
-box-shadow: 0 4px 12px rgba(21, 101, 192, 0.3);
-}
-
-.sudah{
-background:#10b981;
-color:#fff;
-}
-
-/* MODAL */
-.modal-overlay {
-position: fixed;
-top: 0; left: 0; width: 100%; height: 100%;
-background: rgba(15, 23, 42, 0.65);
-backdrop-filter: blur(4px);
-display: flex; justify-content: center; align-items: center;
-z-index: 9999; opacity: 0; pointer-events: none;
-transition: opacity 0.2s ease;
-}
-
-.modal-overlay.aktif {
-opacity: 1; pointer-events: auto;
-}
-
-.modal-content {
-background: #fff; padding: 24px 20px;
-border-radius: 18px; width: 290px; text-align: center;
-box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
-transform: scale(0.85); transition: transform 0.2s ease;
-}
-
-.modal-overlay.aktif .modal-content {
-transform: scale(1);
-}
-
-.modal-title {
-font-size: 18px; font-weight: 800; margin-bottom: 8px; color: #0f172a;
-}
-
-.modal-text {
-font-size: 13px; color: #475569; line-height: 1.4; margin-bottom: 20px;
-}
-
-.modal-buttons {
-display: flex; gap: 10px; justify-content: center;
-}
-
-.btn-modal {
-padding: 10px 16px; border: none; border-radius: 10px;
-font-weight: 700; cursor: pointer; font-size: 13px; width: auto; flex: 1;
-}
-
-.btn-batal { background: #f1f5f9; color: #475569; }
-.btn-oke { background: #6d28d9; color: #fff; }
 </style>
 </head>
 
 <body>
 
-<div class="login" id="loginBox">
-  <div class="box">
-    <img src="logo.png" alt="Logo">
-    <h3 style="margin:0; font-size: 16px; font-weight: 800; color:#0f172a;">UFO KEBONSARI MALANG</h3>
-    <p style="font-size:12px;color:#64748b; margin-top:2px;">Sistem Pengiriman Driver</p>
-
-    <div style="text-align:left;font-size:11px;margin-top:14px;font-weight:700;color:#475569;text-transform:uppercase;">Username</div>
-    <input type="text" id="user" placeholder="Masukkan Username">
-
-    <div style="text-align:left;font-size:11px;margin-top:4px;font-weight:700;color:#475569;text-transform:uppercase;">Password</div>
-    <input type="password" id="pass" placeholder="Masukkan Password">
-
-    <button type="button" id="btnLogin" onclick="login()" style="margin-top:12px; background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%);">
-      <div class="btn-isi">
-        <span id="textLogin">MASUK</span>
-        <div class="spinner" id="login-spinner"></div>
-      </div>
-    </button>
-  </div>
-</div>
-
-<div id="app">
+<div class="container">
+  
+  <!-- HEADER -->
   <div class="header">
-    <div class="header-title">CEK PENGIRIMAN</div>
-    <button class="btn-logout" onclick="logout()">KELUAR</button>
+    <div class="header-title">ADMIN PANEL RUTE</div>
   </div>
 
-  <div id="stats"></div>
-
-  <!-- KARTU UPLOAD SUSULAN (TANPA DATA) -->
-  <div class="card-manual">
-    <div class="card-manual-title">UPLOAD FOTO PENGIRIMAN TANPA FORM</div>
+  <!-- KARTU 1: TAMBAH ORDER GROSIR / MANUAL -->
+  <div class="card-panel" style="border: 2px dashed #6d28d9; background: #fcfbff;">
+    <div class="card-title">Tambah Order Grosir / Manual</div>
+    <p style="font-size:11px; color:#64748b; margin:0 0 10px 0;">Untuk pelanggan grosir yang tidak isi form, ketik nama toko &amp; paste link maps-nya.</p>
     
-    <label class="step-label">1. Masukkan Nama Customer / No.INVOICE:</label>
-    <input type="text" id="manualCustomer" placeholder="Contoh: BUDI/2608/00861">
+    <input type="text" id="grosirDetail" placeholder="Nama Toko / Detail Pesanan" style="width:100%; padding:10px; margin-bottom:8px; border-radius:8px; border:1px solid #ddd; font-size:12px; box-sizing:border-box;">
+    <input type="text" id="grosirMaps" placeholder="Paste Link Google Maps..." style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd; font-size:12px; box-sizing:border-box;">
     
-    <label class="step-label">2. Ambil Foto Bukti Pengiriman:</label>
-    <div class="foto-upload-card" id="foto-card-manual">
-      <input type="file" id="input-foto-manual" class="foto-input-hidden" accept="image/*" onchange="previewFoto('manual')">
-      
-      <div class="foto-placeholder-btn" id="placeholder-manual" onclick="triggerKamera('manual')">
-        <div class="camera-icon-badge">
-          <svg viewBox="0 0 24 24"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2m8 3a5 5 0 0 0-5 5a5 5 0 0 0 5 5a5 5 0 0 0 5-5a5 5 0 0 0-5-5m0 2a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3Z"/></svg>
-        </div>
-        <span class="foto-prompt-text">Pilih Foto / Ambil Foto</span>
-        <span class="foto-subprompt-text">Bisa pilih dari Galeri atau Kamera</span>
-      </div>
+    <button type="button" onclick="tambahOrderGrosir()" style="background:#059669; font-size:12px; padding:10px;">+ TAMBAHKAN KE DAFTAR</button>
+  </div>
 
-      <div class="preview-wrapper" id="preview-wrapper-manual">
-        <button type="button" class="btn-ganti-foto" onclick="triggerKamera('manual')">🔄 Ganti Foto</button>
-        <img id="preview-manual" class="preview-foto" src="" alt="Preview Foto">
-      </div>
+  <!-- KARTU 2: PANEL EKSEKUSI RUTE & ROLLING -->
+  <div class="card-panel">
+    <div class="card-title">Panel Eksekusi Rute &amp; Rolling</div>
+    <p style="font-size:11px; color:#64748b; margin:0 0 10px 0;">Centang driver yang aktif hari ini, lalu klik tombol untuk membagi rute secara searah dan bergiliran.</p>
+    
+    <div class="driver-grid" id="driverCheckboxList">
+      <div style="grid-column: span 2; text-align:center; color:#64748b; font-size:12px;">Memuat driver...</div>
     </div>
 
-    <button type="button" class="btn kirim" id="btn-manual" style="margin-top:12px; height: 40px; font-size:12px; background:#6d28d9;" onclick="kirimStatusManual()">
-      <div class="btn-isi"><span id="txt-manual">KIRIM FOTO</span><div class="spinner" id="spin-manual"></div></div>
-    </button>
+    <button type="button" id="btnBagi" onclick="eksekusiBagiRute()">BAGI RUTE OTOMATIS SEARAH</button>
+    <div id="logStatus"></div>
   </div>
 
+  <!-- KARTU 3: PENCARIAN -->
   <div class="search-container">
-    <input type="text" id="cariCustomer" class="search-input" placeholder="🔍 Cari nama customer..." onkeyup="filterCustomer()">
+    <input type="text" id="cariCustomer" class="search-input" placeholder="🔍 Cari nama customer / toko..." onkeyup="filterCustomer()">
   </div>
 
+  <!-- DAFTAR KARTU PESANAN (SAMA PERSIS DENGAN DRIVER) -->
   <div id="list"></div>
-</div>
 
-<div id="customModal" class="modal-overlay">
-  <div class="modal-content">
-    <div class="modal-title" id="mTitle">Notifikasi</div>
-    <div class="modal-text" id="mText">Isi pesan di sini...</div>
-    <div class="modal-buttons" id="mButtons"></div>
-  </div>
 </div>
 
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbzH4e2dQErvrU5m_1Q-s66gxG68JaKFae2foTcOrTUHiZT42sqY0xYHV4Cv04_Dowgi/exec";
 
-let fungsiCallbackKonfirmasi = null;
-
 window.onload = function() {
-  const driverAktif = localStorage.getItem("driver");
-  if(driverAktif) {
-    document.getElementById("loginBox").style.display = "none";
-    document.getElementById("app").style.display = "block";
-    loadData();
-  }
+  muatDataAdmin();
 };
 
-function bukaModal(judul, pesan, jenis, callback = null) {
-  document.getElementById("mTitle").innerText = judul;
-  document.getElementById("mText").innerText = pesan;
-  
-  const containerTombol = document.getElementById("mButtons");
-  containerTombol.innerHTML = "";
-
-  if (jenis === "alert") {
-    containerTombol.innerHTML = '<button type="button" class="btn-modal btn-oke" onclick="tutupModal()">TUTUP</button>';
-  } else if (jenis === "confirm") {
-    fungsiCallbackKonfirmasi = callback;
-    containerTombol.innerHTML = '<button type="button" class="btn-batal btn-modal" onclick="tutupModal()">BATAL</button><button type="button" class="btn-oke btn-modal" onclick="eksekusiKonfirmasi()">YA, YAKIN</button>';
-  }
-
-  document.getElementById("customModal").classList.add("aktif");
-}
-
-function tutupModal() {
-  document.getElementById("customModal").classList.remove("aktif");
-  fungsiCallbackKonfirmasi = null;
-}
-
-function eksekusiKonfirmasi() {
-  if (fungsiCallbackKonfirmasi) fungsiCallbackKonfirmasi();
-  tutupModal();
-}
-
-/* LOGIN */
-function login() {
-  const user = document.getElementById("user").value;
-  const pass = document.getElementById("pass").value;
-  
-  const btn = document.getElementById("btnLogin");
-  const spinner = document.getElementById("login-spinner");
-  const text = document.getElementById("textLogin");
-
-  if(!user || !pass) {
-    bukaModal("Data Kurang", "Username dan Password harus diisi!", "alert");
-    return;
-  }
-
-  btn.disabled = true;
-  spinner.style.display = "block";
-  text.innerText = "MEMPROSES...";
-
-  fetch(API_URL + "?action=login&user=" + encodeURIComponent(user) + "&pass=" + encodeURIComponent(pass))
-  .then(r => r.json())
-  .then(res => {
-    if(res.status === "OK"){
-      localStorage.setItem("driver", res.user);
-
-      document.getElementById("loginBox").style.display = "none";
-      document.getElementById("app").style.display = "block";
-      loadData();
-    } else {
-      bukaModal("Login Gagal", "Username atau Password salah. Periksa kembali!", "alert");
-      btn.disabled = false;
-      spinner.style.display = "none";
-      text.innerText = "MASUK";
-    }
-  })
-  .catch(() => {
-    bukaModal("Koneksi Error", "Gagal terhubung ke server. Periksa internet Anda.", "alert");
-    btn.disabled = false;
-    spinner.style.display = "none";
-    text.innerText = "MASUK";
-  });
-}
-
-/* LOGOUT */
-function logout() {
-  bukaModal("Konfirmasi Logout", "Apakah Anda yakin ingin keluar dari akun driver ini?", "confirm", () => {
-    localStorage.removeItem("driver");
-    location.reload();
-  });
-}
-
-function ambilCustomer(text) {
-  const m = text.match(/CUSTOMER\s*:\s*([^\n]+)/i);
-  return m ? m[1].trim() : "";
-}
-
-function ambilWa(text) {
-  const wa = text.match(/08\d{8,13}/g);
-  return wa || [];
-}
-
-/* PREVIEW & KAMERA */
-function triggerKamera(idx) {
-  if (idx === 'manual') {
-    const customerName = document.getElementById('manualCustomer').value.trim();
-    if (!customerName) {
-      bukaModal("Data Kurang", "Harap masukkan Nama Customer / No. INVOICE terlebih dahulu sebelum memilih foto!", "alert");
-      document.getElementById('manualCustomer').focus();
-      return;
-    }
-  }
-  document.getElementById('input-foto-' + idx).click();
-}
-
-function previewFoto(idx) {
-  if (idx === 'manual') {
-    const customerName = document.getElementById('manualCustomer').value.trim();
-    if (!customerName) {
-      bukaModal("Data Kurang", "Harap masukkan Nama Customer / No. INVOICE terlebih dahulu!", "alert");
-      document.getElementById('manualCustomer').focus();
-      document.getElementById('input-foto-manual').value = "";
-      return;
-    }
-  }
-
-  const fileInput = document.getElementById('input-foto-' + idx);
-  const imgPreview = document.getElementById('preview-' + idx);
-  const placeholder = document.getElementById('placeholder-' + idx);
-  const previewWrapper = document.getElementById('preview-wrapper-' + idx);
-  const cardBox = document.getElementById('foto-card-' + idx);
-  
-  if (fileInput.files && fileInput.files[0]) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      imgPreview.src = e.target.result;
-      placeholder.style.display = 'none';
-      previewWrapper.style.display = 'block';
-      cardBox.classList.add('has-photo');
-    }
-    reader.readAsDataURL(fileInput.files[0]);
-  }
-}
-
-/* UPLOAD MANUAL / SUSULAN */
-function kirimStatusManual() {
-  const customerName = document.getElementById('manualCustomer').value.trim();
-  const fileInput = document.getElementById('input-foto-manual');
-
-  if (!customerName) {
-    bukaModal("Data Kurang", "Ketik Nama Customer atau No. Nota terlebih dahulu!", "alert");
-    return;
-  }
-
-  if (!fileInput || !fileInput.files[0]) {
-    bukaModal("Foto Wajib", "Ambil foto atau pilih foto dari galeri terlebih dahulu!", "alert");
-    return;
-  }
-
-  prosesUpload(customerName, "", "manual", "SUSULAN");
-}
-
-/* KIRIM STATUS BIASA */
-function kirimStatus(customer, wa, idx) {
-  const fileInput = document.getElementById('input-foto-' + idx);
-
-  if (!fileInput || !fileInput.files[0]) {
-    bukaModal("Foto Wajib", "Harap ambil foto atau pilih foto dari galeri terlebih dahulu!", "alert");
-    return;
-  }
-
-  bukaModal(
-    "Konfirmasi Pengiriman", 
-    "Apakah Anda yakin barang untuk \"" + customer + "\" benar-benar sudah dikirim?", 
-    "confirm", 
-    () => {
-      prosesUpload(customer, wa, idx, "TERKIRIM");
-    }
-  );
-}
-
-/* PROSES UPLOAD REUSABLE */
-function prosesUpload(customer, wa, idx, jenis) {
-  const driver = localStorage.getItem("driver") || "DRIVER";
-  const fileInput = document.getElementById('input-foto-' + idx);
-  
-  const btn = document.getElementById("btn-" + idx);
-  const spinner = document.getElementById("spin-" + idx);
-  const text = document.getElementById("txt-" + idx);
-
-  btn.disabled = true;
-  spinner.style.display = "block";
-  text.innerText = "UPLOADING...";
-
-  const file = fileInput.files[0];
-  const reader = new FileReader();
-  
-  reader.onload = function(e) {
-    const img = new Image();
-    img.src = e.target.result;
-    img.onload = function() {
-      const canvas = document.createElement('canvas');
-      const max_size = 800;
-      let width = img.width;
-      let height = img.height;
-
-      if (width > height) {
-        if (width > max_size) {
-          height *= max_size / width;
-          width = max_size;
-        }
-      } else {
-        if (height > max_size) {
-          width *= max_size / height;
-          height = max_size;
-        }
-      }
-
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, width, height);
-      
-      const base64Image = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
-
-      const payload = {
-        customer: customer,
-        driver: driver,
-        wa: wa,
-        jenis: jenis,
-        image: base64Image
-      };
-
-      fetch(API_URL, {
-        method: 'POST',
-        body: JSON.stringify(payload)
-      })
-      .then(r => r.json())
-      .then(res => {
-        if(res.status === "OK"){
-          bukaModal("Berhasil!", "Bukti pengiriman " + customer + " sukses tersimpan.", "alert");
-          
-          if(idx === 'manual') {
-            document.getElementById('manualCustomer').value = "";
-            document.getElementById('placeholder-manual').style.display = 'flex';
-            document.getElementById('preview-wrapper-manual').style.display = 'none';
-            document.getElementById('foto-card-manual').classList.remove('has-photo');
-            document.getElementById('input-foto-manual').value = "";
-            btn.disabled = false;
-            spinner.style.display = "none";
-            text.innerText = "KIRIM FOTO";
-          }
-          loadData();
-        } else {
-          bukaModal("Gagal", "Server Error: " + res.message, "alert");
-          btn.disabled = false;
-          spinner.style.display = "none";
-          text.innerText = "🚚 KIRIM";
-        }
-      })
-      .catch(() => {
-        bukaModal("Error", "Gagal mengirim data. Coba beberapa saat lagi.", "alert");
-        btn.disabled = false;
-        spinner.style.display = "none";
-        text.innerText = "🚚 KIRIM";
-      });
-    }
-  }
-  reader.readAsDataURL(file);
-}
-
-/* LOAD DATA DARI SHEET (DENGAN FILTER DRIVER LOGIN & TOMBOL MAPS) */
-function loadData() {
-  const driverAktif = localStorage.getItem("driver") || "";
-
-  // Kirim parameter driver agar backend hanya meload orderan milik driver tersebut
-  fetch(API_URL + "?driver=" + encodeURIComponent(driverAktif))
-  .then(r => r.json())
+function muatDataAdmin() {
+  // Tarik Data Pesanan
+  fetch(API_URL)
+  .then(res => res.json())
   .then(data => {
     const orders = data.orders || [];
-    const terkirim = data.terkirim || {};
-
     let html = "";
-    let total = 0, ok = 0, no = 0;
+    let count = 0;
 
-    orders.forEach((row, index) => {
-      const isi = row[0] || "";
-      const linkMaps = row[3] || ""; // Kolom D: Link Google Maps dari Admin
-      if(!isi) return;
+    // Membaca seluruh baris dari awal sampai akhir tanpa terpotong (mendukung 400+ baris)
+    for (let i = 1; i < orders.length; i++) {
+      let row = orders[i];
+      let detail = row[0] || "";
+      let driver = row[2] || "";
+      let linkMaps = row[3] || "";
 
-      total++;
-      const customer = ambilCustomer(isi);
-      const key = customer.toLowerCase();
-      const wa = ambilWa(isi);
-      const sudah = terkirim[key] === true;
+      if(detail.toString().trim() === "") continue;
 
-      if(sudah) ok++; else no++;
-
-      html += '<div class="card" data-customer="' + key + '">';
-      html += '<div class="data">' + isi + '</div>';
+      count++;
+      let rowNum = i + 1;
+      let isSutoyo = detail.toLowerCase().includes("sutoyo");
+      let badgeDriver = driver ? `<span class="badge-driver">👤 ${driver}</span>` : `<span class="badge-none">Belum dibagi</span>`;
       
-      // 📍 TOMBOL GOOGLE MAPS (Hanya muncul jika admin sudah mengisi link di Kolom D)
-      if (linkMaps.trim() !== "") {
-        html += '<div style="margin-top: 10px;">';
-        html += '<a href="' + linkMaps + '" target="_blank" style="display: block; text-align: center; background: #2563eb; color: #fff; padding: 10px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 13px; box-shadow: 0 2px 6px rgba(37,99,235,0.3);">📍 BUKA GOOGLE MAPS</a>';
-        html += '</div>';
-      } else {
-        html += '<div style="margin-top: 8px; font-size: 11px; color: #94a3b8; font-style: italic; text-align: center;">Link Maps belum disiapkan admin</div>';
+      html += '<div class="card" data-customer="' + detail.toLowerCase() + '">';
+      
+      if(isSutoyo) {
+        html += '<div><span class="badge-sutoyo">📍 JALUR SUTOYO</span></div>';
       }
 
-      if(!sudah) {
-        html += '<div class="foto-upload-card" id="foto-card-' + index + '">';
-        html += '<input type="file" id="input-foto-' + index + '" class="foto-input-hidden" accept="image/*" onchange="previewFoto(' + index + ')">';
-        
-        html += '<div class="foto-placeholder-btn" id="placeholder-' + index + '" onclick="triggerKamera(' + index + ')">';
-        html += '<div class="camera-icon-badge"><svg viewBox="0 0 24 24"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2m8 3a5 5 0 0 0-5 5a5 5 0 0 0 5 5a5 5 0 0 0 5-5a5 5 0 0 0-5-5m0 2a3 3 0 0 1 3 3a3 3 0 0 1-3 3a3 3 0 0 1-3-3a3 3 0 0 1 3-3Z"/></svg></div>';
-        html += '<span class="foto-prompt-text">Pilih Foto / Ambil Foto</span>';
-        html += '<span class="foto-subprompt-text">Bisa pilih dari Galeri atau Kamera</span>';
-        html += '</div>';
+      html += '<div class="card-header-row">';
+      html += '<div class="data" style="margin:0; flex:1;">' + detail + '</div>';
+      html += badgeDriver;
+      html += '</div>';
 
-        html += '<div class="preview-wrapper" id="preview-wrapper-' + index + '">';
-        html += '<button type="button" class="btn-ganti-foto" onclick="triggerKamera(' + index + ')">🔄 Ganti Foto</button>';
-        html += '<img id="preview-' + index + '" class="preview-foto" src="" alt="Preview Foto">';
-        html += '</div>';
-
-        html += '</div>';
-      }
-
-      html += '<div class="wa-group">';
-      if(wa[0]) {
-        html += '<a class="wa-box" href="https://wa.me/62' + wa[0].substring(1) + '" target="_blank"><div class="wa-icon"><svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.528 1.981 14.062.96 11.43.96c-5.44 0-9.866 4.372-9.87 9.802 0 1.689.445 3.339 1.287 4.792l-.999 3.649 3.739-.968zm11.341-7.713c-.26-.13-1.534-.757-1.772-.842-.238-.085-.411-.13-.583.13-.172.26-.666.842-.817 1.013-.151.17-.301.19-.561.06-.26-.13-1.1-.405-2.096-1.294-.775-.69-1.299-1.543-1.451-1.802-.152-.258-.016-.399.114-.529.117-.117.26-.302.39-.453.13-.151.173-.258.26-.43.086-.172.043-.322-.022-.453-.064-.13-.583-1.403-.799-1.924-.211-.507-.426-.438-.583-.446-.151-.008-.323-.009-.495-.009-.172 0-.452.065-.689.322-.237.258-.904.883-.904 2.153 0 1.27.925 2.5 1.054 2.671.129.172 1.82 2.779 4.41 3.897.616.265 1.096.424 1.471.543.619.197 1.183.169 1.629.103.497-.074 1.534-.627 1.749-1.233.215-.607.215-1.127.151-1.233-.064-.108-.236-.172-.496-.302z"/></svg></div><div class="wa-text">WA 1</div></a>';
-      }
-      if(wa[1]) {
-        html += '<a class="wa-box wa2" href="https://wa.me/62' + wa[1].substring(1) + '" target="_blank"><div class="wa-icon"><svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.528 1.981 14.062.96 11.43.96c-5.44 0-9.866 4.372-9.87 9.802 0 1.689.445 3.339 1.287 4.792l-.999 3.649 3.739-.968zm11.341-7.713c-.26-.13-1.534-.757-1.772-.842-.238-.085-.411-.13-.583.13-.172.26-.666.842-.817 1.013-.151.17-.301.19-.561.06-.26-.13-1.1-.405-2.096-1.294-.775-.69-1.299-1.543-1.451-1.802-.152-.258-.016-.399.114-.529.117-.117.26-.302.39-.453.13-.151.173-.258.26-.43.086-.172.043-.322-.022-.453-.064-.13-.583-1.403-.799-1.924-.211-.507-.426-.438-.583-.446-.151-.008-.323-.009-.495-.009-.172 0-.452.065-.689.322-.237.258-.904.883-.904 2.153 0 1.27.925 2.5 1.054 2.671.129.172 1.82 2.779 4.41 3.897.616.265 1.096.424 1.471.543.619.197 1.183.169 1.629.103.497-.074 1.534-.627 1.749-1.233.215-.607.215-1.127.151-1.233-.064-.108-.236-.172-.496-.302z"/></svg></div><div class="wa-text">WA 2</div></a>';
-      }
+      // Kotak Input Maps & Tombol Simpan langsung di dalam kartu
+      html += '<div class="maps-action-wrapper">';
+      html += '<input type="text" id="maps-input-' + rowNum + '" class="input-maps" value="' + linkMaps + '" placeholder="Paste link Google Maps...">';
+      html += '<button type="button" class="btn-simpan-row" onclick="simpanLinkRow(' + rowNum + ')">💾 SIMPAN</button>';
+      html += '</div>';
 
       html += '</div>';
-      html += '<div class="aksi">';
-      html += '<button type="button" class="btn ' + (sudah ? 'sudah' : 'kirim') + '" id="btn-' + index + '" ' + (sudah ? 'disabled' : '') + ' onclick="kirimStatus(\'' + customer + '\',\'' + (wa[0] || '') + '\', ' + index + ')">';
-      html += '<div class="btn-isi"><span id="txt-' + index + '">' + (sudah ? '✓ TERKIRIM' : '🚚 KIRIM') + '</span><div class="spinner" id="spin-' + index + '"></div></div>';
-      html += '</button>';
-      html += '</div>';
-      html += '</div>';
-    });
+    }
 
-    document.getElementById("stats").innerHTML = '<div class="stats"><div class="boxstat"><div class="t">TOTAL</div><div class="v" style="font-weight:800;font-size:16px;">' + total + '</div></div><div class="boxstat"><div class="t">TERKIRIM</div><div class="v" style="font-weight:800;font-size:16px;color:#10b981;">' + ok + '</div></div><div class="boxstat"><div class="t">BELUM</div><div class="v" style="font-weight:800;font-size:16px;color:#1565c0;">' + no + '</div></div></div>';
+    if (count === 0) {
+      html = '<div style="text-align:center; color:#64748b; padding:20px; background:#fff; border-radius:16px;">Belum ada data pesanan.</div>';
+    }
 
     document.getElementById("list").innerHTML = html;
     filterCustomer();
   });
+
+  // Tarik List Driver untuk Checkbox
+  fetch(API_URL + "?action=getDrivers")
+  .then(res => res.json())
+  .then(res => {
+    if(res.status === "OK" && res.drivers) {
+      let htmlDrivers = "";
+      res.drivers.forEach(d => {
+        let checked = d.status.toLowerCase() === 'aktif' ? 'checked' : '';
+        htmlDrivers += `<label class="driver-label">
+                          <input type="checkbox" value="${d.name}" ${checked}> ${d.name}
+                        </label>`;
+      });
+      document.getElementById("driverCheckboxList").innerHTML = htmlDrivers;
+    }
+  });
 }
 
+// Fungsi Simpan Link Maps per Baris
+function simpanLinkRow(rowNum) {
+  let inputEl = document.getElementById("maps-input-" + rowNum);
+  if (!inputEl) return;
+  
+  let linkValue = inputEl.value.trim();
+  let btn = event.target;
+  let oldText = btn.innerText;
+  btn.disabled = true;
+  btn.innerText = "...";
+
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "updateMaps",
+      row: rowNum,
+      link: linkValue
+    })
+  })
+  .then(res => res.json())
+  .then(res => {
+    btn.disabled = false;
+    btn.innerText = oldText;
+    if(res.status === "OK") {
+      alert("Link Google Maps berhasil dikunci & disimpan!");
+    } else {
+      alert("Gagal menyimpan link maps.");
+    }
+  })
+  .catch(() => {
+    btn.disabled = false;
+    btn.innerText = oldText;
+    alert("Koneksi gagal.");
+  });
+}
+
+// Fungsi Tambah Order Grosir / Manual
+function tambahOrderGrosir() {
+  let detail = document.getElementById("grosirDetail").value.trim();
+  let maps = document.getElementById("grosirMaps").value.trim();
+
+  if (!detail) {
+    alert("Nama toko / detail pesanan wajib diisi!");
+    return;
+  }
+
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "tambahGrosir",
+      detail: "GROSIR: " + detail,
+      link: maps
+    })
+  })
+  .then(res => res.json())
+  .then(res => {
+    if (res.status === "OK") {
+      document.getElementById("grosirDetail").value = "";
+      document.getElementById("grosirMaps").value = "";
+      alert("Order grosir berhasil ditambahkan!");
+      muatDataAdmin(); 
+    } else {
+      alert("Gagal menambahkan grosir.");
+    }
+  });
+}
+
+// Tombol Eksekusi Bagi Rute Otomatis
+function eksekusiBagiRute() {
+  let checkboxes = document.querySelectorAll('#driverCheckboxList input[type="checkbox"]:checked');
+  let driverAktif = Array.from(checkboxes).map(cb => cb.value);
+
+  if (driverAktif.length === 0) {
+    alert("Pilih minimal 1 driver yang aktif!");
+    return;
+  }
+
+  const btn = document.getElementById("btnBagi");
+  const log = document.getElementById("logStatus");
+
+  btn.disabled = true;
+  btn.innerText = "MEMPROSES RUTE...";
+  log.innerText = "";
+
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "bagiRute",
+      drivers: driverAktif
+    })
+  })
+  .then(res => res.json())
+  .then(res => {
+    btn.disabled = false;
+    btn.innerText = "BAGI RUTE OTOMATIS SEARAH";
+    
+    if (res.status === "OK") {
+      log.style.color = "#059669";
+      log.innerText = res.message;
+      muatDataAdmin();
+    } else {
+      log.style.color = "#dc2626";
+      log.innerText = "Gagal: " + res.message;
+    }
+  });
+}
+
+// Fungsi Pencarian Customer
 function filterCustomer() {
   const keyword = document.getElementById("cariCustomer").value.toLowerCase();
   const cards = document.querySelectorAll(".card");
@@ -895,5 +467,6 @@ function filterCustomer() {
   });
 }
 </script>
+
 </body>
 </html>
