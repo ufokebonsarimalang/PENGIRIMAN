@@ -47,7 +47,6 @@
       margin-bottom: 12px;
     }
 
-    /* Driver Checkbox List */
     .driver-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -74,7 +73,6 @@
       height: 16px;
     }
 
-    /* Button Utama */
     button {
       width: 100%;
       padding: 12px;
@@ -93,7 +91,6 @@
       cursor: not-allowed;
     }
 
-    /* --- GAYA KARTU PESANAN (RAPI & BERSIH) --- */
     .order-container {
       max-height: 600px;
       overflow-y: auto;
@@ -109,7 +106,6 @@
       padding-bottom: 8px;
     }
 
-    /* Layout Rapi Berbaris */
     .data-row {
       display: flex;
       font-size: 12.5px;
@@ -162,7 +158,6 @@
       margin-bottom: 6px;
     }
 
-    /* Bagian Input Maps di dalam Kartu */
     .maps-action-wrapper {
       display: flex;
       gap: 6px;
@@ -196,10 +191,6 @@
       box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
     }
 
-    .btn-simpan-row:hover {
-      background: #1d4ed8;
-    }
-
     #logStatus {
       margin-top: 12px;
       text-align: center;
@@ -208,7 +199,6 @@
       color: #059669;
     }
 
-    /* Pencarian */
     .search-input {
       width: 100%;
       padding: 12px 16px;
@@ -222,7 +212,6 @@
       background: #fff;
     }
 
-    /* MODAL */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -252,10 +241,10 @@
 
   <div class="container">
     
-    <!-- KARTU 0: REKAPITULASI PENGIRIMAN -->
+    <!-- REKAPITULASI PENGIRIMAN -->
     <div class="card" style="background: #ffffff; border: 1.5px solid #059669;">
       <h3 style="color: #059669;">Rekapitulasi Pengiriman</h3>
-      <p>Ringkasan total order, status pengiriman selesai, dan beban tugas per driver.</p>
+      <p>Ringkasan total order, status pengiriman selesai hari ini, dan beban tugas driver.</p>
       
       <div id="boxRekapHasil" style="font-size: 13px; color: #374151; margin-bottom: 12px;">
         <i>Memuat ringkasan rekap...</i>
@@ -264,7 +253,7 @@
       <button type="button" onclick="muatDataAdmin()" style="background: #059669; box-shadow: 0 4px 12px rgba(5,150,105,0.3); padding: 10px; font-size: 12px;">Refresh Rekap & Data</button>
     </div>
 
-    <!-- KARTU 1: TAMBAH ORDER GROSIR / MANUAL -->
+    <!-- TAMBAH ORDER GROSIR / MANUAL -->
     <div class="card" style="border: 2px dashed #6d28d9; background: #fcfbff;">
       <h3>Tambah Nama Toko Grosir</h3>
       <p>Masukkan nama toko dan paste link Google Maps untuk memasukkannya ke dalam giliran rute.</p>
@@ -277,7 +266,7 @@
       <button type="button" onclick="tambahOrderGrosir()" style="background:#059669; box-shadow:0 4px 12px rgba(5,150,105,0.3);">Tambah Toko ke Rute</button>
     </div>
 
-    <!-- KARTU 2: PANEL ATUR DRIVER & EKSEKUSI RUTE -->
+    <!-- PANEL ATUR DRIVER & EKSEKUSI RUTE -->
     <div class="card">
       <h3>Panel Eksekusi Rute</h3>
       <p>Centang driver yang masuk hari ini, lalu klik tombol untuk membagi rute secara otomatis.</p>
@@ -293,7 +282,7 @@
     <!-- PENCARIAN -->
     <input type="text" id="cariCustomer" class="search-input" placeholder="Cari nama customer / promotor..." onkeyup="filterCustomer()">
 
-    <!-- KARTU 3: DAFTAR KARTU PESANAN -->
+    <!-- DAFTAR KARTU PESANAN -->
     <div class="order-container" id="listOrderContainer">
       <div style="text-align:center; color:#64748b; padding:20px; background:#fff; border-radius:16px;">Memuat data pesanan...</div>
     </div>
@@ -348,7 +337,24 @@
       .then(res => res.json())
       .then(data => {
         const orders = data.orders || [];
-        const objTerkirim = data.terkirim || {};
+        const statusSheetData = data.status_sheet_data || [];
+        
+        const todayStr = new Date().toISOString().split('T')[0];
+
+        let selesaiHariIni = new Set();
+        for (let s = 1; s < statusSheetData.length; s++) {
+          let rowStatus = statusSheetData[s];
+          let timestamp = rowStatus[0];
+          let namaCustStatus = (rowStatus[1] || "").toString().trim().toLowerCase();
+
+          if (timestamp && namaCustStatus) {
+            let tglStatus = new Date(timestamp).toISOString().split('T')[0];
+            if (tglStatus === todayStr) {
+              selesaiHariIni.add(namaCustStatus);
+            }
+          }
+        }
+
         let htmlCards = "";
         let countOrder = 0;
         let jumlahTerkirim = 0;
@@ -366,33 +372,25 @@
           let rowNum = i + 1; 
           let isSutoyo = detailPesanan.toLowerCase().includes("sutoyo");
 
+          let cleanTextRaw = detailPesanan.replace(/[\u{1F300}-\u{1F5FF}\u{1F900}-\u{1F9FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}]/gu, '');
+          
           let isSelesai = false;
-          for (let key in objTerkirim) {
-            if (detailPesanan.toLowerCase().includes(key.toLowerCase())) {
-              isSelesai = true;
-              break;
-            }
-          }
-          if (isSelesai) jumlahTerkirim++;
-
-          let drvKey = namaDriver ? namaDriver : "Belum Dibagi";
-          if (!driverStats[drvKey]) driverStats[drvKey] = 0;
-          driverStats[drvKey]++;
-
-          let badgeDriver = namaDriver ? `<span class="badge-driver">${namaDriver}</span>` : `<span class="badge-none">Belum dibagi</span>`;
-          
-          // Bersihkan emoji dari teks Google Form
-          let teksBersih = detailPesanan.replace(/[\u{1F300}-\u{1F5FF}\u{1F900}-\u{1F9FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}]/gu, '');
-          
-          // Ubah teks baris demi baris menjadi format tabel rapi (Label di kiri, Isi di kanan)
-          let lines = teksBersih.split('\n');
+          let lines = cleanTextRaw.split('\n');
           let formattedRows = "";
-          
+
           lines.forEach(line => {
             let parts = line.split(':');
             if (parts.length >= 2) {
               let label = parts[0].trim();
               let val = parts.slice(1).join(':').trim();
+              
+              if (label.toUpperCase() === "CUSTOMER") {
+                let namaCustClean = val.toLowerCase();
+                if (selesaiHariIni.has(namaCustClean)) {
+                  isSelesai = true;
+                }
+              }
+
               if (label !== "") {
                 formattedRows += `
                   <div class="data-row">
@@ -409,6 +407,14 @@
               `;
             }
           });
+
+          if (isSelesai) jumlahTerkirim++;
+
+          let drvKey = namaDriver ? namaDriver : "Belum Dibagi";
+          if (!driverStats[drvKey]) driverStats[drvKey] = 0;
+          driverStats[drvKey]++;
+
+          let badgeDriver = namaDriver ? `<span class="badge-driver">${namaDriver}</span>` : `<span class="badge-none">Belum dibagi</span>`;
 
           htmlCards += `
             <div class="card" data-customer="${detailPesanan.toLowerCase()}">
@@ -440,7 +446,7 @@
             </div>
             <div style="background: #d1fae5; padding: 8px; border-radius: 8px; border: 1px solid #a7f3d0;">
               <div style="font-size: 16px; font-weight: 800; color: #065f46;">${jumlahTerkirim}</div>
-              <div style="font-size: 10px; color: #047857; font-weight: 600;">SELESAI</div>
+              <div style="font-size: 10px; color: #047857; font-weight: 600;">SELESAI HARI INI</div>
             </div>
             <div style="background: #fee2e2; padding: 8px; border-radius: 8px; border: 1px solid #fecaca;">
               <div style="font-size: 16px; font-weight: 800; color: #991b1b;">${sisaPending}</div>
