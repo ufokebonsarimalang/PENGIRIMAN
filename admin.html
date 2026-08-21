@@ -17,7 +17,7 @@
     }
 
     .container {
-      max-width: 600px;
+      max-width: 650px;
       margin: 0 auto;
     }
 
@@ -65,12 +65,6 @@
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .driver-label:hover {
-      border-color: #6d28d9;
-      background: #f5f3ff;
     }
 
     .driver-label input {
@@ -91,22 +85,16 @@
       font-size: 14px;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(109, 40, 217, 0.3);
-      transition: transform 0.1s ease, opacity 0.2s;
-    }
-
-    button:active {
-      transform: scale(0.98);
     }
 
     button:disabled {
       background: #94a3b8 !important;
       cursor: not-allowed;
-      box-shadow: none;
     }
 
     /* Table Order */
     .table-container {
-      max-height: 250px;
+      max-height: 300px;
       overflow-y: auto;
       border-radius: 10px;
       border: 1px solid #e2e8f0;
@@ -120,8 +108,9 @@
     }
 
     th, td {
-      padding: 10px 12px;
+      padding: 10px;
       border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
     }
 
     th {
@@ -132,8 +121,13 @@
       top: 0;
     }
 
-    tr:hover {
-      background: #fcfcfc;
+    input.input-maps {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 11px;
+      box-sizing: border-box;
     }
 
     .badge-driver {
@@ -150,7 +144,6 @@
       font-style: italic;
     }
 
-    /* Status Log */
     #logStatus {
       margin-top: 12px;
       text-align: center;
@@ -167,7 +160,7 @@
     <!-- CARD 1: PANEL ATUR DRIVER & EKSEKUSI RUTE -->
     <div class="card">
       <h3>Panel Eksekusi Rute</h3>
-      <p>Centang driver yang masuk kerja hari ini, lalu klik tombol untuk merapikan dan membagi rute secara otomatis dari data form.</p>
+      <p>Centang driver yang masuk hari ini. Pastikan link maps sudah di-paste di bawah, lalu klik tombol untuk merapikan rute secara otomatis.</p>
       
       <div class="driver-grid" id="driverCheckboxList">
         <div style="grid-column: span 2; text-align:center; color:#64748b; padding:10px;">Memuat data driver...</div>
@@ -177,19 +170,20 @@
       <div id="logStatus"></div>
     </div>
 
-    <!-- CARD 2: PANTAU DATA MASUK DARI FORM -->
+    <!-- CARD 2: PANTAU DATA & PASTE LINK MAPS -->
     <div class="card">
-      <h3>Daftar Order Masuk (PDF Besok)</h3>
-      <p>Data di bawah ini otomatis masuk dari Google Form customer.</p>
+      <h3>Daftar Order Masuk & Input Link Maps</h3>
+      <p>Masukkan link Google Maps / share loc WhatsApp menyusul dari customer pada kolom yang disediakan.</p>
       
       <div class="table-container">
         <table id="tabelOrder">
           <tr>
-            <th>Detail Pesanan / Customer</th>
-            <th>Driver Tertugas</th>
+            <th>Detail Pesanan</th>
+            <th>Link Google Maps</th>
+            <th>Driver</th>
           </tr>
           <tr>
-            <td colspan="2" style="text-align:center; color:#64748b; padding:20px;">Memuat data pesanan...</td>
+            <td colspan="3" style="text-align:center; color:#64748b; padding:20px;">Memuat data pesanan...</td>
           </tr>
         </table>
       </div>
@@ -198,28 +192,25 @@
   </div>
 
   <script>
-    // ⚠️ Gunakan URL Web App Google Apps Script Anda yang sama dengan halaman Driver
-    const API_URL = "https://script.google.com/macros/s/AKfycbzH4e2dQErvrU5m_1Q-s66gxG68JaKFae2foTcOrTUHiZT42sqY0xYHV4Cv04_Dowgi/exec";
+    const API_URL = "URL_DEPLOY_APPS_SCRIPT_ANDA_DISINI";
 
     window.onload = function() {
       muatDataAdmin();
     };
 
     function muatDataAdmin() {
-      // Tarik data dari Apps Script (menggunakan doGet yang sudah ada)
       fetch(API_URL)
       .then(res => res.json())
       .then(data => {
         const orders = data.orders || [];
-        
-        // 1. Render Tabel Order (Lewati baris pertama jika itu judul/header)
         let htmlTable = "";
         let countOrder = 0;
 
         for (let i = 1; i < orders.length; i++) {
           let row = orders[i];
           let detailPesanan = row[0] || "";
-          let namaDriver = row[2] || ""; // Menyesuaikan jika kolom C adalah Driver
+          let namaDriver = row[2] || ""; 
+          let linkMaps = row[3] || ""; // Kolom D untuk Link Maps
 
           if (detailPesanan.trim() !== "") {
             countOrder++;
@@ -227,57 +218,68 @@
             
             htmlTable += `<tr>
                             <td>${detailPesanan}</td>
+                            <td><input type="text" class="input-maps" value="${linkMaps}" placeholder="Paste link maps..." onchange="updateLinkMaps(${i + 1}, this.value)"></td>
                             <td>${badge}</td>
                           </tr>`;
           }
         }
 
         if (countOrder === 0) {
-          htmlTable = `<tr><td colspan="2" style="text-align:center; color:#64748b; padding:20px;">Belum ada pesanan masuk di PDF Besok.</td></tr>`;
+          htmlTable = `<tr><td colspan="3" style="text-align:center; color:#64748b; padding:20px;">Belum ada pesanan masuk.</td></tr>`;
         }
 
         document.getElementById("tabelOrder").innerHTML = `
           <tr>
-            <th>Detail Pesanan / Customer</th>
-            <th>Driver Tertugas</th>
+            <th>Detail Pesanan</th>
+            <th>Link Google Maps</th>
+            <th>Driver</th>
           </tr>
           ${htmlTable}
         `;
-      })
-      .catch(err => {
-        console.error("Gagal memuat order:", err);
       });
 
-      // 2. Tarik List Driver dari Sheet 'users' untuk Checkbox
+      // Tarik List Driver
       fetch(API_URL + "?action=getDrivers")
       .then(res => res.json())
       .then(res => {
         if(res.status === "OK" && res.drivers) {
           let htmlDrivers = "";
           res.drivers.forEach(d => {
-            // Default centang jika status aktif
             let checked = d.status.toLowerCase() === 'aktif' ? 'checked' : '';
             htmlDrivers += `<label class="driver-label">
                               <input type="checkbox" value="${d.name}" ${checked}> ${d.name}
                             </label>`;
           });
           document.getElementById("driverCheckboxList").innerHTML = htmlDrivers;
-        } else {
-          document.getElementById("driverCheckboxList").innerHTML = `<div style="grid-column: span 2; text-align:center; color:red;">Gagal memuat driver.</div>`;
         }
-      })
-      .catch(() => {
-        document.getElementById("driverCheckboxList").innerHTML = `<div style="grid-column: span 2; text-align:center; color:red;">Goresan koneksi gagal.</div>`;
       });
     }
 
-    // Fungsi Tombol Eksekusi Pembagian Rute
+    // Fungsi otomatis menyimpan link maps saat admin mengetik/paste di tabel
+    function updateLinkMaps(rowNum, linkValue) {
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "updateMaps",
+          row: rowNum,
+          link: linkValue
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if(res.status !== "OK") {
+          alert("Gagal menyimpan link maps.");
+        }
+      });
+    }
+
+    // Tombol Eksekusi Rute
     function eksekusiBagiRute() {
       let checkboxes = document.querySelectorAll('#driverCheckboxList input[type="checkbox"]:checked');
       let driverAktif = Array.from(checkboxes).map(cb => cb.value);
 
       if (driverAktif.length === 0) {
-        alert("Pilih minimal 1 driver yang aktif hari ini!");
+        alert("Pilih minimal 1 driver yang aktif!");
         return;
       }
 
@@ -285,10 +287,9 @@
       const log = document.getElementById("logStatus");
 
       btn.disabled = true;
-      btn.innerText = "MENGECEK & MERAPIHKAN RUTE...";
+      btn.innerText = "MERAPIHKAN & MEMBAGI RUTE...";
       log.innerText = "";
 
-      // Kirim perintah pembagian rute lewat POST ke Apps Script
       fetch(API_URL, {
         method: "POST",
         body: JSON.stringify({
@@ -304,17 +305,11 @@
         if (res.status === "OK") {
           log.style.color = "#059669";
           log.innerText = res.message;
-          muatDataAdmin(); // Refresh tabel setelah rute terbagi
+          muatDataAdmin();
         } else {
           log.style.color = "#dc2626";
           log.innerText = "Gagal: " + res.message;
         }
-      })
-      .catch(err => {
-        btn.disabled = false;
-        btn.innerText = "BAGI RUTE OTOMATIS SEARAH";
-        log.style.color = "#dc2626";
-        log.innerText = "Terjadi kesalahan jaringan.";
       });
     }
   </script>
