@@ -6,245 +6,53 @@
   <title>Admin Panel - Rute Pengiriman UFO Kebonsari</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;850&display=swap');
-    
-    body {
-      font-family: 'Inter', Arial, sans-serif;
-      background: #f4f6f9;
-      color: #111;
-      margin: 0;
-      padding: 16px;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    .container {
-      max-width: 650px;
-      margin: 0 auto;
-    }
-
-    .card {
-      background: #fff;
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-      margin-bottom: 16px;
-      border: 1px solid #e2e8f0;
-    }
-
-    h3 {
-      margin-top: 0;
-      font-size: 16px;
-      font-weight: 850;
-      color: #6d28d9;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-
-    p {
-      font-size: 12px;
-      color: #64748b;
-      margin-bottom: 12px;
-    }
-
-    /* Driver Checkbox List */
-    .driver-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    .driver-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: #f8fafc;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid #cbd5e1;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .driver-label input {
-      accent-color: #6d28d9;
-      width: 16px;
-      height: 16px;
-    }
-
-    /* Button Utama */
-    button {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%);
-      color: #fff;
-      font-weight: 800;
-      font-size: 14px;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(109, 40, 217, 0.3);
-    }
-
-    button:disabled {
-      background: #94a3b8 !important;
-      cursor: not-allowed;
-    }
-
-    /* Table Order */
-    .table-container {
-      max-height: 400px;
-      overflow-y: auto;
-      border-radius: 10px;
-      border: 1px solid #e2e8f0;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-      text-align: left;
-    }
-
-    th, td {
-      padding: 12px 10px;
-      border-bottom: 1px solid #f1f5f9;
-      vertical-align: middle;
-    }
-
-    th {
-      background: #f8fafc;
-      font-weight: 700;
-      color: #475569;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .maps-wrapper {
-      display: flex;
-      gap: 6px;
-    }
-
-    input.input-maps {
-      flex: 1;
-      padding: 8px;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      font-size: 11px;
-      box-sizing: border-box;
-    }
-
-    .btn-simpan-row {
-      background: #2563eb;
-      color: #fff;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 10px;
-      font-weight: 700;
-      cursor: pointer;
-      width: auto;
-      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
-    }
-
-    .btn-simpan-row:hover {
-      background: #1d4ed8;
-    }
-
-    .badge-driver {
-      background: #e0e7ff;
-      color: #3730a3;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-weight: 700;
-      font-size: 11px;
-      display: inline-block;
-    }
-
-    .badge-none {
-      color: #94a3b8;
-      font-style: italic;
-    }
-
-    .badge-sutoyo {
-      background: #fee2e2;
-      color: #991b1b;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 10px;
-      font-weight: 700;
-      margin-left: 6px;
-      display: inline-block;
-    }
-
-    #logStatus {
-      margin-top: 12px;
-      text-align: center;
-      font-weight: 700;
-      font-size: 13px;
-      color: #059669;
-    }
+    body { font-family: 'Inter', Arial, sans-serif; background: #f4f6f9; color: #111; margin: 0; padding: 16px; }
+    .container { max-width: 650px; margin: 0 auto; }
+    .card { background: #fff; padding: 20px; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); margin-bottom: 16px; border: 1px solid #e2e8f0; }
+    h3 { margin-top: 0; font-size: 16px; font-weight: 850; color: #6d28d9; text-transform: uppercase; margin-bottom: 12px; }
+    p { font-size: 12px; color: #64748b; margin-bottom: 12px; }
+    .driver-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+    .driver-label { display: flex; align-items: center; gap: 8px; background: #f8fafc; padding: 10px 12px; border-radius: 10px; border: 1px solid #cbd5e1; font-size: 13px; font-weight: 600; cursor: pointer; }
+    button { width: 100%; padding: 14px; border: none; border-radius: 12px; background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%); color: #fff; font-weight: 800; font-size: 14px; cursor: pointer; }
+    .table-container { max-height: 400px; overflow-y: auto; border-radius: 10px; border: 1px solid #e2e8f0; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
+    th, td { padding: 12px 10px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    th { background: #f8fafc; font-weight: 700; color: #475569; position: sticky; top: 0; }
+    .input-maps { flex: 1; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 11px; }
+    .btn-simpan-row { background: #2563eb; color: #fff; border: none; padding: 8px 12px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; }
+    .badge-driver { background: #e0e7ff; color: #3730a3; padding: 4px 8px; border-radius: 6px; font-weight: 700; font-size: 11px; }
+    .badge-none { color: #94a3b8; font-style: italic; }
+    .badge-sutoyo { background: #fee2e2; color: #991b1b; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; margin-left: 6px; }
   </style>
 </head>
 <body>
-
   <div class="container">
-    
-    <!-- KARTU 1: TAMBAH ORDER GROSIR / MANUAL -->
     <div class="card" style="border: 2px dashed #6d28d9; background: #fcfbff;">
       <h3>Tambah Order Grosir / Manual</h3>
-      <p>Untuk pelanggan grosir yang tidak isi Google Form, ketik nama toko dan paste link maps-nya di sini.</p>
-      
-      <div style="margin-bottom: 10px;">
-        <input type="text" id="grosirDetail" placeholder="Nama Toko / Detail Pesanan Grosir" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px; font-size:12px; box-sizing:border-box; margin-bottom:8px;">
-        <input type="text" id="grosirMaps" placeholder="Paste Link Google Maps..." style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px; font-size:12px; box-sizing:border-box;">
-      </div>
-
-      <button type="button" onclick="tambahOrderGrosir()" style="background:#059669; box-shadow:0 4px 12px rgba(5,150,105,0.3);">+ TAMBAHKAN KE DAFTAR KIRIMAN</button>
+      <input type="text" id="grosirDetail" placeholder="Nama Toko" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px; margin-bottom:8px; box-sizing:border-box;">
+      <input type="text" id="grosirMaps" placeholder="Link Maps" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px; margin-bottom:8px; box-sizing:border-box;">
+      <button onclick="tambahOrderGrosir()">+ TAMBAHKAN</button>
     </div>
 
-    <!-- KARTU 2: PANEL ATUR DRIVER & EKSEKUSI RUTE -->
     <div class="card">
       <h3>Panel Eksekusi Rute</h3>
-      <p>Centang driver yang masuk hari ini. Pastikan link maps sudah disimpan, lalu klik tombol untuk merapikan rute secara otomatis.</p>
-      
-      <div class="driver-grid" id="driverCheckboxList">
-        <div style="grid-column: span 2; text-align:center; color:#64748b; padding:10px;">Memuat data driver...</div>
-      </div>
-
+      <div class="driver-grid" id="driverCheckboxList"></div>
       <button id="btnBagi" onclick="eksekusiBagiRute()">BAGI RUTE OTOMATIS SEARAH</button>
-      <div id="logStatus"></div>
+      <div id="logStatus" style="margin-top:10px; text-align:center; font-weight:700; font-size:12px; color:#059669;"></div>
     </div>
 
-    <!-- KARTU 3: PANTAU DATA & PASTE LINK MAPS -->
     <div class="card">
-      <h3>Daftar Order Masuk & Input Link Maps</h3>
-      <p>Paste link Google Maps WhatsApp customer, lalu klik tombol <b>Simpan</b> di setiap barisnya.</p>
-      
+      <h3>Daftar Order Masuk</h3>
       <div class="table-container">
         <table id="tabelOrder">
-          <tr>
-            <th>Detail Pesanan</th>
-            <th>Link Google Maps</th>
-            <th>Driver</th>
-          </tr>
-          <tr>
-            <td colspan="3" style="text-align:center; color:#64748b; padding:20px;">Memuat data pesanan...</td>
-          </tr>
+          <tr><th>Detail Pesanan</th><th>Link Maps</th><th>Driver</th></tr>
         </table>
       </div>
     </div>
-
   </div>
 
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbzH4e2dQErvrU5m_1Q-s66gxG68JaKFae2foTcOrTUHiZT42sqY0xYHV4Cv04_Dowgi/exec";
-
-    window.onload = function() {
-      muatDataAdmin();
-    };
 
     function muatDataAdmin() {
       fetch(API_URL)
@@ -252,176 +60,48 @@
       .then(data => {
         const orders = data.orders || [];
         let htmlTable = "";
-        let countOrder = 0;
-
-        // Membaca seluruh data baris dari awal sampai akhir tanpa terpotong
+        // Looping full 100% tanpa batas, melewatkan baris kosong
         for (let i = 1; i < orders.length; i++) {
           let row = orders[i];
-          let detailPesanan = row[0] || "";
-          let namaDriver = row[2] || ""; 
-          let linkMaps = row[3] || ""; // Kolom D untuk Link Maps
-
-          // Lewati baris kosong tapi lanjutkan terus sampai akhir baris
-          if (detailPesanan.toString().trim() === "") continue;
-
-          countOrder++;
-          let rowNum = i + 1; // Nomor baris akurat di Google Sheets
-          let isSutoyo = detailPesanan.toLowerCase().includes("sutoyo");
-          let badge = namaDriver ? `<span class="badge-driver">${namaDriver}</span>` : `<span class="badge-none">Belum dibagi</span>`;
+          if (!row[0] || row[0].toString().trim() === "") continue;
           
+          let rowNum = i + 1;
+          let isSutoyo = row[0].toLowerCase().includes("sutoyo");
           htmlTable += `<tr>
-                          <td>
-                            ${detailPesanan}
-                            ${isSutoyo ? '<span class="badge-sutoyo">SUTOYO</span>' : ''}
-                          </td>
-                          <td>
-                            <div class="maps-wrapper">
-                              <input type="text" id="maps-input-${rowNum}" class="input-maps" value="${linkMaps}" placeholder="Paste link maps...">
-                              <button type="button" class="btn-simpan-row" onclick="simpanLinkRow(${rowNum})">SIMPAN</button>
-                            </div>
-                          </td>
-                          <td>${badge}</td>
-                        </tr>`;
+            <td>${row[0]} ${isSutoyo ? '<span class="badge-sutoyo">SUTOYO</span>' : ''}</td>
+            <td><div style="display:flex; gap:5px;"><input type="text" id="maps-input-${rowNum}" class="input-maps" value="${row[3] || ''}"><button class="btn-simpan-row" onclick="simpanLinkRow(${rowNum})">SIMPAN</button></div></td>
+            <td><span class="${row[2] ? 'badge-driver' : 'badge-none'}">${row[2] || 'Belum dibagi'}</span></td>
+          </tr>`;
         }
-
-        if (countOrder === 0) {
-          htmlTable = `<tr><td colspan="3" style="text-align:center; color:#64748b; padding:20px;">Belum ada pesanan masuk.</td></tr>`;
-        }
-
-        document.getElementById("tabelOrder").innerHTML = `
-          <tr>
-            <th>Detail Pesanan</th>
-            <th>Link Google Maps</th>
-            <th>Driver</th>
-          </tr>
-          ${htmlTable}
-        `;
+        document.getElementById("tabelOrder").innerHTML = `<tr><th>Detail Pesanan</th><th>Link Maps</th><th>Driver</th></tr>` + htmlTable;
       });
 
-      // Tarik List Driver
       fetch(API_URL + "?action=getDrivers")
       .then(res => res.json())
       .then(res => {
-        if(res.status === "OK" && res.drivers) {
-          let htmlDrivers = "";
-          res.drivers.forEach(d => {
-            let checked = d.status.toLowerCase() === 'aktif' ? 'checked' : '';
-            htmlDrivers += `<label class="driver-label">
-                              <input type="checkbox" value="${d.name}" ${checked}> ${d.name}
-                            </label>`;
-          });
-          document.getElementById("driverCheckboxList").innerHTML = htmlDrivers;
-        }
+        let htmlD = "";
+        res.drivers.forEach(d => htmlD += `<label class="driver-label"><input type="checkbox" value="${d.name}" checked> ${d.name}</label>`);
+        document.getElementById("driverCheckboxList").innerHTML = htmlD;
       });
     }
 
-    // Fungsi Simpan Link Maps per Baris saat tombol SIMPAN diklik
-    function simpanLinkRow(rowNum) {
-      let inputEl = document.getElementById("maps-input-" + rowNum);
-      if (!inputEl) return;
-      
-      let linkValue = inputEl.value.trim();
-      let btn = event.target;
-      let oldText = btn.innerText;
-      btn.disabled = true;
-      btn.innerText = "...";
-
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "updateMaps",
-          row: rowNum,
-          link: linkValue
-        })
-      })
-      .then(res => res.json())
-      .then(res => {
-        btn.disabled = false;
-        btn.innerText = oldText;
-        if(res.status === "OK") {
-          alert("Link maps berhasil dikunci/tersimpan!");
-        } else {
-          alert("Gagal menyimpan link maps.");
-        }
-      })
-      .catch(() => {
-        btn.disabled = false;
-        btn.innerText = oldText;
-        alert("Koneksi gagal.");
-      });
+    function simpanLinkRow(n) {
+      let val = document.getElementById("maps-input-" + n).value;
+      fetch(API_URL, {method:"POST", body:JSON.stringify({action:"updateMaps", row:n, link:val})}).then(() => alert("Tersimpan!"));
     }
 
-    // Fungsi Tambah Order Grosir / Manual
-    function tambahOrderGrosir() {
-      let detail = document.getElementById("grosirDetail").value.trim();
-      let maps = document.getElementById("grosirMaps").value.trim();
-
-      if (!detail) {
-        alert("Nama toko / detail grosir wajib diisi!");
-        return;
-      }
-
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "tambahGrosir",
-          detail: "GROSIR: " + detail,
-          link: maps
-        })
-      })
-      .then(res => res.json())
-      .then(res => {
-        if (res.status === "OK") {
-          document.getElementById("grosirDetail").value = "";
-          document.getElementById("grosirMaps").value = "";
-          alert("Order grosir berhasil ditambahkan!");
-          muatDataAdmin(); 
-        } else {
-          alert("Gagal menambahkan grosir.");
-        }
-      });
-    }
-
-    // Tombol Eksekusi Rute
     function eksekusiBagiRute() {
-      let checkboxes = document.querySelectorAll('#driverCheckboxList input[type="checkbox"]:checked');
-      let driverAktif = Array.from(checkboxes).map(cb => cb.value);
-
-      if (driverAktif.length === 0) {
-        alert("Pilih minimal 1 driver yang aktif!");
-        return;
-      }
-
-      const btn = document.getElementById("btnBagi");
-      const log = document.getElementById("logStatus");
-
-      btn.disabled = true;
-      btn.innerText = "MERAPIHKAN & MEMBAGI RUTE...";
-      log.innerText = "";
-
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "bagiRute",
-          drivers: driverAktif
-        })
-      })
-      .then(res => res.json())
-      .then(res => {
-        btn.disabled = false;
-        btn.innerText = "BAGI RUTE OTOMATIS SEARAH";
-        
-        if (res.status === "OK") {
-          log.style.color = "#059669";
-          log.innerText = res.message;
-          muatDataAdmin();
-        } else {
-          log.style.color = "#dc2626";
-          log.innerText = "Gagal: " + res.message;
-        }
-      });
+      let d = Array.from(document.querySelectorAll('#driverCheckboxList input:checked')).map(cb => cb.value);
+      fetch(API_URL, {method:"POST", body:JSON.stringify({action:"bagiRute", drivers:d})}).then(r=>r.json()).then(res => {alert(res.message); muatDataAdmin();});
     }
-  </script>
 
+    function tambahOrderGrosir() {
+      let d = document.getElementById("grosirDetail").value;
+      let m = document.getElementById("grosirMaps").value;
+      fetch(API_URL, {method:"POST", body:JSON.stringify({action:"tambahGrosir", detail:d, link:m})}).then(() => {alert("Berhasil!"); muatDataAdmin();});
+    }
+
+    window.onload = muatDataAdmin;
+  </script>
 </body>
 </html>
