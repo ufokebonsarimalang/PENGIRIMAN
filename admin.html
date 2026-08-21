@@ -93,7 +93,7 @@
       cursor: not-allowed;
     }
 
-    /* --- GAYA KARTU PESANAN (PERSIS TAMPILAN DRIVER) --- */
+    /* --- GAYA KARTU PESANAN (BERSIH TANPA EMOJI) --- */
     .order-container {
       max-height: 500px;
       overflow-y: auto;
@@ -104,33 +104,38 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
-      border-bottom: 1px solid #f1f5f9;
+      margin-bottom: 10px;
+      border-bottom: 1.5px solid #f1f5f9;
       padding-bottom: 8px;
     }
 
     .data {
       white-space: pre-line;
-      font-weight: 600;
-      font-size: 13px;
-      color: #1e293b;
-      line-height: 1.5;
+      font-weight: 500;
+      font-size: 12.5px;
+      color: #334155;
+      line-height: 1.6;
+      background: #fafafa;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #f1f5f9;
     }
 
     .badge-driver {
       background: #e0e7ff;
       color: #3730a3;
       padding: 4px 10px;
-      border-radius: 8px;
-      font-weight: 800;
+      border-radius: 6px;
+      font-weight: 700;
       font-size: 11px;
+      letter-spacing: 0.3px;
     }
 
     .badge-none {
       background: #f1f5f9;
-      color: #94a3b8;
+      color: #64748b;
       padding: 4px 10px;
-      border-radius: 8px;
+      border-radius: 6px;
       font-style: italic;
       font-size: 11px;
     }
@@ -144,13 +149,14 @@
       font-weight: 800;
       display: inline-block;
       margin-bottom: 6px;
+      letter-spacing: 0.5px;
     }
 
     /* Bagian Input Maps di dalam Kartu */
     .maps-action-wrapper {
       display: flex;
       gap: 6px;
-      margin-top: 12px;
+      margin-top: 10px;
       background: #f8fafc;
       padding: 8px;
       border-radius: 10px;
@@ -236,19 +242,19 @@
 
   <div class="container">
     
-    <!-- KARTU 0: REKAPITULASI PENGIRIMAN (FITUR BARU) -->
+    <!-- REKAPITULASI PENGIRIMAN -->
     <div class="card" style="background: #ffffff; border: 1.5px solid #059669;">
-      <h3 style="color: #059669;">📊 Rekapitulasi Pengiriman</h3>
+      <h3 style="color: #059669;">Rekapitulasi Pengiriman</h3>
       <p>Ringkasan total order, status pengiriman selesai, dan beban tugas per driver.</p>
       
       <div id="boxRekapHasil" style="font-size: 13px; color: #374151; margin-bottom: 12px;">
         <i>Memuat ringkasan rekap...</i>
       </div>
 
-      <button type="button" onclick="muatDataAdmin()" style="background: #059669; box-shadow: 0 4px 12px rgba(5,150,105,0.3); padding: 10px; font-size: 12px;">🔄 REFRESH REKAP & DATA</button>
+      <button type="button" onclick="muatDataAdmin()" style="background: #059669; box-shadow: 0 4px 12px rgba(5,150,105,0.3); padding: 10px; font-size: 12px;">Refresh Rekap & Data</button>
     </div>
 
-    <!-- KARTU 1: TAMBAH ORDER GROSIR / MANUAL -->
+    <!-- TAMBAH ORDER GROSIR / MANUAL -->
     <div class="card" style="border: 2px dashed #6d28d9; background: #fcfbff;">
       <h3>Tambah Nama Toko Grosir</h3>
       <p>Masukkan nama toko dan paste link Google Maps untuk memasukkannya ke dalam giliran rute.</p>
@@ -258,10 +264,10 @@
         <input type="text" id="grosirMaps" placeholder="Paste Link Google Maps..." style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px; font-size:12px; box-sizing:border-box;">
       </div>
 
-      <button type="button" onclick="tambahOrderGrosir()" style="background:#059669; box-shadow:0 4px 12px rgba(5,150,105,0.3);">+ TAMBAHKAN TOKO KE RUTE</button>
+      <button type="button" onclick="tambahOrderGrosir()" style="background:#059669; box-shadow:0 4px 12px rgba(5,150,105,0.3);">Tambah Toko ke Rute</button>
     </div>
 
-    <!-- KARTU 2: PANEL ATUR DRIVER & EKSEKUSI RUTE -->
+    <!-- PANEL ATUR DRIVER & EKSEKUSI RUTE -->
     <div class="card">
       <h3>Panel Eksekusi Rute</h3>
       <p>Centang driver yang masuk hari ini, lalu klik tombol untuk membagi rute secara otomatis.</p>
@@ -270,14 +276,14 @@
         <div style="grid-column: span 2; text-align:center; color:#64748b; padding:10px;">Memuat data driver...</div>
       </div>
 
-      <button id="btnBagi" onclick="eksekusiBagiRute()">BAGI RUTE OTOMATIS SEARAH</button>
+      <button id="btnBagi" onclick="eksekusiBagiRute()">Bagi Rute Otomatis Searah</button>
       <div id="logStatus"></div>
     </div>
 
     <!-- PENCARIAN -->
-    <input type="text" id="cariCustomer" class="search-input" placeholder="🔍 Cari nama customer / promotor..." onkeyup="filterCustomer()">
+    <input type="text" id="cariCustomer" class="search-input" placeholder="Cari nama customer / promotor..." onkeyup="filterCustomer()">
 
-    <!-- KARTU 3: DAFTAR KARTU PESANAN (GAYA PERSIS DRIVER) -->
+    <!-- DAFTAR KARTU PESANAN (BERSIH TANPA ICON) -->
     <div class="order-container" id="listOrderContainer">
       <div style="text-align:center; color:#64748b; padding:20px; background:#fff; border-radius:16px;">Memuat data pesanan...</div>
     </div>
@@ -309,10 +315,10 @@
       containerTombol.innerHTML = "";
 
       if (jenis === "alert") {
-        containerTombol.innerHTML = '<button type="button" class="btn-modal btn-oke" onclick="tutupModal()">TUTUP</button>';
+        containerTombol.innerHTML = '<button type="button" class="btn-modal btn-oke" onclick="tutupModal()">Tutup</button>';
       } else if (jenis === "confirm") {
         fungsiCallbackKonfirmasi = callback;
-        containerTombol.innerHTML = '<button type="button" class="btn-batal btn-modal" onclick="tutupModal()">BATAL</button><button type="button" class="btn-oke btn-modal" onclick="eksekusiKonfirmasi()">YA, YAKIN</button>';
+        containerTombol.innerHTML = '<button type="button" class="btn-batal btn-modal" onclick="tutupModal()">Batal</button><button type="button" class="btn-oke btn-modal" onclick="eksekusiKonfirmasi()">Ya, Yakin</button>';
       }
       document.getElementById("customModal").classList.add("aktif");
     }
@@ -350,7 +356,6 @@
           let rowNum = i + 1; 
           let isSutoyo = detailPesanan.toLowerCase().includes("sutoyo");
 
-          // Hitung rekap terkirim & beban driver
           let isSelesai = false;
           for (let key in objTerkirim) {
             if (detailPesanan.toLowerCase().includes(key.toLowerCase())) {
@@ -364,7 +369,8 @@
           if (!driverStats[drvKey]) driverStats[drvKey] = 0;
           driverStats[drvKey]++;
 
-          let badgeDriver = namaDriver ? `<span class="badge-driver">👤 ${namaDriver}</span>` : `<span class="badge-none">Belum dibagi</span>`;
+          // Badge driver bersih tanpa icon
+          let badgeDriver = namaDriver ? `<span class="badge-driver">${namaDriver}</span>` : `<span class="badge-none">Belum dibagi</span>`;
           
           let cleanText = detailPesanan
             .replace(/PROMOTOR\s*:/gi, '<br><br><b>PROMOTOR :</b>')
@@ -380,24 +386,23 @@
 
           htmlCards += `
             <div class="card" data-customer="${detailPesanan.toLowerCase()}">
-              ${isSutoyo ? '<div><span class="badge-sutoyo">📍 JALUR SUTOYO</span></div>' : ''}
+              ${isSutoyo ? '<div><span class="badge-sutoyo">JALUR SUTOYO</span></div>' : ''}
               
               <div class="order-card-header">
-                <span style="font-size:11px; font-weight:800; color:#64748b;">BARIS #${rowNum}</span>
+                <span style="font-size:11px; font-weight:700; color:#64748b;">BARIS #${rowNum}</span>
                 ${badgeDriver}
               </div>
 
-              <div class="data" style="font-size: 13px; line-height: 1.6;">${cleanText}</div>
+              <div class="data">${cleanText}</div>
 
               <div class="maps-action-wrapper">
                 <input type="text" id="maps-input-${rowNum}" class="input-maps" value="${linkMaps}" placeholder="Paste Link Google Maps...">
-                <button type="button" class="btn-simpan-row" onclick="simpanLinkRow(${rowNum})">💾 SIMPAN</button>
+                <button type="button" class="btn-simpan-row" onclick="simpanLinkRow(${rowNum})">Simpan</button>
               </div>
             </div>
           `;
         }
 
-        // Render Kotak Rekap di Atas
         let sisaPending = countOrder - jumlahTerkirim;
         let htmlRekap = `
           <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; text-align: center;">
@@ -414,7 +419,7 @@
               <div style="font-size: 10px; color: #b91c1c; font-weight: 600;">PENDING</div>
             </div>
           </div>
-          <div style="font-size: 11px; color: #475569; border-top: 1px solid #f1f5f9; pt-2; margin-top: 8px;">
+          <div style="font-size: 11px; color: #475569; border-top: 1px solid #f1f5f9; padding-top: 8px; margin-top: 8px;">
             <b>Beban Driver:</b> 
         `;
         let driverItems = [];
@@ -528,7 +533,7 @@
       const log = document.getElementById("logStatus");
 
       btn.disabled = true;
-      btn.innerText = "MEMPROSES RUTE...";
+      btn.innerText = "Memproses Rute...";
       log.innerText = "";
 
       fetch(API_URL, {
@@ -541,7 +546,7 @@
       .then(res => res.json())
       .then(res => {
         btn.disabled = false;
-        btn.innerText = "BAGI RUTE OTOMATIS SEARAH";
+        btn.innerText = "Bagi Rute Otomatis Searah";
         
         if (res.status === "OK") {
           log.style.color = "#059669";
