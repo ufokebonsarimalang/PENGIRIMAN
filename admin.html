@@ -1,4 +1,4 @@
-<!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -236,6 +236,18 @@
 
   <div class="container">
     
+    <!-- KARTU 0: REKAPITULASI PENGIRIMAN (FITUR BARU) -->
+    <div class="card" style="background: #ffffff; border: 1.5px solid #059669;">
+      <h3 style="color: #059669;">📊 Rekapitulasi Pengiriman</h3>
+      <p>Ringkasan total order, status pengiriman selesai, dan beban tugas per driver.</p>
+      
+      <div id="boxRekapHasil" style="font-size: 13px; color: #374151; margin-bottom: 12px;">
+        <i>Memuat ringkasan rekap...</i>
+      </div>
+
+      <button type="button" onclick="muatDataAdmin()" style="background: #059669; box-shadow: 0 4px 12px rgba(5,150,105,0.3); padding: 10px; font-size: 12px;">🔄 REFRESH REKAP & DATA</button>
+    </div>
+
     <!-- KARTU 1: TAMBAH ORDER GROSIR / MANUAL -->
     <div class="card" style="border: 2px dashed #6d28d9; background: #fcfbff;">
       <h3>Tambah Nama Toko Grosir</h3>
@@ -320,10 +332,13 @@
       .then(res => res.json())
       .then(data => {
         const orders = data.orders || [];
+        const objTerkirim = data.terkirim || {};
         let htmlCards = "";
         let countOrder = 0;
+        let jumlahTerkirim = 0;
+        let driverStats = {};
 
-     for (let i = 0; i < orders.length; i++) {
+        for (let i = 0; i < orders.length; i++) {
           let row = orders[i];
           let detailPesanan = row[0] || "";
           let namaDriver = row[2] || ""; 
@@ -334,6 +349,21 @@
           countOrder++;
           let rowNum = i + 1; 
           let isSutoyo = detailPesanan.toLowerCase().includes("sutoyo");
+
+          // Hitung rekap terkirim & beban driver
+          let isSelesai = false;
+          for (let key in objTerkirim) {
+            if (detailPesanan.toLowerCase().includes(key.toLowerCase())) {
+              isSelesai = true;
+              break;
+            }
+          }
+          if (isSelesai) jumlahTerkirim++;
+
+          let drvKey = namaDriver ? namaDriver : "Belum Dibagi";
+          if (!driverStats[drvKey]) driverStats[drvKey] = 0;
+          driverStats[drvKey]++;
+
           let badgeDriver = namaDriver ? `<span class="badge-driver">👤 ${namaDriver}</span>` : `<span class="badge-none">Belum dibagi</span>`;
           
           let cleanText = detailPesanan
@@ -366,6 +396,33 @@
             </div>
           `;
         }
+
+        // Render Kotak Rekap di Atas
+        let sisaPending = countOrder - jumlahTerkirim;
+        let htmlRekap = `
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; text-align: center;">
+            <div style="background: #f8fafc; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0;">
+              <div style="font-size: 16px; font-weight: 800; color: #1e293b;">${countOrder}</div>
+              <div style="font-size: 10px; color: #64748b; font-weight: 600;">TOTAL</div>
+            </div>
+            <div style="background: #d1fae5; padding: 8px; border-radius: 8px; border: 1px solid #a7f3d0;">
+              <div style="font-size: 16px; font-weight: 800; color: #065f46;">${jumlahTerkirim}</div>
+              <div style="font-size: 10px; color: #047857; font-weight: 600;">SELESAI</div>
+            </div>
+            <div style="background: #fee2e2; padding: 8px; border-radius: 8px; border: 1px solid #fecaca;">
+              <div style="font-size: 16px; font-weight: 800; color: #991b1b;">${sisaPending}</div>
+              <div style="font-size: 10px; color: #b91c1c; font-weight: 600;">PENDING</div>
+            </div>
+          </div>
+          <div style="font-size: 11px; color: #475569; border-top: 1px solid #f1f5f9; pt-2; margin-top: 8px;">
+            <b>Beban Driver:</b> 
+        `;
+        let driverItems = [];
+        for (let drv in driverStats) {
+          driverItems.push(`${drv}: ${driverStats[drv]}`);
+        }
+        htmlRekap += driverItems.join(" | ") + `</div>`;
+        document.getElementById("boxRekapHasil").innerHTML = htmlRekap;
 
         if (countOrder === 0) {
           htmlCards = `<div style="text-align:center; color:#64748b; padding:20px; background:#fff; border-radius:16px;">Belum ada pesanan masuk.</div>`;
@@ -499,7 +556,7 @@
 
     function filterCustomer() {
       const keyword = document.getElementById("cariCustomer").value.toLowerCase();
-      const cards = document.querySelectorAll(".card");
+      const cards = document.querySelectorAll(".order-container .card");
       
       cards.forEach(card => {
         const textData = card.innerText.toLowerCase();
