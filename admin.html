@@ -432,20 +432,24 @@
     }
 
     // Fungsi Tambah Order Grosir / Manual
+  // Fungsi Tambah Order Grosir / Manual yang Disesuaikan
     function tambahOrderGrosir() {
       let detail = document.getElementById("grosirDetail").value.trim();
       let maps = document.getElementById("grosirMaps").value.trim();
 
       if (!detail) {
-        bukaModal("Data Kurang", "Detail pesanan grosir wajib diisi!", "alert");
+        bukaModal("Data Kurang", "Nama toko / detail grosir wajib diisi!", "alert");
         return;
       }
+
+      // Format otomatis agar bentuknya rapi ke bawah seperti order biasa
+      let formatGrosir = `ORDER PENGIRIMAN\nCUSTOMER : ${detail.toUpperCase()}`;
 
       fetch(API_URL, {
         method: "POST",
         body: JSON.stringify({
           action: "tambahGrosir",
-          detail: "ORDER PENGIRIMAN\nCUSTOMER : " + detail,
+          detail: formatGrosir,
           link: maps
         })
       })
@@ -454,10 +458,10 @@
         if (res.status === "OK") {
           document.getElementById("grosirDetail").value = "";
           document.getElementById("grosirMaps").value = "";
-          bukaModal("Berhasil", "Order berhasil ditambahkan!", "alert");
+          bukaModal("Berhasil", "Order grosir berhasil ditambahkan!", "alert");
           muatDataAdmin(); 
         } else {
-          bukaModal("Gagal", "Gagal menambahkan order.", "alert");
+          bukaModal("Gagal", "Gagal menambahkan grosir.", "alert");
         }
       });
     }
