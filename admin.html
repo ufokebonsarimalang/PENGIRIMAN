@@ -73,7 +73,7 @@
       height: 16px;
     }
 
-    /* Button */
+    /* Button Utama */
     button {
       width: 100%;
       padding: 14px;
@@ -94,7 +94,7 @@
 
     /* Table Order */
     .table-container {
-      max-height: 300px;
+      max-height: 320px;
       overflow-y: auto;
       border-radius: 10px;
       border: 1px solid #e2e8f0;
@@ -121,13 +121,35 @@
       top: 0;
     }
 
+    .maps-wrapper {
+      display: flex;
+      gap: 6px;
+    }
+
     input.input-maps {
-      width: 100%;
+      flex: 1;
       padding: 6px 8px;
       border: 1px solid #cbd5e1;
       border-radius: 6px;
       font-size: 11px;
       box-sizing: border-box;
+    }
+
+    .btn-simpan-row {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      width: auto;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-simpan-row:hover {
+      background: #1d4ed8;
     }
 
     .badge-driver {
@@ -173,7 +195,7 @@
     <!-- KARTU 2: PANEL ATUR DRIVER & EKSEKUSI RUTE -->
     <div class="card">
       <h3>Panel Eksekusi Rute</h3>
-      <p>Centang driver yang masuk hari ini. Pastikan link maps sudah di-paste di bawah, lalu klik tombol untuk merapikan rute secara otomatis.</p>
+      <p>Centang driver yang masuk hari ini. Pastikan link maps sudah disimpan, lalu klik tombol untuk merapikan rute secara otomatis.</p>
       
       <div class="driver-grid" id="driverCheckboxList">
         <div style="grid-column: span 2; text-align:center; color:#64748b; padding:10px;">Memuat data driver...</div>
@@ -186,7 +208,7 @@
     <!-- KARTU 3: PANTAU DATA & PASTE LINK MAPS -->
     <div class="card">
       <h3>Daftar Order Masuk & Input Link Maps</h3>
-      <p>Masukkan link Google Maps / share loc WhatsApp menyusul dari customer pada kolom yang disediakan.</p>
+      <p>Paste link Google Maps WhatsApp customer, lalu klik tombol <b>Simpan</b> di setiap barisnya.</p>
       
       <div class="table-container">
         <table id="tabelOrder">
@@ -231,7 +253,12 @@
             
             htmlTable += `<tr>
                             <td>${detailPesanan}</td>
-                            <td><input type="text" class="input-maps" value="${linkMaps}" placeholder="Paste link maps..." onchange="updateLinkMaps(${i + 1}, this.value)"></td>
+                            <td>
+                              <div class="maps-wrapper">
+                                <input type="text" id="maps-input-${i + 1}" class="input-maps" value="${linkMaps}" placeholder="Paste link maps...">
+                                <button type="button" class="btn-simpan-row" onclick="simpanLinkRow(${i + 1})">SIMPAN</button>
+                              </div>
+                            </td>
                             <td>${badge}</td>
                           </tr>`;
           }
@@ -268,6 +295,40 @@
       });
     }
 
+    // Fungsi Simpan Link Maps per Baris saat tombol SIMPAN diklik
+    function simpanLinkRow(rowNum) {
+      let linkValue = document.getElementById("maps-input-" + rowNum).value.trim();
+      
+      let btn = event.target;
+      let oldText = btn.innerText;
+      btn.disabled = true;
+      btn.innerText = "...";
+
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "updateMaps",
+          row: rowNum,
+          link: linkValue
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        btn.disabled = false;
+        btn.innerText = oldText;
+        if(res.status === "OK") {
+          alert("Link maps berhasil dikunci/tersimpan!");
+        } else {
+          alert("Gagal menyimpan link maps.");
+        }
+      })
+      .catch(() => {
+        btn.disabled = false;
+        btn.innerText = oldText;
+        alert("Koneksi gagal.");
+      });
+    }
+
     // Fungsi Tambah Order Grosir / Manual
     function tambahOrderGrosir() {
       let detail = document.getElementById("grosirDetail").value.trim();
@@ -295,24 +356,6 @@
           muatDataAdmin(); 
         } else {
           alert("Gagal menambahkan grosir.");
-        }
-      });
-    }
-
-    // Fungsi otomatis menyimpan link maps saat admin mengetik/paste di tabel
-    function updateLinkMaps(rowNum, linkValue) {
-      fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "updateMaps",
-          row: rowNum,
-          link: linkValue
-        })
-      })
-      .then(res => res.json())
-      .then(res => {
-        if(res.status !== "OK") {
-          alert("Gagal menyimpan link maps.");
         }
       });
     }
