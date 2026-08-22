@@ -128,10 +128,10 @@
             cursor: pointer;
         }
 
-        /* Tombol Responsif (Otomatis menyesuaikan HP & PC) */
+        /* Tombol Responsif */
         .btn-group {
             display: grid;
-            grid-template-columns: repeat(4, 1fr); /* Default PC: 4 kolom sejajar */
+            grid-template-columns: repeat(4, 1fr);
             gap: 10px;
             margin-top: 10px;
         }
@@ -156,7 +156,7 @@
         .btn-run { background: var(--success); }
         .btn-print { background: var(--warning); color: #fff; }
         .btn-excel { background: var(--info); color: #fff; }
-        .btn-reset { background: var(--danger); grid-column: span 4; } /* Tombol reset memanjang sendiri */
+        .btn-reset { background: var(--danger); grid-column: span 4; }
 
         /* Tabel Antrean */
         .table-wrapper {
@@ -233,25 +233,15 @@
             font-weight: 700;
         }
 
-        /* KHUSUS TAMPILAN HP (Layar di bawah 768px) */
         @media screen and (max-width: 768px) {
             body { padding: 10px 5px; }
             .container { padding: 15px; border-radius: 12px; }
-            
-            /* Tombol berubah jadi bertumpuk ke bawah agar besar dan gampang dipencet jempol */
-            .btn-group {
-                grid-template-columns: 1fr 1fr; /* Jadi 2 kolom */
-            }
-            .btn-reset {
-                grid-column: span 2;
-            }
-
-            /* Ukuran font tabel sedikit disesuaikan agar muat di layar HP */
+            .btn-group { grid-template-columns: 1fr 1fr; }
+            .btn-reset { grid-column: span 2; }
             th, td { padding: 8px 10px; font-size: 12px; }
             .header-title h2 { font-size: 18px; }
         }
 
-        /* Mode Print / PDF */
         @media print {
             body { background: white; padding: 0; }
             .container { box-shadow: none; padding: 0; max-width: 100%; }
@@ -337,6 +327,9 @@
 </div>
 
 <script>
+// 🔴 MASUKKAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwrPuwozp74jDYv2Lw-rWGedCect1tyP3yNclwPTMVLGMlYZxTNAn2RypvgVCwIBeZh/exec"; 
+
 let antrean = JSON.parse(localStorage.getItem('antrean')) || [];
 let hasilPembagianGlobal = {};
 
@@ -385,8 +378,19 @@ function tambahOrderan() {
         return;
     }
 
-    antrean.push({ nama, alamat, kec });
+    let orderBaru = { nama, alamat, kec };
+    antrean.push(orderBaru);
     
+    // Kirim data secara online ke Google Sheets (jika URL sudah diisi)
+    if (WEB_APP_URL !== "URL_APPS_SCRIPT_ANDA_DI_SINI") {
+        fetch(WEB_APP_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "tambah", nama: nama, alamat: alamat, kecamatan: kec })
+        }).catch(err => console.error("Gagal kirim ke sheets:", err));
+    }
+
     document.getElementById('inputNama').value = "";
     document.getElementById('inputAlamat').value = "";
     document.getElementById('inputKec').value = "";
