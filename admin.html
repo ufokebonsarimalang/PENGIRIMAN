@@ -90,6 +90,7 @@
             font-weight: 600;
             color: var(--text-main);
             background: #fff;
+            text-transform: uppercase;
         }
 
         input[type="text"]:focus, select:focus {
@@ -272,8 +273,8 @@
     <!-- Form Input -->
     <div class="card-box">
         <label>Input Orderan Masuk</label>
-        <input type="text" id="inputNama" placeholder="Nama Toko / Customer">
-        <input type="text" id="inputAlamat" placeholder="Alamat Lengkap">
+      <input type="text" id="inputNama" placeholder="Nama Toko / Customer" oninput="this.value = this.value.toUpperCase()">
+<input type="text" id="inputAlamat" placeholder="Alamat Lengkap" oninput="this.value = this.value.toUpperCase()">
         
       <label>Kecamatan Tujuan</label>
         <select id="inputKec">
@@ -422,9 +423,9 @@ function renderAntrean() {
 }
 
 function tambahOrderan() {
-    let nama = document.getElementById('inputNama').value.trim();
-    let alamat = document.getElementById('inputAlamat').value.trim();
-    let kec = document.getElementById('inputKec').value;
+   let nama = document.getElementById('inputNama').value.trim().toUpperCase();
+    let alamat = document.getElementById('inputAlamat').value.trim().toUpperCase();
+    let kec = document.getElementById('inputKec').value.toUpperCase();
 
     if(!nama || !alamat || !kec) {
         alert("⚠️ Mohon isi Nama, Alamat, dan pilih Kecamatan dengan lengkap!");
