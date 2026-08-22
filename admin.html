@@ -2,18 +2,23 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Input Orderan Cepat & Aman (Anti-Typo Kecamatan)</title>
+    <title>Dashboard Rute Driver - Anti-Typo Total</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; color: #333; }
         .container { max-width: 950px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        h2, h3 { color: #1a73e8; }
+        h2, h3 { color: #1a73e8; margin-top: 0; }
         
-        .input-section { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e1e4e8; }
-        label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 14px; }
+        .card-box { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e1e4e8; }
+        label { font-weight: bold; display: block; margin-bottom: 6px; font-size: 14px; }
         input[type="text"], select { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; background: white; }
         
-        .btn-group { display: flex; gap: 10px; }
-        button { padding: 10px 15px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; color: white; font-size: 14px; }
+        /* Checkbox Driver Stylings */
+        .driver-checkbox-group { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 10px; background: white; padding: 10px; border-radius: 6px; border: 1px solid #ccc; }
+        .driver-checkbox-group label { font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0; }
+        .driver-checkbox-group input { width: 18px; height: 18px; cursor: pointer; }
+
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        button { padding: 11px 15px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; color: white; font-size: 14px; }
         .btn-add { background: #4285f4; flex: 2; }
         .btn-run { background: #34a853; flex: 2; }
         .btn-reset { background: #ea4335; flex: 1; }
@@ -34,17 +39,25 @@
 <body>
 
 <div class="container">
-    <h2>⚡ Input Orderan Cepat & Aman (Pilih Kecamatan)</h2>
+    <h2>⚡ Dashboard Input & Bagi Rute Driver</h2>
     
-    <div class="input-section">
-        <label>Nama Driver yang Bertugas (Pisahkan dengan koma):</label>
-        <input type="text" id="driversInput" placeholder="Poniadi, Eko, Dedy">
+    <!-- Bagian 1: Pilih Driver Aktif Hari Ini -->
+    <div class="card-box">
+        <label>🚗 Centang Driver yang Aktif Bertugas Hari Ini:</label>
+        <div class="driver-checkbox-group" id="driverCheckboxes">
+            <label><input type="checkbox" value="PONIADI" checked> PONIADI</label>
+            <label><input type="checkbox" value="EKO" checked> EKO</label>
+            <label><input type="checkbox" value="DEDY" checked> DEDY</label>
+        </div>
+    </div>
 
-        <label>Input Orderan Masuk:</label>
+    <!-- Bagian 2: Form Input Orderan -->
+    <div class="card-box">
+        <label>📝 Form Input Orderan Masuk:</label>
         <input type="text" id="inputNama" placeholder="Nama Toko / Customer">
         <input type="text" id="inputAlamat" placeholder="Alamat Lengkap">
         
-        <label>Pilih Kecamatan (Wajib pilih dari daftar):</label>
+        <label>Pilih Kecamatan (Wajib):</label>
         <select id="inputKec">
             <option value="">-- Pilih Kecamatan Tujuan --</option>
             <optgroup label="Blok Barat & Utara">
@@ -77,12 +90,13 @@
         </select>
         
         <div class="btn-group">
-            <button class="btn-add" onclick="tambahOrderan()">📥 Masukkan ke List Antrean</button>
+            <button class="btn-add" onclick="tambahOrderan()">📥 Masukkan ke Antrean</button>
             <button class="btn-run" onclick="bagiRute()">🚀 Bagi Rute ke Driver Sekarang</button>
             <button class="btn-reset" onclick="resetSemua()">Reset</button>
         </div>
     </div>
 
+    <!-- Bagian 3: Tabel Antrean Real-time -->
     <h3>📋 List Antrean Masuk (<span id="jumlahAntrean">0</span> Orderan)</h3>
     <div style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px; background: white;">
         <table id="tabelAntrean">
@@ -90,12 +104,12 @@
         </table>
     </div>
 
+    <!-- Bagian 4: Hasil Pembagian Per Driver -->
     <div id="hasilPembagian"></div>
 </div>
 
 <script>
 let antrean = JSON.parse(localStorage.getItem('antrean')) || [];
-document.getElementById('driversInput').value = localStorage.getItem('drivers') || "";
 
 // Master Klaster Kecamatan Searah Malang
 const klaster = {
@@ -145,7 +159,6 @@ function tambahOrderan() {
 
     antrean.push({ nama, alamat, kec });
     
-    // Kosongkan form input teks saja, pilihan kecamatan dibiarkan atau direset
     document.getElementById('inputNama').value = "";
     document.getElementById('inputAlamat').value = "";
     document.getElementById('inputKec').value = "";
@@ -168,13 +181,19 @@ function resetSemua() {
     }
 }
 
+// Fungsi Ambil Driver yang Dicentang
+function getActiveDrivers() {
+    let checkboxes = document.querySelectorAll('#driverCheckboxes input[type="checkbox"]:checked');
+    let activeDrivers = [];
+    checkboxes.forEach(cb => activeDrivers.push(cb.value));
+    return activeDrivers;
+}
+
 function bagiRute() {
-    let driverStr = document.getElementById('driversInput').value.trim();
-    localStorage.setItem('drivers', driverStr);
-    let drivers = driverStr.split(',').map(d => d.trim()).filter(d => d !== "");
+    let drivers = getActiveDrivers();
 
     if(drivers.length === 0) {
-        alert("⚠️ Masukkan nama driver yang bertugas terlebih dahulu!");
+        alert("⚠️ Centang minimal 1 Driver yang aktif bertugas hari ini!");
         return;
     }
     if(antrean.length === 0) {
@@ -189,7 +208,7 @@ function bagiRute() {
         return uA - uB;
     });
 
-    // Petakan blok ke driver secara adil
+    // Petakan 3 blok ke driver aktif
     let listBlok = ["BARAT & UTARA", "TIMUR & UTARA JAUH", "SELATAN"];
     let blokKeDriver = {};
     listBlok.forEach((blok, idx) => {
