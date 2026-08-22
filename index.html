@@ -494,6 +494,7 @@ font-weight: 700; cursor: pointer; font-size: 13px; width: auto; flex: 1;
     
     <label class="step-label">2. Ambil Foto Bukti Pengiriman:</label>
     <div class="foto-upload-card" id="foto-card-manual">
+      <!-- Dihapus capture="environment" agar driver bisa pilih Galeri/Kamera -->
       <input type="file" id="input-foto-manual" class="foto-input-hidden" accept="image/*" onchange="previewFoto('manual')">
       
       <div class="foto-placeholder-btn" id="placeholder-manual" onclick="triggerKamera('manual')">
@@ -535,6 +536,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbzH4e2dQErvrU5m_1Q-s66g
 
 let fungsiCallbackKonfirmasi = null;
 
+// Cek otomatis jika driver sudah pernah login
 window.onload = function() {
   const driverAktif = localStorage.getItem("driver");
   if(driverAktif) {
@@ -633,23 +635,27 @@ function ambilWa(text) {
 
 /* PREVIEW & KAMERA */
 function triggerKamera(idx) {
+  // Jika ini adalah kartu manual (susulan), wajibkan isi nama customer terlebih dahulu!
   if (idx === 'manual') {
     const customerName = document.getElementById('manualCustomer').value.trim();
     if (!customerName) {
-      bukaModal("Data Kurang", "Harap masukkan Nama Customer / No. INVOICE terlebih dahulu sebelum memilih foto!", "alert");
+      bukaModal("Data Kurang", "Harap masukkan Nama Customer / No. INVOICE terlebih dahulu sebelum memilih foto dari galeri!", "alert");
       document.getElementById('manualCustomer').focus();
-      return;
+      return; // Batalkan buka galeri/kamera jika nama masih kosong
     }
   }
+
   document.getElementById('input-foto-' + idx).click();
 }
 
 function previewFoto(idx) {
+  // Validasi ganda pengaman
   if (idx === 'manual') {
     const customerName = document.getElementById('manualCustomer').value.trim();
     if (!customerName) {
       bukaModal("Data Kurang", "Harap masukkan Nama Customer / No. INVOICE terlebih dahulu!", "alert");
       document.getElementById('manualCustomer').focus();
+      // Reset input file agar bersih kembali
       document.getElementById('input-foto-manual').value = "";
       return;
     }
@@ -672,7 +678,6 @@ function previewFoto(idx) {
     reader.readAsDataURL(fileInput.files[0]);
   }
 }
-
 /* UPLOAD MANUAL / SUSULAN */
 function kirimStatusManual() {
   const customerName = document.getElementById('manualCustomer').value.trim();
@@ -731,7 +736,7 @@ function prosesUpload(customer, wa, idx, jenis) {
     img.src = e.target.result;
     img.onload = function() {
       const canvas = document.createElement('canvas');
-      const max_size = 800;
+      const max_size = 800; // Kompresi gambar agar ringan
       let width = img.width;
       let height = img.height;
 
@@ -800,11 +805,9 @@ function prosesUpload(customer, wa, idx, jenis) {
   reader.readAsDataURL(file);
 }
 
-/* LOAD DATA DARI SHEET (DENGAN FILTER DRIVER LOGIN & TOMBOL MAPS) */
+/* LOAD DATA DARI SHEET */
 function loadData() {
-  const driverAktif = localStorage.getItem("driver") || "";
-
-  fetch(API_URL + "?driver=" + encodeURIComponent(driverAktif))
+  fetch(API_URL)
   .then(r => r.json())
   .then(data => {
     const orders = data.orders || [];
@@ -813,12 +816,9 @@ function loadData() {
     let html = "";
     let total = 0, ok = 0, no = 0;
 
-    // Membaca seluruh data baris dari indeks 0 (baris pertama sheet) tanpa terpotong
-    for (let index = 0; index < orders.length; index++) {
-      let row = orders[index];
+    orders.forEach((row, index) => {
       const isi = row[0] || "";
-      const linkMaps = row[3] || ""; 
-      if(!isi.toString().trim()) continue;
+      if(!isi) return;
 
       total++;
       const customer = ambilCustomer(isi);
@@ -828,38 +828,12 @@ function loadData() {
 
       if(sudah) ok++; else no++;
 
-      // Memformat teks agar rapi berbaris ke bawah
-      let cleanText = isi
-        .replace(/PROMOTOR\s*:/gi, '<br><br><b>PROMOTOR :</b>')
-        .replace(/CUSTOMER\s*:/gi, '<br><b>CUSTOMER :</b>')
-        .replace(/ALAMAT\s*:/gi, '<br><b>ALAMAT :</b>')
-        .replace(/WA\s*1\s*:/gi, '<br><b>WA 1 :</b>')
-        .replace(/WA\s*2\s*:/gi, '<br><b>WA 2 :</b>')
-        .replace(/BARANG\s*:/gi, '<br><b>BARANG :</b>')
-        .replace(/TANGGAL\s*KIRIM\s*:/gi, '<br><b>TANGGAL KIRIM :</b>')
-        .replace(/OPTIONAL\s*:/gi, '<br><b>OPTIONAL :</b>')
-        .replace(/CATATAN\s*:/gi, '<br><b>CATATAN :</b>')
-        .replace(/FES\s*JASA\s*:/gi, '<br><b>FEE JASA :</b>');
-
-      let isSutoyo = isi.toLowerCase().includes("sutoyo");
-
       html += '<div class="card" data-customer="' + key + '">';
-      if (isSutoyo) {
-        html += '<div><span style="background:#fee2e2; color:#991b1b; padding:3px 8px; border-radius:6px; font-size:10px; font-weight:800; display:inline-block; margin-bottom:6px;">📍 JALUR SUTOYO</span></div>';
-      }
+      html += '<div class="data">' + isi + '</div>';
       
-      html += '<div class="data" style="font-size: 13px; line-height: 1.6;">' + cleanText + '</div>';
-      
-      if (linkMaps.trim() !== "") {
-        html += '<div style="margin-top: 10px;">';
-        html += '<a href="' + linkMaps + '" target="_blank" style="display: block; text-align: center; background: #2563eb; color: #fff; padding: 10px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 13px; box-shadow: 0 2px 6px rgba(37,99,235,0.3);">📍 BUKA GOOGLE MAPS</a>';
-        html += '</div>';
-      } else {
-        html += '<div style="margin-top: 8px; font-size: 11px; color: #94a3b8; font-style: italic; text-align: center;">Link Maps belum disiapkan admin</div>';
-      }
-
       if(!sudah) {
         html += '<div class="foto-upload-card" id="foto-card-' + index + '">';
+        // Dihapus capture="environment" agar driver bisa pilih Galeri/Kamera
         html += '<input type="file" id="input-foto-' + index + '" class="foto-input-hidden" accept="image/*" onchange="previewFoto(' + index + ')">';
         
         html += '<div class="foto-placeholder-btn" id="placeholder-' + index + '" onclick="triggerKamera(' + index + ')">';
@@ -891,7 +865,7 @@ function loadData() {
       html += '</button>';
       html += '</div>';
       html += '</div>';
-    }
+    });
 
     document.getElementById("stats").innerHTML = '<div class="stats"><div class="boxstat"><div class="t">TOTAL</div><div class="v" style="font-weight:800;font-size:16px;">' + total + '</div></div><div class="boxstat"><div class="t">TERKIRIM</div><div class="v" style="font-weight:800;font-size:16px;color:#10b981;">' + ok + '</div></div><div class="boxstat"><div class="t">BELUM</div><div class="v" style="font-weight:800;font-size:16px;color:#1565c0;">' + no + '</div></div></div>';
 
