@@ -2,54 +2,274 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Rute Driver - Cetak PDF</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Route Dashboard - Driver Logistics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; color: #333; }
-        .container { max-width: 950px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        h2, h3 { color: #1a73e8; margin-top: 0; }
-        
-        .card-box { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e1e4e8; }
-        label { font-weight: bold; display: block; margin-bottom: 6px; font-size: 14px; }
-        input[type="text"], select { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; background: white; }
-        
-        .driver-checkbox-group { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 10px; background: white; padding: 10px; border-radius: 6px; border: 1px solid #ccc; }
-        .driver-checkbox-group label { font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0; }
-        .driver-checkbox-group input { width: 18px; height: 18px; cursor: pointer; }
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #10b981;
+            --success-hover: #059669;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --warning: #f59e0b;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
 
-        .btn-group { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
-        button { padding: 11px 15px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; color: white; font-size: 14px; }
-        .btn-add { background: #4285f4; flex: 2; }
-        .btn-run { background: #34a853; flex: 2; }
-        .btn-print { background: #ff9800; flex: 1; min-width: 150px; }
-        .btn-reset { background: #ea4335; flex: 1; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 30px 20px;
+        }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border-bottom: 1px solid #eee; padding: 10px; text-align: left; font-size: 14px; }
-        th { background-color: #f8f9fa; color: #5f6368; }
-        tr:hover { background-color: #f8f9fa; }
+        .container {
+            max-width: 950px;
+            margin: auto;
+            background: var(--card-bg);
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
 
-        .driver-card { margin-top: 25px; background: white; border: 1px solid #dcdcdc; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .driver-header { background: #1a73e8; color: white; padding: 12px 15px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
-        .badge { background: rgba(255,255,255,0.2); padding: 3px 8px; border-radius: 4px; font-size: 12px; }
-        .delete-btn { background: #ff4d4d; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 20px;
+        }
 
-        /* Pengaturan khusus saat dicetak / download PDF */
+        .header-title h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        .header-title span {
+            font-size: 28px;
+        }
+
+        .card-box {
+            background: #fdfdfd;
+            padding: 20px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 14px;
+            background: #fff;
+            transition: all 0.2s ease;
+        }
+
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        /* Checkbox Driver Modern */
+        .driver-checkbox-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 5px;
+        }
+
+        .driver-checkbox-group label {
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: 500;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: none;
+            letter-spacing: normal;
+            transition: all 0.2s;
+        }
+
+        .driver-checkbox-group label:hover {
+            background: #e2e8f0;
+        }
+
+        .driver-checkbox-group input {
+            accent-color: var(--primary);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 20px;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            color: white;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-add { background: var(--primary); flex: 2; }
+        .btn-add:hover { background: var(--primary-hover); }
+
+        .btn-run { background: var(--success); flex: 2; }
+        .btn-run:hover { background: var(--success-hover); }
+
+        .btn-print { background: var(--warning); flex: 1; min-width: 140px; color: #fff; }
+        .btn-print:hover { background: #d97706; }
+
+        .btn-reset { background: var(--danger); flex: 1; min-width: 100px; }
+        .btn-reset:hover { background: var(--danger-hover); }
+
+        /* Tabel Antrean Modern */
+        .table-wrapper {
+            max-height: 280px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: white;
+            margin-top: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: var(--text-muted);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+        }
+
+        td {
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .delete-btn {
+            background: #fee2e2;
+            color: var(--danger);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: none;
+            transition: background 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: #fecaca;
+        }
+
+        /* Kartu Hasil Pembagian Per Driver */
+        .driver-card {
+            margin-top: 30px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+        }
+
+        .driver-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Mode Print / PDF */
         @media print {
             body { background: white; padding: 0; }
             .container { box-shadow: none; padding: 0; max-width: 100%; }
             .card-box, .btn-group, h3#judulAntrean, div#tabelAntreanBox, .delete-btn { display: none !important; }
-            .driver-card { border: 1px solid #000; page-break-inside: avoid; margin-bottom: 20px; }
-            .driver-header { background: #333 !important; -webkit-print-color-adjust: exact; }
+            .driver-card { border: 1px solid #cbd5e1; page-break-inside: avoid; margin-bottom: 25px; box-shadow: none; }
+            .driver-header { background: #1e293b !important; -webkit-print-color-adjust: exact; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>⚡ Dashboard Input & Bagi Rute Driver</h2>
+    <div class="header-title">
+        <span>⚡</span>
+        <h2>Smart Route Dashboard</h2>
+    </div>
     
+    <!-- Driver Aktif -->
     <div class="card-box">
-        <label>🚗 Centang Driver yang Aktif Bertugas Hari Ini:</label>
+        <label>Driver Aktif Hari Ini</label>
         <div class="driver-checkbox-group" id="driverCheckboxes">
             <label><input type="checkbox" value="PONIADI" checked> PONIADI</label>
             <label><input type="checkbox" value="EKO" checked> EKO</label>
@@ -57,14 +277,15 @@
         </div>
     </div>
 
+    <!-- Form Input -->
     <div class="card-box">
-        <label>📝 Form Input Orderan Masuk:</label>
+        <label>Input Orderan Masuk</label>
         <input type="text" id="inputNama" placeholder="Nama Toko / Customer">
         <input type="text" id="inputAlamat" placeholder="Alamat Lengkap">
         
-        <label>Pilih Kecamatan (Wajib):</label>
+        <label>Kecamatan Tujuan</label>
         <select id="inputKec">
-            <option value="">-- Pilih Kecamatan Tujuan --</option>
+            <option value="">-- Pilih Kecamatan --</option>
             <optgroup label="Blok Barat & Utara">
                 <option value="SUKUN">Sukun</option>
                 <option value="KLOJEN">Klojen</option>
@@ -95,17 +316,17 @@
         </select>
         
         <div class="btn-group">
-            <button class="btn-add" onclick="tambahOrderan()">📥 Masukkan ke Antrean</button>
-            <button class="btn-run" onclick="bagiRute()">🚀 Bagi Rute ke Driver</button>
-            <button class="btn-print" onclick="cetakPDF()">🖨️ Cetak / Simpan PDF</button>
+            <button class="btn-add" onclick="tambahOrderan()">+ Tambah Antrean</button>
+            <button class="btn-run" onclick="bagiRute()">🚀 Bagi Rute</button>
+            <button class="btn-print" onclick="cetakPDF()">🖨️ Cetak PDF</button>
             <button class="btn-reset" onclick="resetSemua()">Reset</button>
         </div>
     </div>
 
-    <h3 id="judulAntrean">📋 List Antrean Masuk (<span id="jumlahAntrean">0</span> Orderan)</h3>
-    <div id="tabelAntreanBox" style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px; background: white; margin-bottom: 20px;">
+    <h3 id="judulAntrean" style="font-size: 16px; margin-top: 25px; color: var(--text-main);">List Antrean Masuk (<span id="jumlahAntrean">0</span> Orderan)</h3>
+    <div id="tabelAntreanBox" class="table-wrapper">
         <table id="tabelAntrean">
-            <tr><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Kecamatan</th><th style="width: 8%;">Aksi</th></tr>
+            <tr><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Kecamatan</th><th style="width: 90px; text-align: center;">Aksi</th></tr>
         </table>
     </div>
 
@@ -132,16 +353,16 @@ const klaster = {
 };
 
 function renderAntrean() {
-    let html = `<tr><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Kecamatan</th><th>Aksi</th></tr>`;
+    let html = `<tr><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Kecamatan</th><th style="width: 90px; text-align: center;">Aksi</th></tr>`;
     if (antrean.length === 0) {
-        html += `<tr><td colspan="4" style="text-align:center; color:#888; padding: 15px;">Belum ada orderan masuk di list.</td></tr>`;
+        html += `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding: 30px;">Belum ada orderan masuk di antrean.</td></tr>`;
     } else {
         antrean.forEach((item, index) => {
             html += `<tr>
                 <td><b>${item.nama}</b></td>
                 <td>${item.alamat}</td>
-                <td>${item.kec}</td>
-                <td><button class="delete-btn" onclick="hapusItem(${index})">Hapus</button></td>
+                <td><span style="background: #f1f5f9; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 500;">${item.kec}</span></td>
+                <td style="text-align: center;"><button class="delete-btn" onclick="hapusItem(${index})">Hapus</button></td>
             </tr>`;
         });
     }
@@ -156,7 +377,7 @@ function tambahOrderan() {
     let kec = document.getElementById('inputKec').value;
 
     if(!nama || !alamat || !kec) {
-        alert("⚠️ Mohon isi Nama, Alamat, dan PILIH Kecamatan terlebih dahulu!");
+        alert("⚠️ Mohon isi Nama, Alamat, dan pilih Kecamatan dengan lengkap!");
         return;
     }
 
@@ -224,7 +445,7 @@ function bagiRute() {
         driverData[assignedDriver].push(item);
     });
 
-    let htmlOutput = "<h3>📦 Hasil Pembagian Tugas Driver</h3>";
+    let htmlOutput = "<h3 style='margin-top: 30px; font-size: 18px; color: var(--text-main);'>📦 Hasil Pembagian Tugas Driver</h3>";
     
     for (let driver in driverData) {
         let orders = driverData[driver];
@@ -243,14 +464,14 @@ function bagiRute() {
                     </tr>`;
         
         if (orders.length === 0) {
-            htmlOutput += `<tr><td colspan="4" style="text-align:center; color:#888; padding: 15px;">Tidak ada kiriman di rute ini.</td></tr>`;
+            htmlOutput += `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding: 20px;">Tidak ada kiriman di rute ini.</td></tr>`;
         } else {
             orders.forEach((ord, index) => {
                 htmlOutput += `<tr>
                     <td>${index + 1}</td>
                     <td><b>${ord.nama}</b></td>
                     <td>${ord.alamat}</td>
-                    <td>${ord.kec}</td>
+                    <td><span style="background: #f1f5f9; padding: 3px 6px; border-radius: 4px; font-size: 12px;">${ord.kec}</span></td>
                 </tr>`;
             });
         }
