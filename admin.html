@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Rute Driver - Anti-Typo Total</title>
+    <title>Dashboard Rute Driver - Cetak PDF</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; color: #333; }
         .container { max-width: 950px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
@@ -12,28 +12,35 @@
         label { font-weight: bold; display: block; margin-bottom: 6px; font-size: 14px; }
         input[type="text"], select { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; background: white; }
         
-        /* Checkbox Driver Stylings */
         .driver-checkbox-group { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 10px; background: white; padding: 10px; border-radius: 6px; border: 1px solid #ccc; }
         .driver-checkbox-group label { font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0; }
         .driver-checkbox-group input { width: 18px; height: 18px; cursor: pointer; }
 
-        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
         button { padding: 11px 15px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; color: white; font-size: 14px; }
         .btn-add { background: #4285f4; flex: 2; }
         .btn-run { background: #34a853; flex: 2; }
+        .btn-print { background: #ff9800; flex: 1; min-width: 150px; }
         .btn-reset { background: #ea4335; flex: 1; }
 
-        /* Tabel Antrean Live */
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { border-bottom: 1px solid #eee; padding: 10px; text-align: left; font-size: 14px; }
         th { background-color: #f8f9fa; color: #5f6368; }
         tr:hover { background-color: #f8f9fa; }
 
-        /* Kartu Hasil Pembagian Per Driver */
         .driver-card { margin-top: 25px; background: white; border: 1px solid #dcdcdc; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .driver-header { background: #1a73e8; color: white; padding: 12px 15px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
         .badge { background: rgba(255,255,255,0.2); padding: 3px 8px; border-radius: 4px; font-size: 12px; }
         .delete-btn { background: #ff4d4d; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+
+        /* Pengaturan khusus saat dicetak / download PDF */
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; padding: 0; max-width: 100%; }
+            .card-box, .btn-group, h3#judulAntrean, div#tabelAntreanBox, .delete-btn { display: none !important; }
+            .driver-card { border: 1px solid #000; page-break-inside: avoid; margin-bottom: 20px; }
+            .driver-header { background: #333 !important; -webkit-print-color-adjust: exact; }
+        }
     </style>
 </head>
 <body>
@@ -41,7 +48,6 @@
 <div class="container">
     <h2>⚡ Dashboard Input & Bagi Rute Driver</h2>
     
-    <!-- Bagian 1: Pilih Driver Aktif Hari Ini -->
     <div class="card-box">
         <label>🚗 Centang Driver yang Aktif Bertugas Hari Ini:</label>
         <div class="driver-checkbox-group" id="driverCheckboxes">
@@ -51,7 +57,6 @@
         </div>
     </div>
 
-    <!-- Bagian 2: Form Input Orderan -->
     <div class="card-box">
         <label>📝 Form Input Orderan Masuk:</label>
         <input type="text" id="inputNama" placeholder="Nama Toko / Customer">
@@ -91,27 +96,25 @@
         
         <div class="btn-group">
             <button class="btn-add" onclick="tambahOrderan()">📥 Masukkan ke Antrean</button>
-            <button class="btn-run" onclick="bagiRute()">🚀 Bagi Rute ke Driver Sekarang</button>
+            <button class="btn-run" onclick="bagiRute()">🚀 Bagi Rute ke Driver</button>
+            <button class="btn-print" onclick="cetakPDF()">🖨️ Cetak / Simpan PDF</button>
             <button class="btn-reset" onclick="resetSemua()">Reset</button>
         </div>
     </div>
 
-    <!-- Bagian 3: Tabel Antrean Real-time -->
-    <h3>📋 List Antrean Masuk (<span id="jumlahAntrean">0</span> Orderan)</h3>
-    <div style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px; background: white;">
+    <h3 id="judulAntrean">📋 List Antrean Masuk (<span id="jumlahAntrean">0</span> Orderan)</h3>
+    <div id="tabelAntreanBox" style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px; background: white; margin-bottom: 20px;">
         <table id="tabelAntrean">
             <tr><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Kecamatan</th><th style="width: 8%;">Aksi</th></tr>
         </table>
     </div>
 
-    <!-- Bagian 4: Hasil Pembagian Per Driver -->
     <div id="hasilPembagian"></div>
 </div>
 
 <script>
 let antrean = JSON.parse(localStorage.getItem('antrean')) || [];
 
-// Master Klaster Kecamatan Searah Malang
 const klaster = {
     "SUKUN": {blok: "BARAT & UTARA", urut: 1}, "KLOJEN": {blok: "BARAT & UTARA", urut: 2}, 
     "LOWOKWARU": {blok: "BARAT & UTARA", urut: 3}, "DAU": {blok: "BARAT & UTARA", urut: 4}, 
@@ -181,7 +184,6 @@ function resetSemua() {
     }
 }
 
-// Fungsi Ambil Driver yang Dicentang
 function getActiveDrivers() {
     let checkboxes = document.querySelectorAll('#driverCheckboxes input[type="checkbox"]:checked');
     let activeDrivers = [];
@@ -193,7 +195,7 @@ function bagiRute() {
     let drivers = getActiveDrivers();
 
     if(drivers.length === 0) {
-        alert("⚠️ Centang minimal 1 Driver yang aktif bertugas hari ini!");
+        alert("⚠️ Centang minimal 1 Driver yang aktif bertugas!");
         return;
     }
     if(antrean.length === 0) {
@@ -201,21 +203,18 @@ function bagiRute() {
         return;
     }
 
-    // Urutkan antrean berdasarkan jalur searah (Sukun keluar)
     antrean.sort((a, b) => {
         let uA = klaster[a.kec]?.urut || 99;
         let uB = klaster[b.kec]?.urut || 99;
         return uA - uB;
     });
 
-    // Petakan 3 blok ke driver aktif
     let listBlok = ["BARAT & UTARA", "TIMUR & UTARA JAUH", "SELATAN"];
     let blokKeDriver = {};
     listBlok.forEach((blok, idx) => {
         blokKeDriver[blok] = drivers[idx % drivers.length];
     });
 
-    // Kelompokkan order per driver
     let driverData = {};
     drivers.forEach(d => driverData[d] = []);
 
@@ -225,7 +224,6 @@ function bagiRute() {
         driverData[assignedDriver].push(item);
     });
 
-    // Render HTML Hasil Per Driver
     let htmlOutput = "<h3>📦 Hasil Pembagian Tugas Driver</h3>";
     
     for (let driver in driverData) {
@@ -260,6 +258,10 @@ function bagiRute() {
     }
 
     document.getElementById('hasilPembagian').innerHTML = htmlOutput;
+}
+
+function cetakPDF() {
+    window.print();
 }
 
 renderAntrean();
