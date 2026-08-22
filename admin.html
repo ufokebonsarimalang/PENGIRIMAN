@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Route Dashboard - Driver Logistics</title>
-    <!-- Menggunakan font modern pilihan Google Fonts -->
+    <!-- Menggunakan font modern Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -15,6 +15,7 @@
             --danger: #dc2626;
             --danger-hover: #b91c1c;
             --warning: #d97706;
+            --info: #0284c7;
             --bg-color: #f1f5f9;
             --card-bg: #ffffff;
             --text-main: #0f172a;
@@ -140,13 +141,13 @@
 
         .btn-group {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             margin-top: 15px;
             flex-wrap: wrap;
         }
 
         button {
-            padding: 14px 20px;
+            padding: 14px 18px;
             cursor: pointer;
             border: none;
             border-radius: 12px;
@@ -157,22 +158,27 @@
             letter-spacing: 0.3px;
             transition: all 0.2s ease;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            flex: 1;
+            min-width: 130px;
         }
 
         button:active {
             transform: scale(0.98);
         }
 
-        .btn-add { background: var(--primary); flex: 2; }
+        .btn-add { background: var(--primary); }
         .btn-add:hover { background: var(--primary-hover); }
 
-        .btn-run { background: var(--success); flex: 2; }
+        .btn-run { background: var(--success); }
         .btn-run:hover { background: var(--success-hover); }
 
-        .btn-print { background: var(--warning); flex: 1; min-width: 140px; color: #fff; }
+        .btn-print { background: var(--warning); color: #fff; }
         .btn-print:hover { background: #b45309; }
 
-        .btn-reset { background: var(--danger); flex: 1; min-width: 100px; }
+        .btn-excel { background: var(--info); color: #fff; }
+        .btn-excel:hover { background: #0369a1; }
+
+        .btn-reset { background: var(--danger); min-width: 90px; }
         .btn-reset:hover { background: var(--danger-hover); }
 
         /* Tabel Antrean Modern */
@@ -228,6 +234,7 @@
             font-weight: 700;
             box-shadow: none;
             transition: background 0.2s;
+            min-width: auto;
         }
 
         .delete-btn:hover {
@@ -332,9 +339,10 @@
         </select>
         
         <div class="btn-group">
-            <button class="btn-add" onclick="tambahOrderan()">+ Tambah Antrean</button>
+            <button class="btn-add" onclick="tambahOrderan()">+ Tambah</button>
             <button class="btn-run" onclick="bagiRute()">🚀 Bagi Rute</button>
             <button class="btn-print" onclick="cetakPDF()">🖨️ Cetak PDF</button>
+            <button class="btn-excel" onclick="downloadExcel()">📊 Download Excel</button>
             <button class="btn-reset" onclick="resetSemua()">Reset</button>
         </div>
     </div>
@@ -351,6 +359,7 @@
 
 <script>
 let antrean = JSON.parse(localStorage.getItem('antrean')) || [];
+let hasilPembagianGlobal = {}; // Untuk menyimpan data pembagian terakhir agar bisa didownload ke excel
 
 const klaster = {
     "SUKUN": {blok: "BARAT & UTARA", urut: 1}, "KLOJEN": {blok: "BARAT & UTARA", urut: 2}, 
@@ -418,6 +427,7 @@ function resetSemua() {
         localStorage.removeItem('antrean');
         renderAntrean();
         document.getElementById('hasilPembagian').innerHTML = "";
+        hasilPembagianGlobal = {};
     }
 }
 
@@ -461,6 +471,8 @@ function bagiRute() {
         driverData[assignedDriver].push(item);
     });
 
+    hasilPembagianGlobal = driverData; // Simpan untuk excel
+
     let htmlOutput = "<h3 style='margin-top: 35px; font-size: 18px; font-weight: 800; color: var(--text-main); letter-spacing: -0.3px;'>📦 Hasil Pembagian Tugas Driver</h3>";
     
     for (let driver in driverData) {
@@ -498,7 +510,44 @@ function bagiRute() {
 }
 
 function cetakPDF() {
+    if(Object.keys(hasilPembagianGlobal).length === 0) {
+        alert("⚠️ Klik tombol 'Bagi Rute' terlebih dahulu sebelum mencetak!");
+        return;
+    }
     window.print();
+}
+
+function downloadExcel() {
+    if(Object.keys(hasilPembagianGlobal).length === 0) {
+        alert("⚠️ Klik tombol 'Bagi Rute' terlebih dahulu sebelum mendownload Excel!");
+        return;
+    }
+
+    // Buat format CSV yang bisa dibaca Excel
+    let csvContent = "\uFEFF"; // BOM untuk support Excel UTF-8
+    csvContent += "Driver,No,Nama Toko,Alamat Lengkap,Kecamatan\n";
+
+    for (let driver in hasilPembagianGlobal) {
+        let orders = hasilPembagianGlobal[driver];
+        orders.forEach((ord, idx) => {
+            // Bersihkan tanda koma ganda agar format CSV tidak berantakan di Excel
+            let cleanNama = `"${(ord.nama || "").replace(/"/g, '""')}"`;
+            let cleanAlamat = `"${(ord.alamat || "").replace(/"/g, '""')}"`;
+            let cleanKec = `"${(ord.kec || "").replace(/"/g, '""')}"`;
+            
+            csvContent += `"${driver}",${idx + 1},${cleanNama},${cleanAlamat},${cleanKec}\n`;
+        });
+    }
+
+    // Trigger download file
+    let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    a.href = url;
+    a.download = `Data_Rute_Driver_${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
 
 renderAntrean();
