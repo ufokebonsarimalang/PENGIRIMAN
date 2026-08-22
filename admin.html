@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Route Dashboard - Driver Logistics</title>
-    <!-- Menggunakan font modern Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -28,7 +27,7 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 30px 20px;
+            padding: 20px 10px;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -36,46 +35,44 @@
             max-width: 950px;
             margin: auto;
             background: var(--card-bg);
-            padding: 35px;
-            border-radius: 24px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.05);
         }
 
         .header-title {
             display: flex;
             align-items: center;
-            gap: 14px;
-            margin-bottom: 25px;
+            gap: 12px;
+            margin-bottom: 20px;
             border-bottom: 2px solid var(--border);
-            padding-bottom: 20px;
+            padding-bottom: 15px;
         }
 
         .header-title h2 {
-            font-size: 26px;
+            font-size: 22px;
             font-weight: 800;
             color: var(--text-main);
             margin: 0;
-            letter-spacing: -0.5px;
         }
 
         .header-title span {
-            font-size: 32px;
+            font-size: 28px;
         }
 
         .card-box {
             background: #ffffff;
-            padding: 22px;
-            border-radius: 16px;
-            margin-bottom: 20px;
+            padding: 18px;
+            border-radius: 14px;
+            margin-bottom: 15px;
             border: 1.5px solid var(--border);
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01);
         }
 
         label {
             font-weight: 700;
             display: block;
-            margin-bottom: 8px;
-            font-size: 13px;
+            margin-bottom: 6px;
+            font-size: 12px;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.8px;
@@ -83,193 +80,175 @@
 
         input[type="text"], select {
             width: 100%;
-            padding: 14px 16px;
-            margin-bottom: 15px;
+            padding: 12px 14px;
+            margin-bottom: 12px;
             border: 1.5px solid var(--border);
-            border-radius: 12px;
+            border-radius: 10px;
             box-sizing: border-box;
-            font-size: 15px;
+            font-size: 14px;
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 600;
             color: var(--text-main);
             background: #fff;
-            transition: all 0.2s ease;
         }
 
         input[type="text"]:focus, select:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
         }
 
-        /* Checkbox Driver Modern */
+        /* Checkbox Driver */
         .driver-checkbox-group {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
-            margin-bottom: 5px;
         }
 
         .driver-checkbox-group label {
             background: #f8fafc;
             border: 1.5px solid var(--border);
-            padding: 12px 20px;
-            border-radius: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-main);
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             text-transform: none;
             letter-spacing: normal;
-            transition: all 0.2s;
-        }
-
-        .driver-checkbox-group label:hover {
-            background: #f1f5f9;
-            border-color: #94a3b8;
         }
 
         .driver-checkbox-group input {
             accent-color: var(--primary);
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             cursor: pointer;
         }
 
+        /* Tombol Responsif (Otomatis menyesuaikan HP & PC) */
         .btn-group {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* Default PC: 4 kolom sejajar */
             gap: 10px;
-            margin-top: 15px;
-            flex-wrap: wrap;
+            margin-top: 10px;
         }
 
         button {
-            padding: 14px 18px;
+            padding: 12px 10px;
             cursor: pointer;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 700;
             color: white;
-            font-size: 14px;
-            letter-spacing: 0.3px;
+            font-size: 13px;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            flex: 1;
-            min-width: 130px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            width: 100%;
         }
 
-        button:active {
-            transform: scale(0.98);
-        }
+        button:active { transform: scale(0.98); }
 
         .btn-add { background: var(--primary); }
-        .btn-add:hover { background: var(--primary-hover); }
-
         .btn-run { background: var(--success); }
-        .btn-run:hover { background: var(--success-hover); }
-
         .btn-print { background: var(--warning); color: #fff; }
-        .btn-print:hover { background: #b45309; }
-
         .btn-excel { background: var(--info); color: #fff; }
-        .btn-excel:hover { background: #0369a1; }
+        .btn-reset { background: var(--danger); grid-column: span 4; } /* Tombol reset memanjang sendiri */
 
-        .btn-reset { background: var(--danger); min-width: 90px; }
-        .btn-reset:hover { background: var(--danger-hover); }
-
-        /* Tabel Antrean Modern */
+        /* Tabel Antrean */
         .table-wrapper {
-            max-height: 280px;
+            max-height: 250px;
             overflow-y: auto;
             border: 1.5px solid var(--border);
-            border-radius: 14px;
+            border-radius: 12px;
             background: white;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 13px;
         }
 
         th, td {
-            padding: 14px 18px;
+            padding: 10px 12px;
             text-align: left;
-            font-size: 14px;
         }
 
         th {
             background-color: #f8fafc;
             color: var(--text-muted);
             font-weight: 700;
-            font-size: 13px;
+            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
             border-bottom: 1.5px solid var(--border);
             position: sticky;
             top: 0;
         }
 
-        td {
-            border-bottom: 1px solid #f1f5f9;
-            font-weight: 500;
-        }
-
-        tr:hover {
-            background-color: #f8fafc;
-        }
+        td { border-bottom: 1px solid #f1f5f9; font-weight: 500; }
+        tr:hover { background-color: #f8fafc; }
 
         .delete-btn {
             background: #fee2e2;
             color: var(--danger);
             border: none;
-            padding: 6px 14px;
-            border-radius: 8px;
+            padding: 5px 10px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 700;
-            box-shadow: none;
-            transition: background 0.2s;
-            min-width: auto;
-        }
-
-        .delete-btn:hover {
-            background: #fecaca;
+            width: auto;
         }
 
         /* Kartu Hasil Pembagian Per Driver */
         .driver-card {
-            margin-top: 30px;
+            margin-top: 25px;
             background: white;
             border: 1.5px solid var(--border);
-            border-radius: 16px;
+            border-radius: 14px;
             overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
         }
 
         .driver-header {
             background: linear-gradient(135deg, var(--primary), var(--primary-hover));
             color: white;
-            padding: 16px 22px;
+            padding: 14px 18px;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            letter-spacing: -0.3px;
         }
 
         .badge {
             background: rgba(255, 255, 255, 0.25);
-            padding: 5px 12px;
+            padding: 4px 10px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
-            letter-spacing: normal;
+        }
+
+        /* KHUSUS TAMPILAN HP (Layar di bawah 768px) */
+        @media screen and (max-width: 768px) {
+            body { padding: 10px 5px; }
+            .container { padding: 15px; border-radius: 12px; }
+            
+            /* Tombol berubah jadi bertumpuk ke bawah agar besar dan gampang dipencet jempol */
+            .btn-group {
+                grid-template-columns: 1fr 1fr; /* Jadi 2 kolom */
+            }
+            .btn-reset {
+                grid-column: span 2;
+            }
+
+            /* Ukuran font tabel sedikit disesuaikan agar muat di layar HP */
+            th, td { padding: 8px 10px; font-size: 12px; }
+            .header-title h2 { font-size: 18px; }
         }
 
         /* Mode Print / PDF */
@@ -277,7 +256,7 @@
             body { background: white; padding: 0; }
             .container { box-shadow: none; padding: 0; max-width: 100%; }
             .card-box, .btn-group, h3#judulAntrean, div#tabelAntreanBox, .delete-btn { display: none !important; }
-            .driver-card { border: 1.5px solid #0f172a; page-break-inside: avoid; margin-bottom: 25px; box-shadow: none; }
+            .driver-card { border: 1.5px solid #0f172a; page-break-inside: avoid; margin-bottom: 20px; }
             .driver-header { background: #0f172a !important; -webkit-print-color-adjust: exact; }
         }
     </style>
@@ -340,17 +319,17 @@
         
         <div class="btn-group">
             <button class="btn-add" onclick="tambahOrderan()">+ Tambah</button>
-            <button class="btn-run" onclick="bagiRute()">🚀 Bagi Rute</button>
-            <button class="btn-print" onclick="cetakPDF()">🖨️ Cetak PDF</button>
-            <button class="btn-excel" onclick="downloadExcel()">📊 Download Excel</button>
-            <button class="btn-reset" onclick="resetSemua()">Reset</button>
+            <button class="btn-run" onclick="bagiRute()">🚀 Bagi</button>
+            <button class="btn-print" onclick="cetakPDF()">🖨️ Cetak</button>
+            <button class="btn-excel" onclick="downloadExcel()">📊 Excel</button>
+            <button class="btn-reset" onclick="resetSemua()">Reset Semua Data</button>
         </div>
     </div>
 
-    <h3 id="judulAntrean" style="font-size: 15px; font-weight: 700; margin-top: 25px; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">List Antrean Masuk (<span id="jumlahAntrean">0</span> Orderan)</h3>
+    <h3 id="judulAntrean" style="font-size: 14px; font-weight: 700; margin-top: 20px; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">List Antrean Masuk (<span id="jumlahAntrean">0</span> Orderan)</h3>
     <div id="tabelAntreanBox" class="table-wrapper">
         <table id="tabelAntrean">
-            <tr><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Kecamatan</th><th style="width: 100px; text-align: center;">Aksi</th></tr>
+            <tr><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Kecamatan</th><th style="width: 80px; text-align: center;">Aksi</th></tr>
         </table>
     </div>
 
@@ -359,7 +338,7 @@
 
 <script>
 let antrean = JSON.parse(localStorage.getItem('antrean')) || [];
-let hasilPembagianGlobal = {}; // Untuk menyimpan data pembagian terakhir agar bisa didownload ke excel
+let hasilPembagianGlobal = {};
 
 const klaster = {
     "SUKUN": {blok: "BARAT & UTARA", urut: 1}, "KLOJEN": {blok: "BARAT & UTARA", urut: 2}, 
@@ -378,15 +357,15 @@ const klaster = {
 };
 
 function renderAntrean() {
-    let html = `<tr><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Kecamatan</th><th style="width: 100px; text-align: center;">Aksi</th></tr>`;
+    let html = `<tr><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Kecamatan</th><th style="width: 80px; text-align: center;">Aksi</th></tr>`;
     if (antrean.length === 0) {
-        html += `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding: 30px; font-weight: 600;">Belum ada orderan masuk di antrean.</td></tr>`;
+        html += `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding: 25px; font-weight: 600;">Belum ada orderan masuk di antrean.</td></tr>`;
     } else {
         antrean.forEach((item, index) => {
             html += `<tr>
                 <td><b>${item.nama}</b></td>
                 <td>${item.alamat}</td>
-                <td><span style="background: #f1f5f9; border: 1px solid var(--border); padding: 5px 10px; border-radius: 8px; font-size: 12px; font-weight: 700;">${item.kec}</span></td>
+                <td><span style="background: #f1f5f9; border: 1px solid var(--border); padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;">${item.kec}</span></td>
                 <td style="text-align: center;"><button class="delete-btn" onclick="hapusItem(${index})">Hapus</button></td>
             </tr>`;
         });
@@ -471,9 +450,9 @@ function bagiRute() {
         driverData[assignedDriver].push(item);
     });
 
-    hasilPembagianGlobal = driverData; // Simpan untuk excel
+    hasilPembagianGlobal = driverData;
 
-    let htmlOutput = "<h3 style='margin-top: 35px; font-size: 18px; font-weight: 800; color: var(--text-main); letter-spacing: -0.3px;'>📦 Hasil Pembagian Tugas Driver</h3>";
+    let htmlOutput = "<h3 style='margin-top: 30px; font-size: 16px; font-weight: 800; color: var(--text-main);'>📦 Hasil Pembagian Tugas Driver</h3>";
     
     for (let driver in driverData) {
         let orders = driverData[driver];
@@ -485,21 +464,21 @@ function bagiRute() {
                 </div>
                 <table>
                     <tr>
-                        <th style="width: 5%">No</th>
-                        <th style="width: 30%">Nama / Toko</th>
-                        <th style="width: 50%">Alamat Lengkap</th>
-                        <th style="width: 15%">Kecamatan</th>
+                        <th style="width: 8%">No</th>
+                        <th style="width: 35%">Nama / Toko</th>
+                        <th style="width: 45%">Alamat Lengkap</th>
+                        <th style="width: 12%">Kec</th>
                     </tr>`;
         
         if (orders.length === 0) {
-            htmlOutput += `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding: 20px; font-weight: 600;">Tidak ada kiriman di rute ini.</td></tr>`;
+            htmlOutput += `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding: 15px; font-weight: 600;">Tidak ada kiriman di rute ini.</td></tr>`;
         } else {
             orders.forEach((ord, index) => {
                 htmlOutput += `<tr>
                     <td><b>${index + 1}</b></td>
                     <td><b>${ord.nama}</b></td>
                     <td>${ord.alamat}</td>
-                    <td><span style="background: #f1f5f9; border: 1px solid var(--border); padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;">${ord.kec}</span></td>
+                    <td><span style="background: #f1f5f9; border: 1px solid var(--border); padding: 3px 6px; border-radius: 4px; font-size: 11px; font-weight: 700;">${ord.kec}</span></td>
                 </tr>`;
             });
         }
@@ -511,7 +490,7 @@ function bagiRute() {
 
 function cetakPDF() {
     if(Object.keys(hasilPembagianGlobal).length === 0) {
-        alert("⚠️ Klik tombol 'Bagi Rute' terlebih dahulu sebelum mencetak!");
+        alert("⚠️ Klik tombol 'Bagi' terlebih dahulu sebelum mencetak!");
         return;
     }
     window.print();
@@ -519,18 +498,16 @@ function cetakPDF() {
 
 function downloadExcel() {
     if(Object.keys(hasilPembagianGlobal).length === 0) {
-        alert("⚠️ Klik tombol 'Bagi Rute' terlebih dahulu sebelum mendownload Excel!");
+        alert("⚠️ Klik tombol 'Bagi' terlebih dahulu sebelum mendownload Excel!");
         return;
     }
 
-    // Buat format CSV yang bisa dibaca Excel
-    let csvContent = "\uFEFF"; // BOM untuk support Excel UTF-8
+    let csvContent = "\uFEFF";
     csvContent += "Driver,No,Nama Toko,Alamat Lengkap,Kecamatan\n";
 
     for (let driver in hasilPembagianGlobal) {
         let orders = hasilPembagianGlobal[driver];
         orders.forEach((ord, idx) => {
-            // Bersihkan tanda koma ganda agar format CSV tidak berantakan di Excel
             let cleanNama = `"${(ord.nama || "").replace(/"/g, '""')}"`;
             let cleanAlamat = `"${(ord.alamat || "").replace(/"/g, '""')}"`;
             let cleanKec = `"${(ord.kec || "").replace(/"/g, '""')}"`;
@@ -539,7 +516,6 @@ function downloadExcel() {
         });
     }
 
-    // Trigger download file
     let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     let url = URL.createObjectURL(blob);
     let a = document.createElement('a');
