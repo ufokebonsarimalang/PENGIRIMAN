@@ -1,53 +1,201 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <title>Sistem Rute Driver</title>
+    <meta charset="UTF-8">
+    <title>Dashboard Rute Driver Profesional</title>
     <style>
-        body { font-family: Arial; padding: 20px; background: #f4f4f9; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        textarea { width: 100%; height: 100px; margin-bottom: 10px; }
-        button { width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        #hasil { margin-top: 20px; white-space: pre-line; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; color: #333; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h2, h3 { color: #1a73e8; text-align: center; }
+        
+        .input-section { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e1e4e8; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; }
+        input[type="text"], textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        textarea { height: 80px; }
+        
+        .btn-group { display: flex; gap: 10px; }
+        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; color: white; font-size: 14px; }
+        .btn-add { background: #4285f4; flex: 1; }
+        .btn-run { background: #34a853; flex: 1; }
+        .btn-reset { background: #ea4335; }
+
+        /* Tampilan Kotak/Card Per Driver supaya tidak semrawut */
+        .driver-card { margin-top: 25px; background: white; border: 1px solid #dcdcdc; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .driver-header { background: #1a73e8; color: white; padding: 12px 15px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border-bottom: 1px solid #eee; padding: 10px 15px; text-align: left; font-size: 14px; }
+        th { background-color: #f8f9fa; color: #5f6368; }
+        tr:hover { background-color: #f8f9fa; }
+        
+        .badge { background: rgba(255,255,255,0.2); padding: 3px 8px; border-radius: 4px; font-size: 12px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Sistem Bagi Rute</h2>
-    <p>Masukkan Nama Driver (Pisahkan dengan koma):</p>
-    <textarea id="drivers" placeholder="Andi, Budi, Candra"></textarea>
-    <p>Masukkan Data Order (Nama, Alamat, Kecamatan):</p>
-    <textarea id="dataOrder" placeholder="Contoh: Budi, Jl Sukun 1, SUKUN"></textarea>
-    <button onclick="prosesRute()">Urutkan & Bagi Rute</button>
-    <div id="hasil"></div>
+    <h2>🚚 Sistem Pembagian Rute Driver</h2>
+    
+    <div class="input-section">
+        <label>Nama Driver (Pisahkan dengan koma):</label>
+        <input type="text" id="driversInput" placeholder="Poniadi, Eko, Dedy">
+
+        <label>Tambah Data (Nama / Toko, Alamat Lengkap, Kecamatan):</label>
+        <textarea id="inputData" placeholder="Contoh: Toko Berkah, Jl. Alpaka No.5, SUKUN"></textarea>
+        
+        <div class="btn-group">
+            <button class="btn-add" onclick="tambahData()">+ Masukkan ke Antrean</button>
+            <button class="btn-run" onclick="bagiRute()">🚀 Proses & Bagi ke Driver</button>
+            <button class="btn-reset" onclick="resetData()">Reset Semua</button>
+        </div>
+    </div>
+
+    <h3>Daftar Antrean Masuk (<span id="jumlahAntrean">0</span>)</h3>
+    <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px;">
+        <table id="tabelAntrean">
+            <tr><th>Nama / Toko</th><th>Alamat</th><th>Kecamatan</th></tr>
+        </table>
+    </div>
+
+    <div id="hasilPembagian"></div>
 </div>
 
 <script>
-function prosesRute() {
-    let drivers = document.getElementById('drivers').value.split(',').map(d => d.trim());
-    let rawData = document.getElementById('dataOrder').value.split('\n');
+let antrean = JSON.parse(localStorage.getItem('antrean')) || [];
+document.getElementById('driversInput').value = localStorage.getItem('drivers') || "";
+
+// Master Klaster Kecamatan Searah Malang
+const klaster = {
+    "SUKUN": {blok: "BARAT & UTARA", urut: 1}, "KLOJEN": {blok: "BARAT & UTARA", urut: 2}, 
+    "LOWOKWARU": {blok: "BARAT & UTARA", urut: 3}, "DAU": {blok: "BARAT & UTARA", urut: 4}, 
+    "KARANGPLOSO": {blok: "BARAT & UTARA", urut: 5},
     
-    // Klaster & Urutan
-    const klaster = {
-        "SUKUN": "BLOK_BARAT_UTARA", "KLOJEN": "BLOK_BARAT_UTARA", "LOWOKWARU": "BLOK_BARAT_UTARA",
-        "BLIMBING": "BLOK_TIMUR_UTARAJAUH", "SINGOSARI": "BLOK_TIMUR_UTARAJAUH", "PAKIS": "BLOK_TIMUR_UTARAJAUH",
-        "WAGIR": "BLOK_SELATAN", "KEPANJEN": "BLOK_SELATAN", "TUREN": "BLOK_SELATAN"
-    };
+    "BLIMBING": {blok: "TIMUR & UTARA JAUH", urut: 6}, "KEDUNGKANDANG": {blok: "TIMUR & UTARA JAUH", urut: 7}, 
+    "SINGOSARI": {blok: "TIMUR & UTARA JAUH", urut: 8}, "LAWANG": {blok: "TIMUR & UTARA JAUH", urut: 9}, 
+    "PAKIS": {blok: "TIMUR & UTARA JAUH", urut: 10}, "TAJINAN": {blok: "TIMUR & UTARA JAUH", urut: 11}, 
+    "JABUNG": {blok: "TIMUR & UTARA JAUH", urut: 12}, "WAJAK": {blok: "TIMUR & UTARA JAUH", urut: 13},
+    
+    "WAGIR": {blok: "SELATAN", urut: 14}, "PAKISAJI": {blok: "SELATAN", urut: 15}, 
+    "BULULAWANG": {blok: "SELATAN", urut: 16}, "KEPANJEN": {blok: "SELATAN", urut: 17}, 
+    "GONDANGLEGI": {blok: "SELATAN", urut: 18}, "TUREN": {blok: "SELATAN", urut: 19}, 
+    "DAMPIT": {blok: "SELATAN", urut: 20}, "PAGELARAN": {blok: "SELATAN", urut: 21}
+};
 
-    let list = rawData.map(line => {
-        let [nama, alamat, kec] = line.split(',').map(s => s.trim().toUpperCase());
-        return { nama, alamat, kec, blok: klaster[kec] || "LAIN-LAIN" };
+function renderAntrean() {
+    let html = `<tr><th>Nama / Toko</th><th>Alamat</th><th>Kecamatan</th></tr>`;
+    antrean.forEach(item => {
+        html += `<tr><td><b>${item.nama}</b></td><td>${item.alamat}</td><td>${item.kec}</td></tr>`;
     });
-
-    // Simulasi Rolling Sederhana (bisa dikembangkan dengan LocalStorage)
-    let output = "HASIL PEMBAGIAN:\n";
-    list.forEach((item, index) => {
-        let driver = drivers[index % drivers.length];
-        output += `${item.nama} - ${item.blok} -> Driver: ${driver}\n`;
-    });
-
-    document.getElementById('hasil').innerText = output;
+    document.getElementById('tabelAntrean').innerHTML = html;
+    document.getElementById('jumlahAntrean').innerText = antrean.length;
+    localStorage.setItem('antrean', JSON.stringify(antrean));
 }
+
+function tambahData() {
+    let teks = document.getElementById('inputData').value.trim();
+    if(!teks) return;
+    
+    let baris = teks.split('\n');
+    baris.forEach(line => {
+        let parts = line.split(',').map(s => s.trim());
+        if(parts.length >= 3) {
+            antrean.push({
+                nama: parts[0],
+                alamat: parts.slice(1, parts.length - 1).join(', '), // Mengatasi alamat yang ada komanya
+                kec: parts[parts.length - 1].toUpperCase()
+            });
+        }
+    });
+    
+    document.getElementById('inputData').value = "";
+    renderAntrean();
+}
+
+function resetData() {
+    if(confirm("Hapus semua data antrean?")) {
+        antrean = [];
+        localStorage.removeItem('antrean');
+        renderAntrean();
+        document.getElementById('hasilPembagian').innerHTML = "";
+    }
+}
+
+function bagiRute() {
+    let driverStr = document.getElementById('driversInput').value.trim();
+    localStorage.setItem('drivers', driverStr);
+    let drivers = driverStr.split(',').map(d => d.trim()).filter(d => d !== "");
+
+    if(drivers.length === 0) {
+        alert("Masukkan nama driver dulu!");
+        return;
+    }
+    if(antrean.length === 0) {
+        alert("Antrean masih kosong!");
+        return;
+    }
+
+    // Urutkan antrean berdasarkan jalur searah (Sukun keluar)
+    antrean.sort((a, b) => {
+        let uA = klaster[a.kec]?.urut || 99;
+        let uB = klaster[b.kec]?.urut || 99;
+        return uA - uB;
+    });
+
+    // Petakan blok ke driver secara adil
+    let listBlok = ["BARAT & UTARA", "TIMUR & UTARA JAUH", "SELATAN"];
+    let blokKeDriver = {};
+    listBlok.forEach((blok, idx) => {
+        blokKeDriver[blok] = drivers[idx % drivers.length];
+    });
+
+    // Kelompokkan order per driver
+    let driverData = {};
+    drivers.forEach(d => driverData[d] = []);
+
+    antrean.forEach(item => {
+        let infoBlok = klaster[item.kec]?.blok || "BARAT & UTARA";
+        let assignedDriver = blokKeDriver[infoBlok] || drivers[0];
+        driverData[assignedDriver].push(item);
+    });
+
+    // Render HTML Hasil yang Rapi Berbentuk Kartu/Tabel Per Driver
+    let htmlOutput = "<h3>📦 Hasil Pembagian Tugas Driver</h3>";
+    
+    for (let driver in driverData) {
+        let orders = driverData[driver];
+        htmlOutput += `
+            <div class="driver-card">
+                <div class="driver-header">
+                    <span>🚗 Driver: ${driver}</span>
+                    <span class="badge">${orders.length} Kiriman</span>
+                </div>
+                <table>
+                    <tr>
+                        <th style="width: 5%">No</th>
+                        <th style="width: 30%">Nama / Toko</th>
+                        <th style="width: 50%">Alamat Lengkap</th>
+                        <th style="width: 15%">Kecamatan</th>
+                    </tr>`;
+        
+        if (orders.length === 0) {
+            htmlOutput += `<tr><td colspan="4" style="text-align:center; color:#888; padding: 15px;">Tidak ada kiriman di rute ini.</td></tr>`;
+        } else {
+            orders.forEach((ord, index) => {
+                htmlOutput += `<tr>
+                    <td>${index + 1}</td>
+                    <td><b>${ord.nama}</b></td>
+                    <td>${ord.alamat}</td>
+                    <td>${ord.kec}</td>
+                </tr>`;
+            });
+        }
+        htmlOutput += `</table></div>`;
+    }
+
+    document.getElementById('hasilPembagian').innerHTML = htmlOutput;
+}
+
+renderAntrean();
 </script>
 </body>
 </html>
