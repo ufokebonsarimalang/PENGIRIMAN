@@ -2,58 +2,91 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Rute Driver Profesional</title>
+    <title>Input Orderan Cepat & Aman (Anti-Typo Kecamatan)</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; color: #333; }
-        .container { max-width: 1000px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        h2, h3 { color: #1a73e8; text-align: center; }
+        .container { max-width: 950px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h2, h3 { color: #1a73e8; }
         
         .input-section { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e1e4e8; }
-        label { font-weight: bold; display: block; margin-bottom: 5px; }
-        input[type="text"], textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        textarea { height: 80px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 14px; }
+        input[type="text"], select { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; background: white; }
         
         .btn-group { display: flex; gap: 10px; }
-        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; color: white; font-size: 14px; }
-        .btn-add { background: #4285f4; flex: 1; }
-        .btn-run { background: #34a853; flex: 1; }
-        .btn-reset { background: #ea4335; }
+        button { padding: 10px 15px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; color: white; font-size: 14px; }
+        .btn-add { background: #4285f4; flex: 2; }
+        .btn-run { background: #34a853; flex: 2; }
+        .btn-reset { background: #ea4335; flex: 1; }
 
-        /* Tampilan Kotak/Card Per Driver supaya tidak semrawut */
-        .driver-card { margin-top: 25px; background: white; border: 1px solid #dcdcdc; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .driver-header { background: #1a73e8; color: white; padding: 12px 15px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
-        
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border-bottom: 1px solid #eee; padding: 10px 15px; text-align: left; font-size: 14px; }
+        /* Tabel Antrean Live */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border-bottom: 1px solid #eee; padding: 10px; text-align: left; font-size: 14px; }
         th { background-color: #f8f9fa; color: #5f6368; }
         tr:hover { background-color: #f8f9fa; }
-        
+
+        /* Kartu Hasil Pembagian Per Driver */
+        .driver-card { margin-top: 25px; background: white; border: 1px solid #dcdcdc; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .driver-header { background: #1a73e8; color: white; padding: 12px 15px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
         .badge { background: rgba(255,255,255,0.2); padding: 3px 8px; border-radius: 4px; font-size: 12px; }
+        .delete-btn { background: #ff4d4d; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>🚚 Sistem Pembagian Rute Driver</h2>
+    <h2>⚡ Input Orderan Cepat & Aman (Pilih Kecamatan)</h2>
     
     <div class="input-section">
-        <label>Nama Driver (Pisahkan dengan koma):</label>
+        <label>Nama Driver yang Bertugas (Pisahkan dengan koma):</label>
         <input type="text" id="driversInput" placeholder="Poniadi, Eko, Dedy">
 
-        <label>Tambah Data (Nama / Toko, Alamat Lengkap, Kecamatan):</label>
-        <textarea id="inputData" placeholder="Contoh: Toko Berkah, Jl. Alpaka No.5, SUKUN"></textarea>
+        <label>Input Orderan Masuk:</label>
+        <input type="text" id="inputNama" placeholder="Nama Toko / Customer">
+        <input type="text" id="inputAlamat" placeholder="Alamat Lengkap">
+        
+        <label>Pilih Kecamatan (Wajib pilih dari daftar):</label>
+        <select id="inputKec">
+            <option value="">-- Pilih Kecamatan Tujuan --</option>
+            <optgroup label="Blok Barat & Utara">
+                <option value="SUKUN">Sukun</option>
+                <option value="KLOJEN">Klojen</option>
+                <option value="LOWOKWARU">Lowokwaru</option>
+                <option value="DAU">Dau</option>
+                <option value="KARANGPLOSO">Karangploso</option>
+            </optgroup>
+            <optgroup label="Blok Timur & Utara Jauh">
+                <option value="BLIMBING">Blimbing</option>
+                <option value="KEDUNGKANDANG">Kedungkandang</option>
+                <option value="SINGOSARI">Singosari</option>
+                <option value="LAWANG">Lawang</option>
+                <option value="PAKIS">Pakis</option>
+                <option value="TAJINAN">Tajinan</option>
+                <option value="JABUNG">Jabung</option>
+                <option value="WAJAK">Wajak</option>
+            </optgroup>
+            <optgroup label="Blok Selatan">
+                <option value="WAGIR">Wagir</option>
+                <option value="PAKISAJI">Pakisaji</option>
+                <option value="BULULAWANG">Bululawang</option>
+                <option value="KEPANJEN">Kepanjen</option>
+                <option value="GONDANGLEGI">Gondanglegi</option>
+                <option value="TUREN">Turen</option>
+                <option value="DAMPIT">Dampit</option>
+                <option value="PAGELARAN">Pagelaran</option>
+            </optgroup>
+        </select>
         
         <div class="btn-group">
-            <button class="btn-add" onclick="tambahData()">+ Masukkan ke Antrean</button>
-            <button class="btn-run" onclick="bagiRute()">🚀 Proses & Bagi ke Driver</button>
-            <button class="btn-reset" onclick="resetData()">Reset Semua</button>
+            <button class="btn-add" onclick="tambahOrderan()">📥 Masukkan ke List Antrean</button>
+            <button class="btn-run" onclick="bagiRute()">🚀 Bagi Rute ke Driver Sekarang</button>
+            <button class="btn-reset" onclick="resetSemua()">Reset</button>
         </div>
     </div>
 
-    <h3>Daftar Antrean Masuk (<span id="jumlahAntrean">0</span>)</h3>
-    <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px;">
+    <h3>📋 List Antrean Masuk (<span id="jumlahAntrean">0</span> Orderan)</h3>
+    <div style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px; background: white;">
         <table id="tabelAntrean">
-            <tr><th>Nama / Toko</th><th>Alamat</th><th>Kecamatan</th></tr>
+            <tr><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Kecamatan</th><th style="width: 8%;">Aksi</th></tr>
         </table>
     </div>
 
@@ -82,37 +115,52 @@ const klaster = {
 };
 
 function renderAntrean() {
-    let html = `<tr><th>Nama / Toko</th><th>Alamat</th><th>Kecamatan</th></tr>`;
-    antrean.forEach(item => {
-        html += `<tr><td><b>${item.nama}</b></td><td>${item.alamat}</td><td>${item.kec}</td></tr>`;
-    });
+    let html = `<tr><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Kecamatan</th><th>Aksi</th></tr>`;
+    if (antrean.length === 0) {
+        html += `<tr><td colspan="4" style="text-align:center; color:#888; padding: 15px;">Belum ada orderan masuk di list.</td></tr>`;
+    } else {
+        antrean.forEach((item, index) => {
+            html += `<tr>
+                <td><b>${item.nama}</b></td>
+                <td>${item.alamat}</td>
+                <td>${item.kec}</td>
+                <td><button class="delete-btn" onclick="hapusItem(${index})">Hapus</button></td>
+            </tr>`;
+        });
+    }
     document.getElementById('tabelAntrean').innerHTML = html;
     document.getElementById('jumlahAntrean').innerText = antrean.length;
     localStorage.setItem('antrean', JSON.stringify(antrean));
 }
 
-function tambahData() {
-    let teks = document.getElementById('inputData').value.trim();
-    if(!teks) return;
+function tambahOrderan() {
+    let nama = document.getElementById('inputNama').value.trim();
+    let alamat = document.getElementById('inputAlamat').value.trim();
+    let kec = document.getElementById('inputKec').value;
+
+    if(!nama || !alamat || !kec) {
+        alert("⚠️ Mohon isi Nama, Alamat, dan PILIH Kecamatan terlebih dahulu!");
+        return;
+    }
+
+    antrean.push({ nama, alamat, kec });
     
-    let baris = teks.split('\n');
-    baris.forEach(line => {
-        let parts = line.split(',').map(s => s.trim());
-        if(parts.length >= 3) {
-            antrean.push({
-                nama: parts[0],
-                alamat: parts.slice(1, parts.length - 1).join(', '), // Mengatasi alamat yang ada komanya
-                kec: parts[parts.length - 1].toUpperCase()
-            });
-        }
-    });
-    
-    document.getElementById('inputData').value = "";
+    // Kosongkan form input teks saja, pilihan kecamatan dibiarkan atau direset
+    document.getElementById('inputNama').value = "";
+    document.getElementById('inputAlamat').value = "";
+    document.getElementById('inputKec').value = "";
+    document.getElementById('inputNama').focus();
+
     renderAntrean();
 }
 
-function resetData() {
-    if(confirm("Hapus semua data antrean?")) {
+function hapusItem(index) {
+    antrean.splice(index, 1);
+    renderAntrean();
+}
+
+function resetSemua() {
+    if(confirm("Hapus seluruh list antrean?")) {
         antrean = [];
         localStorage.removeItem('antrean');
         renderAntrean();
@@ -126,11 +174,11 @@ function bagiRute() {
     let drivers = driverStr.split(',').map(d => d.trim()).filter(d => d !== "");
 
     if(drivers.length === 0) {
-        alert("Masukkan nama driver dulu!");
+        alert("⚠️ Masukkan nama driver yang bertugas terlebih dahulu!");
         return;
     }
     if(antrean.length === 0) {
-        alert("Antrean masih kosong!");
+        alert("⚠️ List antrean masih kosong!");
         return;
     }
 
@@ -158,7 +206,7 @@ function bagiRute() {
         driverData[assignedDriver].push(item);
     });
 
-    // Render HTML Hasil yang Rapi Berbentuk Kartu/Tabel Per Driver
+    // Render HTML Hasil Per Driver
     let htmlOutput = "<h3>📦 Hasil Pembagian Tugas Driver</h3>";
     
     for (let driver in driverData) {
