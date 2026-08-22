@@ -277,38 +277,56 @@
         
       <label>Kecamatan Tujuan</label>
         <select id="inputKec">
-            <option value="">-- Pilih Kecamatan --</option>
-            <optgroup label="Blok Barat & Utara">
-                <option value="SUKUN">Sukun</option>
-                <option value="KLOJEN">Klojen</option>
-                <option value="LOWOKWARU">Lowokwaru</option>
-                <option value="DAU">Dau</option>
-                <option value="KARANGPLOSO">Karangploso</option>
-                <option value="BATU">Batu</option>
-                <option value="BUMIAJI">Bumiaji</option>
-                <option value="JUNREJO">Junrejo</option>
-            </optgroup>
-            <optgroup label="Blok Timur & Utara Jauh">
-                <option value="BLIMBING">Blimbing</option>
-                <option value="KEDUNGKANDANG">Kedungkandang</option>
-                <option value="SINGOSARI">Singosari</option>
-                <option value="LAWANG">Lawang</option>
-                <option value="PAKIS">Pakis</option>
-                <option value="TAJINAN">Tajinan</option>
-                <option value="JABUNG">Jabung</option>
-                <option value="WAJAK">Wajak</option>
-            </optgroup>
-            <optgroup label="Blok Selatan">
-                <option value="WAGIR">Wagir</option>
-                <option value="PAKISAJI">Pakisaji</option>
-                <option value="BULULAWANG">Bululawang</option>
-                <option value="KEPANJEN">Kepanjen</option>
-                <option value="GONDANGLEGI">Gondanglegi</option>
-                <option value="TUREN">Turen</option>
-                <option value="DAMPIT">Dampit</option>
-                <option value="PAGELARAN">Pagelaran</option>
-            </optgroup>
-        </select>
+    <option value="">-- Pilih Kecamatan --</option>
+    <optgroup label="Blok Barat & Utara (Batu, Singosari, Pujon, dll)">
+        <option value="SUKUN">Sukun</option>
+        <option value="KLOJEN">Klojen</option>
+        <option value="LOWOKWARU">Lowokwaru</option>
+        <option value="DAU">Dau</option>
+        <option value="KARANGPLOSO">Karangploso</option>
+        <option value="BATU">Batu</option>
+        <option value="BUMIAJI">Bumiaji</option>
+        <option value="JUNREJO">Junrejo</option>
+        <option value="PUJON">Pujon</option>
+        <option value="NGANTANG">Ngantang</option>
+        <option value="KASEMBON">Kasembon</option>
+        <option value="SINGOSARI">Singosari</option>
+        <option value="LAWANG">Lawang</option>
+    </optgroup>
+    <optgroup label="Blok Timur & Utara Jauh">
+        <option value="BLIMBING">Blimbing</option>
+        <option value="KEDUNGKANDANG">Kedungkandang</option>
+        <option value="PAKIS">Pakis</option>
+        <option value="TAJINAN">Tajinan</option>
+        <option value="JABUNG">Jabung</option>
+        <option value="WAJAK">Wajak</option>
+        <option value="TUMPANG">Tumpang</option>
+        <option value="PONCOKUSUMO">Poncokusumo</option>
+        <option value="TIRTOYUDO">Tirtoyudo</option>
+        <option value="AMPELGADING">Ampelgading</option>
+        <option value="DAMPIT">Dampit</option>
+    </optgroup>
+    <optgroup label="Blok Selatan & Tengah">
+        <option value="WAGIR">Wagir</option>
+        <option value="PAKISAJI">Pakisaji</option>
+        <option value="BULULAWANG">Bululawang</option>
+        <option value="KEPANJEN">Kepanjen</option>
+        <option value="GONDANGLEGI">Gondanglegi</option>
+        <option value="TUREN">Turen</option>
+        <option value="DAMPIT">Dampit</option>
+        <option value="PAGELARAN">Pagelaran</option>
+        <option value="SUMBERMANJING">Sumbermanjing Wetan</option>
+        <option value="BANTUR">Bantur</option>
+        <option value="PAGAK">Pagak</option>
+        <option value="DONOMULYO">Donomulyo</option>
+        <option value="SUMBERPUCUNG">Sumberpucung</option>
+        <option value="KALIPARE">Kalipare</option>
+        <option value="GEDANGAN">Gedangan</option>
+        <option value="NGAJUM">Ngajum</option>
+        <option value="WONOSARI">Wonosari</option>
+        <option value="KROMENGAN">Kromengan</option>
+    </optgroup>
+</select>
         <div class="btn-group">
             <button class="btn-add" onclick="tambahOrderan()">+ Tambah</button>
             <button class="btn-run" onclick="bagiRute()">🚀 Bagi</button>
@@ -336,20 +354,52 @@ let antrean = JSON.parse(localStorage.getItem('antrean')) || [];
 let hasilPembagianGlobal = {};
 
 const klaster = {
-    "SUKUN": {blok: "BARAT & UTARA", urut: 1}, "KLOJEN": {blok: "BARAT & UTARA", urut: 2}, 
-    "LOWOKWARU": {blok: "BARAT & UTARA", urut: 3}, "DAU": {blok: "BARAT & UTARA", urut: 4}, 
-    "KARANGPLOSO": {blok: "BARAT & UTARA", urut: 5}, "BATU": {blok: "BARAT & UTARA", urut: 6}, 
-    "BUMIAJI": {blok: "BARAT & UTARA", urut: 7}, "JUNREJO": {blok: "BARAT & UTARA", urut: 8},
+    // Blok Barat & Utara
+    "SUKUN": {blok: "BARAT & UTARA", urut: 1}, 
+    "KLOJEN": {blok: "BARAT & UTARA", urut: 2}, 
+    "LOWOKWARU": {blok: "BARAT & UTARA", urut: 3}, 
+    "DAU": {blok: "BARAT & UTARA", urut: 4}, 
+    "KARANGPLOSO": {blok: "BARAT & UTARA", urut: 5}, 
+    "BATU": {blok: "BARAT & UTARA", urut: 6}, 
+    "BUMIAJI": {blok: "BARAT & UTARA", urut: 7}, 
+    "JUNREJO": {blok: "BARAT & UTARA", urut: 8},
+    "PUJON": {blok: "BARAT & UTARA", urut: 9},
+    "NGANTANG": {blok: "BARAT & UTARA", urut: 10},
+    "KASEMBON": {blok: "BARAT & UTARA", urut: 11},
     
-    "BLIMBING": {blok: "TIMUR & UTARA JAUH", urut: 9}, "KEDUNGKANDANG": {blok: "TIMUR & UTARA JAUH", urut: 10}, 
-    "SINGOSARI": {blok: "TIMUR & UTARA JAUH", urut: 11}, "LAWANG": {blok: "TIMUR & UTARA JAUH", urut: 12}, 
-    "PAKIS": {blok: "TIMUR & UTARA JAUH", urut: 13}, "TAJINAN": {blok: "TIMUR & UTARA JAUH", urut: 14}, 
-    "JABUNG": {blok: "TIMUR & UTARA JAUH", urut: 15}, "WAJAK": {blok: "TIMUR & UTARA JAUH", urut: 16},
+    // Blok Timur & Utara Jauh
+    "BLIMBING": {blok: "TIMUR & UTARA JAUH", urut: 12}, 
+    "KEDUNGKANDANG": {blok: "TIMUR & UTARA JAUH", urut: 13}, 
+    "SINGOSARI": {blok: "TIMUR & UTARA JAUH", urut: 14}, 
+    "LAWANG": {blok: "TIMUR & UTARA JAUH", urut: 15}, 
+    "PAKIS": {blok: "TIMUR & UTARA JAUH", urut: 16}, 
+    "TAJINAN": {blok: "TIMUR & UTARA JAUH", urut: 17}, 
+    "JABUNG": {blok: "TIMUR & UTARA JAUH", urut: 18}, 
+    "WAJAK": {blok: "TIMUR & UTARA JAUH", urut: 19},
+    "TUMPANG": {blok: "TIMUR & UTARA JAUH", urut: 20},
+    "PONCOKUSUMO": {blok: "TIMUR & UTARA JAUH", urut: 21},
+    "TIRTOYUDO": {blok: "TIMUR & UTARA JAUH", urut: 22},
+    "AMPELGADING": {blok: "TIMUR & UTARA JAUH", urut: 23},
+    "DAMPIT": {blok: "TIMUR & UTARA JAUH", urut: 24},
     
-    "WAGIR": {blok: "SELATAN", urut: 17}, "PAKISAJI": {blok: "SELATAN", urut: 18}, 
-    "BULULAWANG": {blok: "SELATAN", urut: 19}, "KEPANJEN": {blok: "SELATAN", urut: 20}, 
-    "GONDANGLEGI": {blok: "SELATAN", urut: 21}, "TUREN": {blok: "SELATAN", urut: 22}, 
-    "DAMPIT": {blok: "SELATAN", urut: 23}, "PAGELARAN": {blok: "SELATAN", urut: 24}
+    // Blok Selatan
+    "WAGIR": {blok: "SELATAN", urut: 25}, 
+    "PAKISAJI": {blok: "SELATAN", urut: 26}, 
+    "BULULAWANG": {blok: "SELATAN", urut: 27}, 
+    "KEPANJEN": {blok: "SELATAN", urut: 28}, 
+    "GONDANGLEGI": {blok: "SELATAN", urut: 29}, 
+    "TUREN": {blok: "SELATAN", urut: 30}, 
+    "PAGELARAN": {blok: "SELATAN", urut: 31},
+    "SUMBERMANJING": {blok: "SELATAN", urut: 32},
+    "BANTUR": {blok: "SELATAN", urut: 33},
+    "PAGAK": {blok: "SELATAN", urut: 34},
+    "DONOMULYO": {blok: "SELATAN", urut: 35},
+    "SUMBERPUCUNG": {blok: "SELATAN", urut: 36},
+    "KALIPARE": {blok: "SELATAN", urut: 37},
+    "GEDANGAN": {blok: "SELATAN", urut: 38},
+    "NGAJUM": {blok: "SELATAN", urut: 39},
+    "WONOSARI": {blok: "SELATAN", urut: 40},
+    "KROMENGAN": {blok: "SELATAN", urut: 41}
 };
 
 function renderAntrean() {
