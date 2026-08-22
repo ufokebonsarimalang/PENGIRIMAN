@@ -275,7 +275,7 @@
         <input type="text" id="inputNama" placeholder="Nama Toko / Customer">
         <input type="text" id="inputAlamat" placeholder="Alamat Lengkap">
         
-        <label>Kecamatan Tujuan</label>
+      <label>Kecamatan Tujuan</label>
         <select id="inputKec">
             <option value="">-- Pilih Kecamatan --</option>
             <optgroup label="Blok Barat & Utara">
@@ -284,6 +284,9 @@
                 <option value="LOWOKWARU">Lowokwaru</option>
                 <option value="DAU">Dau</option>
                 <option value="KARANGPLOSO">Karangploso</option>
+                <option value="BATU">Batu</option>
+                <option value="BUMIAJI">Bumiaji</option>
+                <option value="JUNREJO">Junrejo</option>
             </optgroup>
             <optgroup label="Blok Timur & Utara Jauh">
                 <option value="BLIMBING">Blimbing</option>
@@ -306,7 +309,6 @@
                 <option value="PAGELARAN">Pagelaran</option>
             </optgroup>
         </select>
-        
         <div class="btn-group">
             <button class="btn-add" onclick="tambahOrderan()">+ Tambah</button>
             <button class="btn-run" onclick="bagiRute()">🚀 Bagi</button>
@@ -336,17 +338,18 @@ let hasilPembagianGlobal = {};
 const klaster = {
     "SUKUN": {blok: "BARAT & UTARA", urut: 1}, "KLOJEN": {blok: "BARAT & UTARA", urut: 2}, 
     "LOWOKWARU": {blok: "BARAT & UTARA", urut: 3}, "DAU": {blok: "BARAT & UTARA", urut: 4}, 
-    "KARANGPLOSO": {blok: "BARAT & UTARA", urut: 5},
+    "KARANGPLOSO": {blok: "BARAT & UTARA", urut: 5}, "BATU": {blok: "BARAT & UTARA", urut: 6}, 
+    "BUMIAJI": {blok: "BARAT & UTARA", urut: 7}, "JUNREJO": {blok: "BARAT & UTARA", urut: 8},
     
-    "BLIMBING": {blok: "TIMUR & UTARA JAUH", urut: 6}, "KEDUNGKANDANG": {blok: "TIMUR & UTARA JAUH", urut: 7}, 
-    "SINGOSARI": {blok: "TIMUR & UTARA JAUH", urut: 8}, "LAWANG": {blok: "TIMUR & UTARA JAUH", urut: 9}, 
-    "PAKIS": {blok: "TIMUR & UTARA JAUH", urut: 10}, "TAJINAN": {blok: "TIMUR & UTARA JAUH", urut: 11}, 
-    "JABUNG": {blok: "TIMUR & UTARA JAUH", urut: 12}, "WAJAK": {blok: "TIMUR & UTARA JAUH", urut: 13},
+    "BLIMBING": {blok: "TIMUR & UTARA JAUH", urut: 9}, "KEDUNGKANDANG": {blok: "TIMUR & UTARA JAUH", urut: 10}, 
+    "SINGOSARI": {blok: "TIMUR & UTARA JAUH", urut: 11}, "LAWANG": {blok: "TIMUR & UTARA JAUH", urut: 12}, 
+    "PAKIS": {blok: "TIMUR & UTARA JAUH", urut: 13}, "TAJINAN": {blok: "TIMUR & UTARA JAUH", urut: 14}, 
+    "JABUNG": {blok: "TIMUR & UTARA JAUH", urut: 15}, "WAJAK": {blok: "TIMUR & UTARA JAUH", urut: 16},
     
-    "WAGIR": {blok: "SELATAN", urut: 14}, "PAKISAJI": {blok: "SELATAN", urut: 15}, 
-    "BULULAWANG": {blok: "SELATAN", urut: 16}, "KEPANJEN": {blok: "SELATAN", urut: 17}, 
-    "GONDANGLEGI": {blok: "SELATAN", urut: 18}, "TUREN": {blok: "SELATAN", urut: 19}, 
-    "DAMPIT": {blok: "SELATAN", urut: 20}, "PAGELARAN": {blok: "SELATAN", urut: 21}
+    "WAGIR": {blok: "SELATAN", urut: 17}, "PAKISAJI": {blok: "SELATAN", urut: 18}, 
+    "BULULAWANG": {blok: "SELATAN", urut: 19}, "KEPANJEN": {blok: "SELATAN", urut: 20}, 
+    "GONDANGLEGI": {blok: "SELATAN", urut: 21}, "TUREN": {blok: "SELATAN", urut: 22}, 
+    "DAMPIT": {blok: "SELATAN", urut: 23}, "PAGELARAN": {blok: "SELATAN", urut: 24}
 };
 
 function renderAntrean() {
