@@ -526,16 +526,40 @@ function tambahOrderan() {
         return;
     }
 
-    antrean.push({ nama, alamat, maps, kec });
-    renderAntrean();
+    // 🟢 Kirim data secara online ke Google Apps Script (Sheet TEST RUTE)
+    let payload = {
+        action: "tambah",
+        nama: nama,
+        alamat: alamat,
+        kecamatan: kec,
+        maps: maps
+    };
 
-    document.getElementById('inputNama').value = "";
-    document.getElementById('inputAlamat').value = "";
-    document.getElementById('inputMaps').value = "";
-    document.getElementById('inputKec').value = "";
-    document.getElementById('inputNama').focus();
+    fetch(API_URL, {
+        method: "POST",
+        mode: "no-cors", // Penting untuk koneksi GitHub Pages ke GAS
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    })
+    .then(() => {
+        alert("✅ Orderan berhasil dikirim dan tersimpan online di Google Sheets!");
+        
+        // Tambahkan juga ke antrean lokal untuk langsung tampil di tabel
+        antrean.push({ nama, alamat, maps, kec });
+        renderAntrean();
+
+        // Reset form input
+        document.getElementById('inputNama').value = "";
+        document.getElementById('inputAlamat').value = "";
+        document.getElementById('inputMaps').value = "";
+        document.getElementById('inputKec').value = "";
+        document.getElementById('inputNama').focus();
+    })
+    .catch(err => {
+        console.error("Gagal menyimpan ke server:", err);
+        alert("❌ Gagal terhubung ke server Google Sheets.");
+    });
 }
-
 function hapusItem(index) {
     antrean.splice(index, 1);
     renderAntrean();
