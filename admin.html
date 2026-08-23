@@ -764,13 +764,14 @@ function simpanBarisKeServer(index) {
 }
 
 function parseDataMentah(text) {
-    let matchCust = text.match(/CUSTOMER\s*:\s*([^📍📦🛒🚚📝💰📱👤]+)/i);
+    // 🟢 Ekstraksi presisi: Cari teks yang berada tepat setelah label "CUSTOMER :" sampai sebelum label berikutnya
+    let matchCust = text.match(/CUSTOMER\s*:\s*([^📍📦🛒🚚📝💰📱👤ALAMAT]+)/i);
     let nama = matchCust ? matchCust[1].trim() : "";
 
     if (!nama) {
         let parts = text.split("CUSTOMER :");
         if (parts.length > 1) {
-            nama = parts[1].split("📍")[0].split("📱")[0].split("ALAMAT")[0].trim();
+            nama = parts[1].split("📍")[0].split("📱")[0].split("ALAMAT")[0].split("PROMOTOR")[0].trim();
         }
     }
 
