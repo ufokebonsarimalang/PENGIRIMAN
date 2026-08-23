@@ -271,7 +271,7 @@
         </div>
     </div>
 
-    <!-- Form Input Manual (Digabung Menjadi Satu Kesatuan) -->
+    <!-- Form Input Manual -->
     <div class="card-box" style="border: 2px solid var(--primary);">
         <label style="color: var(--primary); font-size: 13px; margin-bottom: 12px;">➕ Form Tambah Orderan Manual</label>
         
@@ -349,7 +349,7 @@
     <h3 id="judulAntrean" style="font-size: 14px; font-weight: 700; margin-top: 20px; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">List Antrean Masuk (<span id="jumlahAntrean">0</span> Orderan)</h3>
     <div id="tabelAntreanBox" class="table-wrapper">
         <table id="tabelAntrean">
-            <tr><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Link Maps</th><th>Kecamatan</th><th style="width: 80px; text-align: center;">Aksi</th></tr>
+            <tr><th>Status Kirim</th><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Link Maps</th><th>Kecamatan</th><th style="width: 80px; text-align: center;">Aksi</th></tr>
         </table>
     </div>
 
@@ -357,10 +357,10 @@
 </div>
 
 <script>
-// 🔴 URL WEB APP GAS DRIVER / SHEET TEST RUTE ANDA
 const API_URL = "https://script.google.com/macros/s/AKfycbzH4e2dQErvrU5m_1Q-s66gxG68JaKFae2foTcOrTUHiZT42sqY0xYHV4Cv04_Dowgi/exec";  
 
 let antrean = JSON.parse(localStorage.getItem('antreanAdmin')) || [];
+let statusTerkirimGlobal = {}; // Menyimpan status terkirim dari server
 let hasilPembagianGlobal = {};
 
 const klaster = {
@@ -408,17 +408,14 @@ const klaster = {
 };
 
 window.onload = function() {
-    if (antrean.length === 0) {
-        tarikDataDariSheet(true);
-    } else {
-        renderAntrean();
-    }
+    tarikDataDariSheet(true); // Otomatis ambil data + status saat web dibuka
 };
 
 function renderAntrean() {
-    let html = `<tr><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Link Maps / Sharelok</th><th>Kecamatan</th><th style="width: 80px; text-align: center;">Aksi</th></tr>`;
+    let html = `<tr><th>Status Kirim</th><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Link Maps</th><th>Kecamatan</th><th style="width: 80px; text-align: center;">Aksi</th></tr>`;
+    
     if (antrean.length === 0) {
-        html += `<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding: 25px; font-weight: 600;">Belum ada orderan masuk di antrean.</td></tr>`;
+        html += `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding: 25px; font-weight: 600;">Belum ada orderan masuk di antrean.</td></tr>`;
     } else {
         antrean.forEach((item, index) => {
             let opsiKecamatan = Object.keys(klaster).sort();
@@ -432,7 +429,16 @@ function renderAntrean() {
 
             let mapsInputHtml = `<input type="text" value="${item.maps || ''}" placeholder="Paste Link Maps..." oninput="updateMapsManual(${index}, this.value)" style="margin-bottom:0; padding:6px 10px; font-size:12px; text-transform:none;">`;
 
+            // Cek status terkirim dari server berdasarkan nama customer
+            let keyNama = (item.nama || "").toLowerCase().trim();
+            let isTerkirim = statusTerkirimGlobal[keyNama] === true;
+
+            let statusBadge = isTerkirim ? 
+                `<span style="background:#ecfdf5; color:#059669; border:1px solid #10b981; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:800; display:inline-block;">✓ TERKIRIM</span>` : 
+                `<span style="background:#fef2f2; color:#dc2626; border:1px solid #f87171; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:700; display:inline-block;">⏳ BELUM</span>`;
+
             html += `<tr>
+                <td style="white-space: nowrap;">${statusBadge}</td>
                 <td><b>${item.nama}</b></td>
                 <td>${item.alamat}</td>
                 <td>${mapsInputHtml}</td>
@@ -457,12 +463,14 @@ function updateMapsManual(index, nilaiBaru) {
 }
 
 function tarikDataDariSheet(isSilent = false) {
-    if (!isSilent) alert("⏳ Sedang mengambil data dari sheet PDF Besok...");
+    if (!isSilent) alert("⏳ Sedang menyinkronkan data & status dari server...");
 
     fetch(API_URL)
     .then(r => r.json())
     .then(data => {
         let ordersFromSheet = data.orders || [];
+        statusTerkirimGlobal = data.terkirim || {}; // Ambil status terkirim hari ini dari GAS
+
         if (ordersFromSheet.length === 0) return;
 
         let existingKecMap = {};
@@ -497,7 +505,7 @@ function tarikDataDariSheet(isSilent = false) {
         antrean = newAntrean;
         renderAntrean();
         
-        if (!isSilent) alert("✅ Berhasil! Data antrean ditarik. Pilihan kecamatan dan link maps Anda tetap aman.");
+        if (!isSilent) alert("✅ Berhasil! Data antrean & status pengiriman driver telah diperbarui.");
     })
     .catch(err => {
         console.error("Gagal sinkronisasi sheet:", err);
