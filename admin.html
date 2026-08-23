@@ -32,41 +32,52 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* SaaS Modern Layout Container */
         .container {
-            max-width: 1450px;
+            max-width: 1500px;
             margin: auto;
-            background: var(--card-bg);
-            padding: 32px;
-            border-radius: 24px;
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
-            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
         }
 
-        .header-title {
+        /* SaaS Top Header Navbar */
+        .top-navbar {
+            background: var(--card-bg);
+            padding: 20px 32px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 24px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 20px;
+            box-shadow: 0 4px 20px -4px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
         .header-left {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
         }
 
         .header-title h2 {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 800;
             color: var(--text-main);
             margin: 0;
             letter-spacing: -0.5px;
         }
 
-        .header-title span {
-            font-size: 28px;
+        .header-left span {
+            font-size: 26px;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
         }
 
         .badge-live {
@@ -75,8 +86,8 @@
             border: 1px solid #10b981;
             padding: 6px 14px;
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
+            font-size: 11px;
+            font-weight: 800;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -98,7 +109,7 @@
             100% { transform: scale(0.95); opacity: 0.8; }
         }
 
-        /* 💻 LAYOUT GRID UTAMA KHUSUS PC */
+        /* 💻 DASHBOARD GRID UTAMA (Sidebar Kiri & Tabel Kanan) */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 380px 1fr;
@@ -124,7 +135,7 @@
             padding: 24px;
             border-radius: 20px;
             border: 1px solid var(--border);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.02);
         }
 
         label {
@@ -193,20 +204,20 @@
         .btn-group {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 10px;
         }
 
         button {
-            padding: 13px 16px;
+            padding: 12px 16px;
             cursor: pointer;
             border: none;
-            border-radius: 14px;
+            border-radius: 12px;
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 700;
             color: white;
             font-size: 13px;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
             width: 100%;
             display: flex;
             align-items: center;
@@ -216,12 +227,12 @@
 
         button:active { transform: scale(0.98); }
 
-        .btn-add { background: var(--primary); font-size: 14px; box-shadow: 0 6px 16px rgba(99, 102, 241, 0.25); }
-        .btn-run { background: var(--success); box-shadow: 0 6px 16px rgba(16, 185, 129, 0.25); }
-        .btn-sheet { background: var(--info); color: #fff; }
-        .btn-print { background: var(--warning); color: #fff; }
-        .btn-excel { background: #0891b2; color: #fff; }
-        .btn-reset { background: var(--danger); grid-column: span 2; }
+        .btn-add { background: var(--primary); font-size: 14px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25); }
+        .btn-run { background: var(--success); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); }
+        .btn-sheet { background: var(--info); color: #fff; width: auto; padding: 10px 16px; font-size: 12px; }
+        .btn-print { background: var(--warning); color: #fff; width: auto; padding: 10px 16px; font-size: 12px; }
+        .btn-excel { background: #0891b2; color: #fff; width: auto; padding: 10px 16px; font-size: 12px; }
+        .btn-reset { background: var(--danger); color: #fff; width: auto; padding: 10px 16px; font-size: 12px; }
 
         /* SPINNER LOADING */
         .btn-isi {
@@ -400,15 +411,16 @@
 
         @media screen and (max-width: 1024px) {
             body { padding: 12px; }
-            .container { padding: 18px; border-radius: 16px; }
+            .container { padding: 0; }
             .dashboard-grid { grid-template-columns: 1fr; gap: 20px; }
-            .header-title { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .top-navbar { flex-direction: column; align-items: flex-start; }
+            .nav-actions { width: 100%; justify-content: space-between; }
         }
 
         @media print {
             body { background: white; padding: 0; }
             .container { box-shadow: none; padding: 0; max-width: 100%; border: none; }
-            .card-box, .btn-group, h3#judulAntrean, div#tabelAntreanBox, .delete-btn, .header-title { display: none !important; }
+            .card-box, .top-navbar, h3#judulAntrean, div#tabelAntreanBox, .delete-btn { display: none !important; }
             .driver-card { border: 1.5px solid #0f172a; page-break-inside: avoid; margin-bottom: 20px; }
             .driver-header { background: #0f172a !important; -webkit-print-color-adjust: exact; }
         }
@@ -417,17 +429,28 @@
 <body>
 
 <div class="container">
-    <div class="header-title">
+    
+    <!-- SaaS Top Header Navbar -->
+    <div class="top-navbar">
         <div class="header-left">
             <span>⚡</span>
-            <h2>Smart Route Dashboard (Admin)</h2>
+            <div class="header-title">
+                <h2>Smart Route Dashboard (Admin)</h2>
+            </div>
+        </div>
+        <div class="nav-actions">
+            <button class="btn-sheet" onclick="tarikDataDariSheet()">🔄 Sinkron Sheet</button>
+            <button class="btn-run" onclick="bagiRute()">⚡ Proses Rute</button>
+            <button class="btn-print" onclick="cetakPDF()">📄 Cetak PDF</button>
+            <button class="btn-excel" onclick="downloadExcel()">📈 Unduh Excel</button>
+            <button class="btn-reset" onclick="resetSemua()">🗑️ Reset</button>
         </div>
         <div class="badge-live">Live Sync Ready</div>
     </div>
     
     <div class="dashboard-grid">
         
-        <!-- KOLOM KIRI: Form Input & Kontrol -->
+        <!-- KOLOM KIRI: Form Input & Kontrol Driver -->
         <div class="sidebar-panel">
             <div class="card-box">
                 <label>Driver Aktif Hari Ini</label>
@@ -499,20 +522,9 @@
 
                 <button class="btn-add" onclick="tambahOrderan()" style="margin-top: 6px;">💾 Simpan & Masukkan</button>
             </div>
-
-            <div class="card-box">
-                <label>Aksi & Kontrol Data</label>
-                <div class="btn-group">
-                    <button class="btn-sheet" onclick="tarikDataDariSheet()">🔄 Sinkron Sheet</button>
-                    <button class="btn-run" onclick="bagiRute()">⚡ Proses Rute</button>
-                    <button class="btn-print" onclick="cetakPDF()">📄 Cetak PDF</button>
-                    <button class="btn-excel" onclick="downloadExcel()">📈 Unduh Excel</button>
-                    <button class="btn-reset" onclick="resetSemua()">🗑️ Bersihkan Semua Data</button>
-                </div>
-            </div>
         </div>
 
-        <!-- KOLOM KANAN: Tabel Antrean Luas & Rapi -->
+        <!-- KOLOM KANAN: Tabel Antrean Utama -->
         <div class="main-panel">
             <div class="card-box">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
