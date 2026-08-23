@@ -847,11 +847,11 @@ function loadData() {
       html += '<div class="card" data-customer="' + key + '">';
       html += '<div class="data">' + isi + '</div>';
       
-      // Tampilkan tombol Google Maps jika ada
+    // Tampilkan tombol Google Maps dengan pemicu external intent
       if (linkMaps) {
-          html += '<a href="' + linkMaps + '" target="_blank" class="btn-maps-driver">📍 Buka Google Maps</a>';
+          let cleanMaps = linkMaps.toString().trim();
+          html += '<a href="' + cleanMaps + '" target="_blank" external="true" class="btn-maps-driver">📍 Buka Google Maps</a>';
       }
-      
       // Kondisi: HANYA tampilkan card upload foto jika BELUM dikirim
       if(!sudah) {
         html += '<div class="foto-upload-card" id="foto-card-' + index + '">';
