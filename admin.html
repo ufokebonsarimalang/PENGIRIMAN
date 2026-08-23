@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Route Dashboard - Driver Logistics</title>
+    <title>Smart Route Dashboard - Admin Logistics</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -132,7 +132,7 @@
         /* Tombol Responsif */
         .btn-group {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 10px;
             margin-top: 10px;
         }
@@ -155,9 +155,10 @@
 
         .btn-add { background: var(--primary); }
         .btn-run { background: var(--success); }
+        .btn-sheet { background: var(--info); color: #fff; }
         .btn-print { background: var(--warning); color: #fff; }
-        .btn-excel { background: var(--info); color: #fff; }
-        .btn-reset { background: var(--danger); grid-column: span 4; }
+        .btn-excel { background: #0891b2; color: #fff; }
+        .btn-reset { background: var(--danger); grid-column: span 3; }
 
         /* Tabel Antrean */
         .table-wrapper {
@@ -257,80 +258,46 @@
 <div class="container">
     <div class="header-title">
         <span>⚡</span>
-        <h2>Smart Route Dashboard</h2>
+        <h2>Smart Route Dashboard (Admin)</h2>
     </div>
     
     <!-- Driver Aktif -->
     <div class="card-box">
         <label>Driver Aktif Hari Ini</label>
         <div class="driver-checkbox-group" id="driverCheckboxes">
-            <label><input type="checkbox" value="PONIADI" checked> PONIADI</label>
-            <label><input type="checkbox" value="EKO" checked> EKO</label>
-            <label><input type="checkbox" value="DEDY" checked> DEDY</label>
+            <label><input type="checkbox" value="FRIZA" checked> FRIZA</label>
+            <label><input type="checkbox" value="DWI" checked> DWI</label>
+            <label><input type="checkbox" value="AGUS" checked> AGUS</label>
         </div>
     </div>
 
     <!-- Form Input -->
     <div class="card-box">
-        <label>Input Orderan Masuk</label>
-      <input type="text" id="inputNama" placeholder="Nama Toko / Customer" oninput="this.value = this.value.toUpperCase()">
-<input type="text" id="inputAlamat" placeholder="Alamat Lengkap" oninput="this.value = this.value.toUpperCase()">
+        <label>Input Orderan Tambahan / Manual</label>
+        <input type="text" id="inputNama" placeholder="Nama Toko / Customer" oninput="this.value = this.value.toUpperCase()">
+        <input type="text" id="inputAlamat" placeholder="Alamat Lengkap" oninput="this.value = this.value.toUpperCase()">
         
-      <label>Kecamatan Tujuan</label>
+        <label>Kecamatan Tujuan</label>
         <select id="inputKec">
-    <option value="">-- Pilih Kecamatan --</option>
-    <optgroup label="Blok Barat & Utara (Batu, Singosari, Pujon, dll)">
-        <option value="SUKUN">Sukun</option>
-        <option value="KLOJEN">Klojen</option>
-        <option value="LOWOKWARU">Lowokwaru</option>
-        <option value="DAU">Dau</option>
-        <option value="KARANGPLOSO">Karangploso</option>
-        <option value="BATU">Batu</option>
-        <option value="BUMIAJI">Bumiaji</option>
-        <option value="JUNREJO">Junrejo</option>
-        <option value="PUJON">Pujon</option>
-        <option value="NGANTANG">Ngantang</option>
-        <option value="KASEMBON">Kasembon</option>
-        <option value="SINGOSARI">Singosari</option>
-        <option value="LAWANG">Lawang</option>
-    </optgroup>
-    <optgroup label="Blok Timur & Utara Jauh">
-        <option value="BLIMBING">Blimbing</option>
-        <option value="KEDUNGKANDANG">Kedungkandang</option>
-        <option value="PAKIS">Pakis</option>
-        <option value="TAJINAN">Tajinan</option>
-        <option value="JABUNG">Jabung</option>
-        <option value="WAJAK">Wajak</option>
-        <option value="TUMPANG">Tumpang</option>
-        <option value="PONCOKUSUMO">Poncokusumo</option>
-        <option value="TIRTOYUDO">Tirtoyudo</option>
-        <option value="AMPELGADING">Ampelgading</option>
-        <option value="DAMPIT">Dampit</option>
-    </optgroup>
-    <optgroup label="Blok Selatan & Tengah">
-        <option value="WAGIR">Wagir</option>
-        <option value="PAKISAJI">Pakisaji</option>
-        <option value="BULULAWANG">Bululawang</option>
-        <option value="KEPANJEN">Kepanjen</option>
-        <option value="GONDANGLEGI">Gondanglegi</option>
-        <option value="TUREN">Turen</option>
-        <option value="DAMPIT">Dampit</option>
-        <option value="PAGELARAN">Pagelaran</option>
-        <option value="SUMBERMANJING">Sumbermanjing Wetan</option>
-        <option value="BANTUR">Bantur</option>
-        <option value="PAGAK">Pagak</option>
-        <option value="DONOMULYO">Donomulyo</option>
-        <option value="SUMBERPUCUNG">Sumberpucung</option>
-        <option value="KALIPARE">Kalipare</option>
-        <option value="GEDANGAN">Gedangan</option>
-        <option value="NGAJUM">Ngajum</option>
-        <option value="WONOSARI">Wonosari</option>
-        <option value="KROMENGAN">Kromengan</option>
-    </optgroup>
-</select>
+            <option value="">-- Pilih Kecamatan --</option>
+            <option value="SUKUN">Sukun</option>
+            <option value="KLOJEN">Klojen</option>
+            <option value="LOWOKWARU">Lowokwaru</option>
+            <option value="BLIMBING">Blimbing</option>
+            <option value="KEDUNGKANDANG">Kedungkandang</option>
+            <option value="SINGOSARI">Singosari</option>
+            <option value="LAWANG">Lawang</option>
+            <option value="PAKIS">Pakis</option>
+            <option value="WAGIR">Wagir</option>
+            <option value="PAKISAJI">Pakisaji</option>
+            <option value="BULULAWANG">Bululawang</option>
+            <option value="KEPANJEN">Kepanjen</option>
+        </select>
+
         <div class="btn-group">
             <button class="btn-add" onclick="tambahOrderan()">+ Tambah</button>
-            <button class="btn-run" onclick="bagiRute()">🚀 Bagi</button>
+            <button class="btn-sheet" onclick="tarikDataDariSheet()">📥 Ambil dari Sheet</button>
+            <button class="btn-run" onclick="bagiRute()">🚀 Bagi Rute</button>
             <button class="btn-print" onclick="cetakPDF()">🖨️ Cetak</button>
             <button class="btn-excel" onclick="downloadExcel()">📊 Excel</button>
             <button class="btn-reset" onclick="resetSemua()">Reset Semua Data</button>
@@ -348,59 +315,30 @@
 </div>
 
 <script>
-// 🔴 MASUKKAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwrPuwozp74jDYv2Lw-rWGedCect1tyP3yNclwPTMVLGMlYZxTNAn2RypvgVCwIBeZh/exec"; 
+// 🔴 URL WEB APP GAS DRIVER / SHEET PDF BESOK ANDA
+const API_URL = "https://script.google.com/macros/s/AKfycbzH4e2dQErvrU5m_1Q-s66gxG68JaKFae2foTcOrTUHiZT42sqY0xYHV4Cv04_Dowgi/exec";  
 
-let antrean = JSON.parse(localStorage.getItem('antrean')) || [];
+let antrean = JSON.parse(localStorage.getItem('antreanAdmin')) || [];
 let hasilPembagianGlobal = {};
 
 const klaster = {
-    // Blok Barat & Utara
     "SUKUN": {blok: "BARAT & UTARA", urut: 1}, 
     "KLOJEN": {blok: "BARAT & UTARA", urut: 2}, 
     "LOWOKWARU": {blok: "BARAT & UTARA", urut: 3}, 
-    "DAU": {blok: "BARAT & UTARA", urut: 4}, 
-    "KARANGPLOSO": {blok: "BARAT & UTARA", urut: 5}, 
-    "BATU": {blok: "BARAT & UTARA", urut: 6}, 
-    "BUMIAJI": {blok: "BARAT & UTARA", urut: 7}, 
-    "JUNREJO": {blok: "BARAT & UTARA", urut: 8},
-    "PUJON": {blok: "BARAT & UTARA", urut: 9},
-    "NGANTANG": {blok: "BARAT & UTARA", urut: 10},
-    "KASEMBON": {blok: "BARAT & UTARA", urut: 11},
-    
-    // Blok Timur & Utara Jauh
-    "BLIMBING": {blok: "TIMUR & UTARA JAUH", urut: 12}, 
-    "KEDUNGKANDANG": {blok: "TIMUR & UTARA JAUH", urut: 13}, 
-    "SINGOSARI": {blok: "TIMUR & UTARA JAUH", urut: 14}, 
-    "LAWANG": {blok: "TIMUR & UTARA JAUH", urut: 15}, 
-    "PAKIS": {blok: "TIMUR & UTARA JAUH", urut: 16}, 
-    "TAJINAN": {blok: "TIMUR & UTARA JAUH", urut: 17}, 
-    "JABUNG": {blok: "TIMUR & UTARA JAUH", urut: 18}, 
-    "WAJAK": {blok: "TIMUR & UTARA JAUH", urut: 19},
-    "TUMPANG": {blok: "TIMUR & UTARA JAUH", urut: 20},
-    "PONCOKUSUMO": {blok: "TIMUR & UTARA JAUH", urut: 21},
-    "TIRTOYUDO": {blok: "TIMUR & UTARA JAUH", urut: 22},
-    "AMPELGADING": {blok: "TIMUR & UTARA JAUH", urut: 23},
-    "DAMPIT": {blok: "TIMUR & UTARA JAUH", urut: 24},
-    
-    // Blok Selatan
-    "WAGIR": {blok: "SELATAN", urut: 25}, 
-    "PAKISAJI": {blok: "SELATAN", urut: 26}, 
-    "BULULAWANG": {blok: "SELATAN", urut: 27}, 
-    "KEPANJEN": {blok: "SELATAN", urut: 28}, 
-    "GONDANGLEGI": {blok: "SELATAN", urut: 29}, 
-    "TUREN": {blok: "SELATAN", urut: 30}, 
-    "PAGELARAN": {blok: "SELATAN", urut: 31},
-    "SUMBERMANJING": {blok: "SELATAN", urut: 32},
-    "BANTUR": {blok: "SELATAN", urut: 33},
-    "PAGAK": {blok: "SELATAN", urut: 34},
-    "DONOMULYO": {blok: "SELATAN", urut: 35},
-    "SUMBERPUCUNG": {blok: "SELATAN", urut: 36},
-    "KALIPARE": {blok: "SELATAN", urut: 37},
-    "GEDANGAN": {blok: "SELATAN", urut: 38},
-    "NGAJUM": {blok: "SELATAN", urut: 39},
-    "WONOSARI": {blok: "SELATAN", urut: 40},
-    "KROMENGAN": {blok: "SELATAN", urut: 41}
+    "BLIMBING": {blok: "TIMUR & UTARA JAUH", urut: 4}, 
+    "KEDUNGKANDANG": {blok: "TIMUR & UTARA JAUH", urut: 5}, 
+    "SINGOSARI": {blok: "TIMUR & UTARA JAUH", urut: 6}, 
+    "LAWANG": {blok: "TIMUR & UTARA JAUH", urut: 7}, 
+    "PAKIS": {blok: "TIMUR & UTARA JAUH", urut: 8}, 
+    "WAGIR": {blok: "SELATAN", urut: 9}, 
+    "PAKISAJI": {blok: "SELATAN", urut: 10}, 
+    "BULULAWANG": {blok: "SELATAN", urut: 11}, 
+    "KEPANJEN": {blok: "SELATAN", urut: 12}
+};
+
+// Otomatis tarik data dari Sheet PDF Besok saat halaman pertama dibuka
+window.onload = function() {
+    tarikDataDariSheet(true); // true = silent/otomatis
 };
 
 function renderAntrean() {
@@ -419,11 +357,61 @@ function renderAntrean() {
     }
     document.getElementById('tabelAntrean').innerHTML = html;
     document.getElementById('jumlahAntrean').innerText = antrean.length;
-    localStorage.setItem('antrean', JSON.stringify(antrean));
+    localStorage.setItem('antreanAdmin', JSON.stringify(antrean));
+}
+
+function tarikDataDariSheet(isSilent = false) {
+    if (!isSilent) alert("⏳ Sedang mengambil data dari sheet PDF Besok...");
+
+    fetch(API_URL)
+    .then(r => r.json())
+    .then(data => {
+        let ordersFromSheet = data.orders || [];
+        if (ordersFromSheet.length === 0) return;
+
+        antrean = [];
+
+        ordersFromSheet.forEach((row, index) => {
+            let isiTeks = row[0] || "";
+            if (!isiTeks) return;
+
+            // Ekstrak informasi dari format teks yang sama persis dengan web driver
+            let namaCust = ambilPola(isiTeks, /CUSTOMER\s*:\s*([^\n]+)/i);
+            let alamatCust = ambilPola(isiTeks, /ALAMAT\s*:\s*([^\n]+)/i);
+            let kecCust = deteksiKecamatan(alamatCust || isiTeks);
+
+            antrean.push({
+                nama: namaCust ? namaCust.toUpperCase() : "CUSTOMER " + (index + 1),
+                alamat: alamatCust ? alamatCust.toUpperCase() : isiTeks,
+                kec: kecCust ? kecCust.toUpperCase() : "SUKUN"
+            });
+        });
+
+        renderAntrean();
+        if (!isSilent) alert("✅ Berhasil! Data antrean admin sudah sama persis dengan Web Driver.");
+    })
+    .catch(err => {
+        console.error("Gagal sinkronisasi sheet:", err);
+        if (!isSilent) alert("❌ Gagal terhubung ke Google Sheets.");
+    });
+}
+
+function ambilPola(text, pola) {
+    let m = text.match(pola);
+    return m ? m[1].trim() : "";
+}
+
+function deteksiKecamatan(teks) {
+    for (let kec in klaster) {
+        if (teks.toUpperCase().includes(kec)) {
+            return kec;
+        }
+    }
+    return "SUKUN";
 }
 
 function tambahOrderan() {
-   let nama = document.getElementById('inputNama').value.trim().toUpperCase();
+    let nama = document.getElementById('inputNama').value.trim().toUpperCase();
     let alamat = document.getElementById('inputAlamat').value.trim().toUpperCase();
     let kec = document.getElementById('inputKec').value.toUpperCase();
 
@@ -432,25 +420,13 @@ function tambahOrderan() {
         return;
     }
 
-    let orderBaru = { nama, alamat, kec };
-    antrean.push(orderBaru);
-    
-    // Kirim data secara online ke Google Sheets (jika URL sudah diisi)
-    if (WEB_APP_URL !== "URL_APPS_SCRIPT_ANDA_DI_SINI") {
-        fetch(WEB_APP_URL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ action: "tambah", nama: nama, alamat: alamat, kecamatan: kec })
-        }).catch(err => console.error("Gagal kirim ke sheets:", err));
-    }
+    antrean.push({ nama, alamat, kec });
+    renderAntrean();
 
     document.getElementById('inputNama').value = "";
     document.getElementById('inputAlamat').value = "";
     document.getElementById('inputKec').value = "";
     document.getElementById('inputNama').focus();
-
-    renderAntrean();
 }
 
 function hapusItem(index) {
@@ -461,7 +437,7 @@ function hapusItem(index) {
 function resetSemua() {
     if(confirm("Hapus seluruh list antrean?")) {
         antrean = [];
-        localStorage.removeItem('antrean');
+        localStorage.removeItem('antreanAdmin');
         renderAntrean();
         document.getElementById('hasilPembagian').innerHTML = "";
         hasilPembagianGlobal = {};
@@ -548,7 +524,7 @@ function bagiRute() {
 
 function cetakPDF() {
     if(Object.keys(hasilPembagianGlobal).length === 0) {
-        alert("⚠️ Klik tombol 'Bagi' terlebih dahulu sebelum mencetak!");
+        alert("⚠️ Klik tombol 'Bagi Rute' terlebih dahulu sebelum mencetak!");
         return;
     }
     window.print();
@@ -556,7 +532,7 @@ function cetakPDF() {
 
 function downloadExcel() {
     if(Object.keys(hasilPembagianGlobal).length === 0) {
-        alert("⚠️ Klik tombol 'Bagi' terlebih dahulu sebelum mendownload Excel!");
+        alert("⚠️ Klik tombol 'Bagi Rute' terlebih dahulu sebelum mendownload Excel!");
         return;
     }
 
@@ -583,8 +559,6 @@ function downloadExcel() {
     a.click();
     document.body.removeChild(a);
 }
-
-renderAntrean();
 </script>
 </body>
 </html>
