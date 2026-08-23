@@ -664,12 +664,18 @@ function tarikDataDariSheet(isSilent = false) {
     if (!isSilent) bukaModal("Sinkronisasi", "Sedang menyinkronkan data & status dari server...", "alert");
 
     fetch(API_URL)
-    .then(r => r.json())
+    .then(r => {
+        if (!r.ok) throw new Error("Network response was not ok");
+        return r.json();
+    })
     .then(data => {
         let ordersFromSheet = data.orders || [];
         statusTerkirimGlobal = data.terkirim || {}; 
 
-        if (ordersFromSheet.length === 0) return;
+        if (ordersFromSheet.length <= 1) { // Hanya header atau kosong
+            if (!isSilent) bukaModal("Info", "Sheet 'TEST RUTE' masih kosong.", "alert");
+            return;
+        }
 
         let existingKecMap = {};
         let existingMapsMap = {};
@@ -680,19 +686,38 @@ function tarikDataDariSheet(isSilent = false) {
 
         let newAntrean = [];
 
-        ordersFromSheet.forEach((row, index) => {
-            let isiTeks = row[0] || "";
-            if (!isiTeks) return;
+        // Mulai dari i = 1 untuk melewati baris header (baris 1)
+        for (let i = 1; i < ordersFromSheet.length; i++) {
+            let row = ordersFromSheet[i];
+            
+            // Ambil langsung dari kolom jika sudah terpisah rapi, atau parsing jika berupa teks mentah
+            let kolomA = (row[0] || "").toString().trim();
+            let kolomB = (row[1] || "").toString().trim();
+            let kolomC = (row[2] || "").toString().trim();
+            let kolomE = (row[4] || "").toString().trim();
 
-            let namaCust = ambilPola(isiTeks, /CUSTOMER\s*:\s*([^\n]+)/i);
-            let namaFinal = namaCust ? namaCust.toUpperCase() : "CUSTOMER " + (index + 1);
-            let alamatCust = ambilPola(isiTeks, /ALAMAT\s*:\s*([^\n]+)/i);
-            let alamatFinal = alamatCust ? alamatCust.toUpperCase() : isiTeks;
+            if (!kolomA && !kolomB) continue; // Lewati baris kosong
 
-            let kecSheet = row[2] || ""; // Kolom C (Kecamatan)
+            let namaFinal = "";
+            let alamatFinal = "";
+
+            // Cek apakah Kolom A berbentuk format teks mentah berantakan atau nama toko biasa
+            if (kolomA.includes("CUSTOMER:")) {
+                let namaCust = ambilPola(kolomA, /CUSTOMER\s*:\s*([^\n]+)/i);
+                namaFinal = namaCust ? namaCust.toUpperCase() : "CUSTOMER " + i;
+                
+                let alamatCust = ambilPola(kolomA, /ALAMAT\s*:\s*([^\n]+)/i);
+                alamatFinal = alamatCust ? alamatCust.toUpperCase() : kolomA;
+            } else {
+                // Format sudah bersih per kolom (Hasil input Web Driver / Admin)
+                namaFinal = kolomA.toUpperCase();
+                alamatFinal = kolomB.toUpperCase();
+            }
+
+            let kecSheet = kolomC;
             let kecFinal = existingKecMap[namaFinal] || kecSheet || (deteksiKecamatan(alamatFinal) || "SUKUN").toUpperCase();
             
-            let mapsSheet = row[4] || ""; // Kolom E (Link Maps - index 4)
+            let mapsSheet = kolomE;
             let mapsFinal = existingMapsMap[namaFinal] || mapsSheet || "";
 
             newAntrean.push({
@@ -702,12 +727,12 @@ function tarikDataDariSheet(isSilent = false) {
                 kec: kecFinal,
                 tersimpan: true
             });
-        });
+        }
 
         antrean = newAntrean;
         renderAntrean();
         
-        if (!isSilent) bukaModal("Sukses", "Data antrean & status pengiriman driver telah diperbarui.", "alert");
+        if (!isSilent) bukaModal("Sukses", "Data otomatis dari server berhasil ditarik ke antrean!", "alert");
     })
     .catch(err => {
         console.error("Gagal sinkronisasi sheet:", err);
