@@ -342,21 +342,37 @@ window.onload = function() {
 };
 
 function renderAntrean() {
-    let html = `<tr><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Kecamatan</th><th style="width: 80px; text-align: center;">Aksi</th></tr>`;
+    let html = `<tr><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Kecamatan (Bisa Diubah)</th><th style="width: 80px; text-align: center;">Aksi</th></tr>`;
     if (antrean.length === 0) {
         html += `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding: 25px; font-weight: 600;">Belum ada orderan masuk di antrean.</td></tr>`;
     } else {
         antrean.forEach((item, index) => {
+            // Daftar pilihan kecamatan untuk dropdown manual
+            let opsiKecamatan = ["SUKUN", "KLOJEN", "LOWOKWARU", "BLIMBING", "KEDUNGKANDANG", "SINGOSARI", "LAWANG", "PAKIS", "WAGIR", "PAKISAJI", "BULULAWANG", "KEPANJEN"];
+            let dropdownHtml = `<select onchange="updateKecamatanManual(${index}, this.value)" style="margin-bottom:0; padding:6px 10px; font-size:12px;">`;
+            
+            opsiKecamatan.forEach(k => {
+                let selected = (item.kec === k) ? "selected" : "";
+                dropdownHtml += `<option value="${k}" ${selected}>${k}</option>`;
+            });
+            dropdownHtml += `</select>`;
+
             html += `<tr>
                 <td><b>${item.nama}</b></td>
                 <td>${item.alamat}</td>
-                <td><span style="background: #f1f5f9; border: 1px solid var(--border); padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;">${item.kec}</span></td>
+                <td>${dropdownHtml}</td>
                 <td style="text-align: center;"><button class="delete-btn" onclick="hapusItem(${index})">Hapus</button></td>
             </tr>`;
         });
     }
     document.getElementById('tabelAntrean').innerHTML = html;
     document.getElementById('jumlahAntrean').innerText = antrean.length;
+    localStorage.setItem('antreanAdmin', JSON.stringify(antrean));
+}
+
+// Fungsi untuk menyimpan perubahan kecamatan saat admin mengubah pilihan dropdown manual
+function updateKecamatanManual(index, nilaiBaru) {
+    antrean[index].kec = nilaiBaru;
     localStorage.setItem('antreanAdmin', JSON.stringify(antrean));
 }
 
@@ -375,20 +391,22 @@ function tarikDataDariSheet(isSilent = false) {
             let isiTeks = row[0] || "";
             if (!isiTeks) return;
 
-            // Ekstrak informasi dari format teks yang sama persis dengan web driver
+            // Ekstrak nama dan alamat dari teks
             let namaCust = ambilPola(isiTeks, /CUSTOMER\s*:\s*([^\n]+)/i);
             let alamatCust = ambilPola(isiTeks, /ALAMAT\s*:\s*([^\n]+)/i);
+            
+            // Coba deteksi otomatis, kalau meleset nanti admin bisa ganti manual via dropdown
             let kecCust = deteksiKecamatan(alamatCust || isiTeks);
 
             antrean.push({
                 nama: namaCust ? namaCust.toUpperCase() : "CUSTOMER " + (index + 1),
                 alamat: alamatCust ? alamatCust.toUpperCase() : isiTeks,
-                kec: kecCust ? kecCust.toUpperCase() : "SUKUN"
+                kec: kecCust ? kecCust.toUpperCase() : "SUKUN" // Default Sukun, bisa diubah manual di tabel
             });
         });
 
         renderAntrean();
-        if (!isSilent) alert("✅ Berhasil! Data antrean admin sudah sama persis dengan Web Driver.");
+        if (!isSilent) alert("✅ Berhasil! Data antrean ditarik. Silakan cek dan atur kecamatan jika ada yang keliru.");
     })
     .catch(err => {
         console.error("Gagal sinkronisasi sheet:", err);
