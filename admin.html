@@ -271,9 +271,10 @@
         </div>
     </div>
 
-    <!-- Form Input Manual -->
-    <div class="card-box">
-        <label>Input Orderan Tambahan / Manual</label>
+    <!-- Form Input Manual (Digabung Menjadi Satu Kesatuan) -->
+    <div class="card-box" style="border: 2px solid var(--primary);">
+        <label style="color: var(--primary); font-size: 13px; margin-bottom: 12px;">➕ Form Tambah Orderan Manual</label>
+        
         <input type="text" id="inputNama" placeholder="NAMA TOKO / CUSTOMER" oninput="this.value = this.value.toUpperCase()">
         <input type="text" id="inputAlamat" placeholder="ALAMAT LENGKAP" oninput="this.value = this.value.toUpperCase()">
         <input type="text" id="inputMaps" placeholder="LINK GOOGLE MAPS / SHARELOK (OPSIONAL)">
@@ -330,13 +331,18 @@
             </optgroup>
         </select>
 
+        <button class="btn-add" onclick="tambahOrderan()" style="margin-top: 5px; height: 46px; font-size: 14px;">💾 Simpan & Masukkan ke Daftar</button>
+    </div>
+
+    <!-- Kotak Aksi & Kontrol Data -->
+    <div class="card-box">
+        <label>Aksi & Kontrol Data</label>
         <div class="btn-group">
-            <button class="btn-add" onclick="tambahOrderan()">✨ Tambah Manual</button>
             <button class="btn-sheet" onclick="tarikDataDariSheet()">🔄 Sinkron Sheet</button>
             <button class="btn-run" onclick="bagiRute()">⚡ Proses Rute</button>
             <button class="btn-print" onclick="cetakPDF()">📄 Cetak Dokumen</button>
             <button class="btn-excel" onclick="downloadExcel()">📈 Unduh Excel</button>
-            <button class="btn-reset" onclick="resetSemua()">🗑️ Bersihkan Semua Data</button>
+            <button class="btn-reset" onclick="resetSemua()" style="grid-column: span 3;">🗑️ Bersihkan Semua Data</button>
         </div>
     </div>
 
@@ -351,7 +357,7 @@
 </div>
 
 <script>
-// 🔴 URL WEB APP GAS DRIVER / SHEET PDF BESOK ANDA
+// 🔴 URL WEB APP GAS DRIVER / SHEET TEST RUTE ANDA
 const API_URL = "https://script.google.com/macros/s/AKfycbzH4e2dQErvrU5m_1Q-s66gxG68JaKFae2foTcOrTUHiZT42sqY0xYHV4Cv04_Dowgi/exec";  
 
 let antrean = JSON.parse(localStorage.getItem('antreanAdmin')) || [];
@@ -424,7 +430,6 @@ function renderAntrean() {
             });
             dropdownHtml += `</select>`;
 
-            // Input teks kecil langsung di tabel untuk mengisi atau mengedit link maps orderan dari sheet
             let mapsInputHtml = `<input type="text" value="${item.maps || ''}" placeholder="Paste Link Maps..." oninput="updateMapsManual(${index}, this.value)" style="margin-bottom:0; padding:6px 10px; font-size:12px; text-transform:none;">`;
 
             html += `<tr>
@@ -460,7 +465,6 @@ function tarikDataDariSheet(isSilent = false) {
         let ordersFromSheet = data.orders || [];
         if (ordersFromSheet.length === 0) return;
 
-        // Catat mapping data lama (kecamatan dan maps) yang sudah di-setting manual oleh admin agar tidak tertimpa
         let existingKecMap = {};
         let existingMapsMap = {};
         antrean.forEach(item => {
@@ -480,7 +484,7 @@ function tarikDataDariSheet(isSilent = false) {
             let alamatFinal = alamatCust ? alamatCust.toUpperCase() : isiTeks;
 
             let kecFinal = existingKecMap[namaFinal] || (deteksiKecamatan(alamatFinal) || "SUKUN").toUpperCase();
-            let mapsFinal = existingMapsMap[namaFinal] || ""; // Pertahankan link maps jika sudah diisi
+            let mapsFinal = existingMapsMap[namaFinal] || "";
 
             newAntrean.push({
                 nama: namaFinal,
@@ -526,7 +530,6 @@ function tambahOrderan() {
         return;
     }
 
-    // 🟢 Kirim data secara online ke Google Apps Script (Sheet TEST RUTE)
     let payload = {
         action: "tambah",
         nama: nama,
@@ -537,18 +540,16 @@ function tambahOrderan() {
 
     fetch(API_URL, {
         method: "POST",
-        mode: "no-cors", // Penting untuk koneksi GitHub Pages ke GAS
+        mode: "no-cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
     })
     .then(() => {
         alert("✅ Orderan berhasil dikirim dan tersimpan online di Google Sheets!");
         
-        // Tambahkan juga ke antrean lokal untuk langsung tampil di tabel
         antrean.push({ nama, alamat, maps, kec });
         renderAntrean();
 
-        // Reset form input
         document.getElementById('inputNama').value = "";
         document.getElementById('inputAlamat').value = "";
         document.getElementById('inputMaps').value = "";
@@ -560,6 +561,7 @@ function tambahOrderan() {
         alert("❌ Gagal terhubung ke server Google Sheets.");
     });
 }
+
 function hapusItem(index) {
     antrean.splice(index, 1);
     renderAntrean();
