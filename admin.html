@@ -657,8 +657,17 @@ function renderAntrean() {
 
             let mapsInputHtml = `<input type="text" id="maps-${index}" value="${item.maps || ''}" placeholder="Paste Link Maps..." oninput="tandaiBelumSimpan(${index})" style="margin-bottom:0; padding:10px 14px; font-size:13px; width:100%; text-transform:none;">`;
 
-            let keyNama = (item.nama || "").toLowerCase().trim();
-            let isTerkirim = statusTerkirimGlobal[keyNama] === true;
+            let rawNama = (item.nama || "").toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+            let isTerkirim = false;
+            
+            // Cek apakah ada nama di statusTerkirimGlobal yang cocok dengan nama customer ini
+            for (let savedName in statusTerkirimGlobal) {
+                let cleanSaved = savedName.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+                if (rawNama.includes(cleanSaved) || cleanSaved.includes(rawNama)) {
+                    isTerkirim = true;
+                    break;
+                }
+            }
 
             let statusBadge = isTerkirim ? 
                 `<span style="background:#ecfdf5; color:#059669; border:1px solid #10b981; padding:5px 10px; border-radius:6px; font-size:11px; font-weight:800; display:inline-block;">✓ TERKIRIM</span>` : 
