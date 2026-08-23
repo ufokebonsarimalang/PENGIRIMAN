@@ -762,29 +762,21 @@ function simpanBarisKeServer(index) {
         bukaModal("Koneksi Error", "Gagal terhubung ke Google Sheets.", "alert");
     });
 }
-
 function parseDataMentah(text) {
-    // 🟢 Ekstraksi presisi: Cari teks yang berada tepat setelah label "CUSTOMER :" sampai sebelum label berikutnya
-    let matchCust = text.match(/CUSTOMER\s*:\s*([^📍📦🛒🚚📝💰📱👤ALAMAT]+)/i);
-    let nama = matchCust ? matchCust[1].trim() : "";
-
-    if (!nama) {
-        let parts = text.split("CUSTOMER :");
-        if (parts.length > 1) {
-            nama = parts[1].split("📍")[0].split("📱")[0].split("ALAMAT")[0].split("PROMOTOR")[0].trim();
-        }
+    if (!text) return { nama: "", alamat: "" };
+    
+    // 🟢 Gunakan pola pencocokan nama yang sama persis dengan Web Driver
+    let m = text.match(/CUSTOMER\s*:\s*([^📍📦🛒🚚📝💰📱👤\n]+)/i);
+    if (!m) {
+        m = text.match(/CUSTOMER\s*:\s*([^\n]+)/i);
     }
+    let nama = m ? m[1].trim() : "";
 
-    let matchAlamat = text.match(/ALAMAT\s*:\s*([^📱🛒🚚📝💰📦]+)/i);
+    // Ekstraksi alamat
+    let matchAlamat = text.match(/ALAMAT\s*:\s*([^📱🛒🚚📝💰📦\n]+)/i);
     let alamat = matchAlamat ? matchAlamat[1].trim() : text;
-
     if (matchAlamat) {
         alamat = alamat.replace(/WA\s*1\s*:.*/i, "").trim();
-    } else {
-        let partsAlamat = text.split("ALAMAT :");
-        if (partsAlamat.length > 1) {
-            alamat = partsAlamat[1].split("📱")[0].split("🛒")[0].split("🚚")[0].split("📝")[0].trim();
-        }
     }
 
     return {
