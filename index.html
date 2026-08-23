@@ -847,10 +847,19 @@ function loadData() {
       html += '<div class="card" data-customer="' + key + '">';
       html += '<div class="data">' + isi + '</div>';
       
-    // Tampilkan tombol Google Maps dengan pemicu external intent
+   // Tampilkan tombol Google Maps dengan pembersih & pemaksa buka aplikasi
       if (linkMaps) {
           let cleanMaps = linkMaps.toString().trim();
-          html += '<a href="' + cleanMaps + '" target="_blank" external="true" class="btn-maps-driver">📍 Buka Google Maps</a>';
+          
+          // Jika link berupa maps.app.goo.gl, kita beri opsi tombol cadangan atau arahkan langsung
+          html += '<div style="display: flex; gap: 6px;">';
+          html += '<a href="' + cleanMaps + '" target="_blank" class="btn-maps-driver" style="flex: 1;">📍 Buka Maps (Link)</a>';
+          
+          // Tombol darurat pencarian teks alamat jika link pendek error
+          let namaCust = customer || "";
+          let searchUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(namaCust + " Malang");
+          html += '<a href="' + searchUrl + '" target="_blank" class="btn-maps-driver" style="flex: 1; background: #059669;">🔍 Cari di Maps</a>';
+          html += '</div>';
       }
       // Kondisi: HANYA tampilkan card upload foto jika BELUM dikirim
       if(!sudah) {
