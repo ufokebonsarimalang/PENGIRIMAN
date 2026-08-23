@@ -833,7 +833,7 @@ function loadData() {
       const customer = ambilCustomer(isi);
       if(!customer || customer === "-") return; 
 
-      // 🟢 AMBIL LINK MAPS DARI KOLOM E (index 4 di Google Sheet TEST RUTE)
+      // 🟢 AMBIL LINK MAPS DARI KOLOM E (index 4)
       const linkMaps = row[4] || "";
 
       total++;
@@ -843,6 +843,7 @@ function loadData() {
       const sudah = key ? (terkirim[key] === true) : false;
 
       if(sudah) ok++; else no++;
+      
       html += '<div class="card" data-customer="' + key + '">';
       html += '<div class="data">' + isi + '</div>';
       
@@ -851,6 +852,7 @@ function loadData() {
           html += '<a href="' + linkMaps + '" target="_blank" class="btn-maps-driver">📍 Buka Google Maps</a>';
       }
       
+      // 🟢 KONDISI JIKA BELUM TERKIRIM: TAMPILKAN UPLOAD FOTO & TOMBOL KIRIM
       if(!sudah) {
         html += '<div class="foto-upload-card" id="foto-card-' + index + '">';
         html += '<input type="file" id="input-foto-' + index + '" class="foto-input-hidden" accept="image/*" onchange="previewFoto(' + index + ')">';
@@ -878,6 +880,8 @@ function loadData() {
       }
 
       html += '</div>';
+      
+      // 🟢 TOMBOL AKSI (JIKA SUDAH TERKIRIM: WARNA ABU-BU TERKUNCI. JIKA BELUM: WARNA BIRU/KIRIM)
       html += '<div class="aksi">';
       html += '<button type="button" class="btn ' + (sudah ? 'sudah' : 'kirim') + '" id="btn-' + index + '" ' + (sudah ? 'disabled' : '') + ' onclick="kirimStatus(\'' + customer + '\',\'' + (wa[0] || '') + '\', ' + index + ')">';
       html += '<div class="btn-isi"><span id="txt-' + index + '">' + (sudah ? '✓ TERKIRIM' : '🚚 KIRIM') + '</span><div class="spinner" id="spin-' + index + '"></div></div>';
