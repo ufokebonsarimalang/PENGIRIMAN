@@ -20,7 +20,6 @@
             --text-main: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
-            --border-focus: #6366f1;
         }
 
         body {
@@ -32,27 +31,26 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* SaaS Modern Layout Container */
         .container {
-            max-width: 1500px;
+            max-width: 1550px;
             margin: auto;
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 20px;
         }
 
         /* SaaS Top Header Navbar */
         .top-navbar {
             background: var(--card-bg);
-            padding: 20px 32px;
-            border-radius: 20px;
+            padding: 16px 24px;
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             box-shadow: 0 4px 20px -4px rgba(0,0,0,0.04);
             border: 1px solid var(--border);
             flex-wrap: wrap;
-            gap: 16px;
+            gap: 15px;
         }
 
         .header-left {
@@ -62,7 +60,7 @@
         }
 
         .header-title h2 {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 800;
             color: var(--text-main);
             margin: 0;
@@ -70,21 +68,31 @@
         }
 
         .header-left span {
-            font-size: 26px;
+            font-size: 24px;
         }
 
+        /* Tombol Aksi Header yang Rapi & Kecil */
         .nav-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
             align-items: center;
+        }
+
+        .btn-action-top {
+            padding: 9px 14px;
+            font-size: 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            width: auto;
         }
 
         .badge-live {
             background: #ecfdf5;
             color: #059669;
             border: 1px solid #10b981;
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 20px;
             font-size: 11px;
             font-weight: 800;
@@ -95,8 +103,8 @@
 
         .badge-live::before {
             content: '';
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             background: #10b981;
             border-radius: 50%;
             display: inline-block;
@@ -109,39 +117,39 @@
             100% { transform: scale(0.95); opacity: 0.8; }
         }
 
-        /* 💻 DASHBOARD GRID UTAMA (Sidebar Kiri & Tabel Kanan) */
+        /* 💻 DASHBOARD GRID UTAMA */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 380px 1fr;
-            gap: 24px;
+            grid-template-columns: 360px 1fr;
+            gap: 20px;
             align-items: start;
         }
 
         .sidebar-panel {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
         .main-panel {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
             overflow-x: auto;
         }
 
         .card-box {
             background: #ffffff;
-            padding: 24px;
-            border-radius: 20px;
+            padding: 20px;
+            border-radius: 18px;
             border: 1px solid var(--border);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
         }
 
         label {
             font-weight: 700;
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-size: 11px;
             color: var(--text-muted);
             text-transform: uppercase;
@@ -150,10 +158,10 @@
 
         input[type="text"], select {
             width: 100%;
-            padding: 12px 16px;
-            margin-bottom: 14px;
+            padding: 11px 14px;
+            margin-bottom: 12px;
             border: 1.5px solid var(--border);
-            border-radius: 14px;
+            border-radius: 12px;
             box-sizing: border-box;
             font-size: 13px;
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -165,7 +173,7 @@
 
         input[type="text"]:focus, select:focus {
             outline: none;
-            border-color: var(--border-focus);
+            border-color: var(--primary);
             background: #fff;
             box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
         }
@@ -173,42 +181,36 @@
         /* Checkbox Driver */
         .driver-checkbox-group {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
         .driver-checkbox-group label {
             background: #f8fafc;
             border: 1.5px solid var(--border);
-            padding: 10px 16px;
-            border-radius: 12px;
+            padding: 8px 12px;
+            border-radius: 10px;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-main);
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             text-transform: none;
             letter-spacing: normal;
         }
 
         .driver-checkbox-group input {
             accent-color: var(--primary);
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             cursor: pointer;
         }
 
-        /* Tombol Aksi */
-        .btn-group {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
+        /* Tombol Global & Spinner */
         button {
-            padding: 12px 16px;
+            padding: 11px 16px;
             cursor: pointer;
             border: none;
             border-radius: 12px;
@@ -217,35 +219,34 @@
             color: white;
             font-size: 13px;
             transition: all 0.2s ease;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
         }
 
         button:active { transform: scale(0.98); }
 
-        .btn-add { background: var(--primary); font-size: 14px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25); }
-        .btn-run { background: var(--success); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); }
-        .btn-sheet { background: var(--info); color: #fff; width: auto; padding: 10px 16px; font-size: 12px; }
-        .btn-print { background: var(--warning); color: #fff; width: auto; padding: 10px 16px; font-size: 12px; }
-        .btn-excel { background: #0891b2; color: #fff; width: auto; padding: 10px 16px; font-size: 12px; }
-        .btn-reset { background: var(--danger); color: #fff; width: auto; padding: 10px 16px; font-size: 12px; }
+        .btn-add { background: var(--primary); width: 100%; font-size: 13px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2); }
+        .btn-run { background: var(--success); }
+        .btn-sheet { background: var(--info); }
+        .btn-print { background: var(--warning); }
+        .btn-excel { background: #0891b2; }
+        .btn-reset { background: var(--danger); }
 
         /* SPINNER LOADING */
         .btn-isi {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .spinner {
-            width: 16px;
-            height: 16px;
-            border: 2.5px solid rgba(255,255,255,0.3);
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
             border-radius: 50%;
             border-top-color: #fff;
             animation: putar 0.6s linear infinite;
@@ -261,7 +262,7 @@
             max-height: 520px;
             overflow-y: auto;
             border: 1px solid var(--border);
-            border-radius: 16px;
+            border-radius: 14px;
             background: white;
         }
 
@@ -273,7 +274,7 @@
         }
 
         th, td {
-            padding: 14px 16px;
+            padding: 12px 14px;
             text-align: left;
             vertical-align: middle;
         }
@@ -288,27 +289,27 @@
             position: sticky;
             top: 0;
             z-index: 10;
-            letter-spacing: 0.5px;
         }
 
         td { border-bottom: 1px solid var(--border); font-weight: 500; }
         tr:hover { background-color: #f8fafc; }
 
-        .col-status { width: 120px; }
-        .col-nama { width: 160px; }
-        .col-alamat { width: 260px; }
-        .col-maps { width: 220px; }
-        .col-kec { width: 180px; }
-        .col-aksi { width: 170px; text-align: center; }
+        .col-status { width: 110px; }
+        .col-nama { width: 150px; }
+        .col-alamat { width: 240px; }
+        .col-maps { width: 200px; }
+        .col-kec { width: 160px; }
+        .col-aksi { width: 150px; text-align: center; }
 
+        /* Tombol Aksi di Tabel (Kecil & Rapi) */
         .delete-btn {
             background: #fee2e2;
             color: var(--danger);
             border: none;
-            padding: 8px 12px;
-            border-radius: 10px;
+            padding: 6px 10px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             width: auto;
             box-shadow: none;
@@ -318,13 +319,13 @@
             background: var(--success);
             color: white;
             border: none;
-            padding: 8px 14px;
-            border-radius: 10px;
+            padding: 6px 10px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             width: auto;
-            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.15);
         }
 
         .save-row-btn.saved, .save-row-btn:disabled {
@@ -345,57 +346,39 @@
             transition: opacity 0.25s ease;
         }
 
-        .modal-overlay.aktif {
-            opacity: 1; pointer-events: auto;
-        }
+        .modal-overlay.aktif { opacity: 1; pointer-events: auto; }
 
         .modal-content {
-            background: #fff; padding: 28px 24px;
-            border-radius: 24px; width: 320px; text-align: center;
+            background: #fff; padding: 26px 22px;
+            border-radius: 20px; width: 320px; text-align: center;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             transform: scale(0.85); transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .modal-overlay.aktif .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-title {
-            font-size: 18px; font-weight: 800; margin-bottom: 8px; color: #0f172a;
-        }
-
-        .modal-text {
-            font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 24px;
-        }
-
-        .modal-buttons {
-            display: flex; gap: 10px; justify-content: center;
-        }
-
-        .btn-modal {
-            padding: 12px 18px; border: none; border-radius: 12px;
-            font-weight: 700; cursor: pointer; font-size: 13px; width: auto; flex: 1;
-        }
-
+        .modal-overlay.aktif .modal-content { transform: scale(1); }
+        .modal-title { font-size: 17px; font-weight: 800; margin-bottom: 8px; color: #0f172a; }
+        .modal-text { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; }
+        .modal-buttons { display: flex; gap: 10px; justify-content: center; }
+        .btn-modal { padding: 10px 16px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 12px; flex: 1; }
         .btn-batal { background: #f1f5f9; color: var(--text-muted); }
-        .btn-oke { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25); }
+        .btn-oke { background: var(--primary); color: #fff; }
 
         /* Kartu Hasil Pembagian Per Driver */
         .driver-card {
-            margin-top: 24px;
+            margin-top: 20px;
             background: white;
             border: 1px solid var(--border);
-            border-radius: 20px;
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
         }
 
         .driver-header {
             background: linear-gradient(135deg, var(--primary), var(--primary-hover));
             color: white;
-            padding: 16px 20px;
+            padding: 14px 18px;
             font-weight: 700;
-            font-size: 15px;
+            font-size: 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -403,18 +386,17 @@
 
         .badge {
             background: rgba(255, 255, 255, 0.25);
-            padding: 5px 12px;
+            padding: 4px 10px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
         }
 
         @media screen and (max-width: 1024px) {
-            body { padding: 12px; }
-            .container { padding: 0; }
-            .dashboard-grid { grid-template-columns: 1fr; gap: 20px; }
-            .top-navbar { flex-direction: column; align-items: flex-start; }
-            .nav-actions { width: 100%; justify-content: space-between; }
+            body { padding: 10px; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .top-navbar { flex-direction: column; align-items: stretch; }
+            .nav-actions { justify-content: space-between; }
         }
 
         @media print {
@@ -430,27 +412,32 @@
 
 <div class="container">
     
-    <!-- SaaS Top Header Navbar -->
+    <!-- SaaS Top Header Navbar dengan Tombol Rapi & Spinner -->
     <div class="top-navbar">
         <div class="header-left">
             <span>⚡</span>
             <div class="header-title">
-                <h2>Smart Route Dashboard (Admin)</h2>
+                <h2>Smart Route Dashboard</h2>
             </div>
         </div>
         <div class="nav-actions">
-            <button class="btn-sheet" onclick="tarikDataDariSheet()">🔄 Sinkron Sheet</button>
-            <button class="btn-run" onclick="bagiRute()">⚡ Proses Rute</button>
-            <button class="btn-print" onclick="cetakPDF()">📄 Cetak PDF</button>
-            <button class="btn-excel" onclick="downloadExcel()">📈 Unduh Excel</button>
-            <button class="btn-reset" onclick="resetSemua()">🗑️ Reset</button>
+            <button class="btn-sheet btn-action-top" onclick="tarikDataDariSheet()">
+                <div class="btn-isi">
+                    <span id="txt-sync">🔄 Sinkron</span>
+                    <div class="spinner" id="spin-sync"></div>
+                </div>
+            </button>
+            <button class="btn-run btn-action-top" onclick="bagiRute()">⚡ Proses Rute</button>
+            <button class="btn-print btn-action-top" onclick="cetakPDF()">📄 Cetak PDF</button>
+            <button class="btn-excel btn-action-top" onclick="downloadExcel()">📈 Excel</button>
+            <button class="btn-reset btn-action-top" onclick="resetSemua()">🗑️ Reset</button>
         </div>
-        <div class="badge-live">Live Sync Ready</div>
+        <div class="badge-live">Live Sync</div>
     </div>
     
     <div class="dashboard-grid">
         
-        <!-- KOLOM KIRI: Form Input & Kontrol Driver -->
+        <!-- KOLOM KIRI: Driver Aktif & Tambah Orderan Manual -->
         <div class="sidebar-panel">
             <div class="card-box">
                 <label>Driver Aktif Hari Ini</label>
@@ -462,7 +449,7 @@
             </div>
 
             <div class="card-box" style="border: 2px solid var(--primary);">
-                <label style="color: var(--primary); font-size: 12px; margin-bottom: 12px;">➕ Tambah Orderan Manual</label>
+                <label style="color: var(--primary); font-size: 11px; margin-bottom: 10px;">➕ Tambah Orderan Manual</label>
                 
                 <input type="text" id="inputNama" placeholder="NAMA TOKO / CUSTOMER" oninput="this.value = this.value.toUpperCase()">
                 <input type="text" id="inputAlamat" placeholder="ALAMAT LENGKAP" oninput="this.value = this.value.toUpperCase()">
@@ -520,15 +507,20 @@
                     </optgroup>
                 </select>
 
-                <button class="btn-add" onclick="tambahOrderan()" style="margin-top: 6px;">💾 Simpan & Masukkan</button>
+                <button class="btn-add" onclick="tambahOrderan()" style="margin-top: 4px;">
+                    <div class="btn-isi">
+                        <span id="txt-tambah">💾 Simpan & Masukkan</span>
+                        <div class="spinner" id="spin-tambah"></div>
+                    </div>
+                </button>
             </div>
         </div>
 
         <!-- KOLOM KANAN: Tabel Antrean Utama -->
         <div class="main-panel">
             <div class="card-box">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <h3 id="judulAntrean" style="font-size: 14px; font-weight: 800; margin: 0; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">List Antrean Masuk (<span id="jumlahAntrean">0</span> Orderan)</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                    <h3 id="judulAntrean" style="font-size: 13px; font-weight: 800; margin: 0; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">List Antrean Masuk (<span id="jumlahAntrean">0</span> Orderan)</h3>
                 </div>
                 
                 <div class="table-wrapper">
@@ -654,19 +646,19 @@ function renderAntrean() {
     </tr>`;
     
     if (antrean.length === 0) {
-        html += `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding: 35px; font-weight: 600;">Belum ada orderan masuk di antrean. Silakan klik Sinkron Sheet.</td></tr>`;
+        html += `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding: 35px; font-weight: 600;">Belum ada orderan masuk di antrean. Silakan klik Sinkron.</td></tr>`;
     } else {
         antrean.forEach((item, index) => {
             let opsiKecamatan = Object.keys(klaster).sort();
             
-            let dropdownHtml = `<select id="kec-${index}" onchange="tandaiBelumSimpan(${index})" style="margin-bottom:0; padding:10px 14px; font-size:13px; width:100%;">`;
+            let dropdownHtml = `<select id="kec-${index}" onchange="tandaiBelumSimpan(${index})" style="margin-bottom:0; padding:8px 12px; font-size:12px; width:100%;">`;
             opsiKecamatan.forEach(k => {
                 let selected = (item.kec === k) ? "selected" : "";
                 dropdownHtml += `<option value="${k}" ${selected}>${k}</option>`;
             });
             dropdownHtml += `</select>`;
 
-            let mapsInputHtml = `<input type="text" id="maps-${index}" value="${item.maps || ''}" placeholder="Paste Link Maps..." oninput="tandaiBelumSimpan(${index})" style="margin-bottom:0; padding:10px 14px; font-size:13px; width:100%; text-transform:none;">`;
+            let mapsInputHtml = `<input type="text" id="maps-${index}" value="${item.maps || ''}" placeholder="Link Maps..." oninput="tandaiBelumSimpan(${index})" style="margin-bottom:0; padding:8px 12px; font-size:12px; width:100%; text-transform:none;">`;
 
             let rawNama = (item.nama || "").toLowerCase().trim().replace(/[^a-z0-9]/g, '');
             let isTerkirim = false;
@@ -680,16 +672,16 @@ function renderAntrean() {
             }
 
             let statusBadge = isTerkirim ? 
-                `<span style="background:#ecfdf5; color:#059669; border:1px solid #10b981; padding:5px 10px; border-radius:6px; font-size:11px; font-weight:800; display:inline-block;">✓ TERKIRIM</span>` : 
-                `<span style="background:#fef2f2; color:#dc2626; border:1px solid #f87171; padding:5px 10px; border-radius:6px; font-size:11px; font-weight:700; display:inline-block;">⏳ BELUM</span>`;
+                `<span style="background:#ecfdf5; color:#059669; border:1px solid #10b981; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:800; display:inline-block;">✓ TERKIRIM</span>` : 
+                `<span style="background:#fef2f2; color:#dc2626; border:1px solid #f87171; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:700; display:inline-block;">⏳ BELUM</span>`;
 
             let isSaved = item.tersimpan === true;
             let btnClass = isSaved ? "save-row-btn saved" : "save-row-btn";
-            let btnText = isSaved ? "✓ TERSIMPAN" : "💾 Simpan";
+            let btnText = isSaved ? "✓ Saved" : "💾 Simpan";
             let btnDisabled = isSaved ? "disabled" : "";
 
             let aksiHtml = `
-                <div style="display: flex; gap: 6px; justify-content: center;">
+                <div style="display: flex; gap: 4px; justify-content: center;">
                     <button class="${btnClass}" id="btn-save-${index}" ${btnDisabled} onclick="simpanBarisKeServer(${index})">
                         <div class="btn-isi">
                             <span id="txt-save-${index}">${btnText}</span>
@@ -703,7 +695,7 @@ function renderAntrean() {
             html += `<tr>
                 <td class="col-status" style="white-space: nowrap;">${statusBadge}</td>
                 <td class="col-nama"><b>${item.nama}</b></td>
-                <td class="col-alamat" style="color: var(--text-muted); font-size: 12px;">${item.alamat}</td>
+                <td class="col-alamat" style="color: var(--text-muted); font-size: 11px;">${item.alamat}</td>
                 <td class="col-maps">${mapsInputHtml}</td>
                 <td class="col-kec">${dropdownHtml}</td>
                 <td class="col-aksi">${aksiHtml}</td>
@@ -741,7 +733,7 @@ function simpanBarisKeServer(index) {
 
     btn.disabled = true;
     spinner.style.display = "block";
-    txt.innerText = "MENYIMPAN...";
+    txt.innerText = "PROSES...";
 
     antrean[index].maps = mapsBaru;
     antrean[index].kec = kecBaru;
@@ -763,12 +755,11 @@ function simpanBarisKeServer(index) {
     })
     .then(() => {
         spinner.style.display = "none";
-        txt.innerText = "✓ TERSIMPAN";
+        txt.innerText = "✓ Saved";
         btn.classList.add("saved");
         btn.disabled = true;
         
         localStorage.setItem('antreanAdmin', JSON.stringify(antrean));
-        bukaModal("Berhasil!", "Data untuk \"" + item.nama + "\" berhasil disimpan!", "alert");
     })
     .catch(err => {
         console.error("Gagal menyimpan ke server:", err);
@@ -804,11 +795,22 @@ function parseDataMentah(text) {
 }
 
 function tarikDataDariSheet(isSilent = false) {
-    if (!isSilent) bukaModal("Sinkronisasi", "Sedang menyinkronkan data dengan server...", "alert");
+    const spinner = document.getElementById("spin-sync");
+    const txt = document.getElementById("txt-sync");
+
+    if (!isSilent) {
+        spinner.style.display = "block";
+        txt.innerText = "SYNC...";
+    }
 
     fetch(API_URL)
     .then(r => r.json())
     .then(data => {
+        if (!isSilent) {
+            spinner.style.display = "none";
+            txt.innerText = "🔄 Sinkron";
+        }
+
         let ordersFromSheet = data.orders || [];
         
         let rawTerkirim = data.terkirim || {};
@@ -863,12 +865,13 @@ function tarikDataDariSheet(isSilent = false) {
 
         antrean = newAntrean;
         renderAntrean();
-        
-        if (!isSilent) bukaModal("Sukses", "Data berhasil disinkronkan!", "alert");
     })
     .catch(err => {
-        console.error("Gagal sinkronisasi sheet:", err);
-        if (!isSilent) bukaModal("Error", "Gagal terhubung ke Google Sheets.", "alert");
+        if (!isSilent) {
+            spinner.style.display = "none";
+            txt.innerText = "🔄 Sinkron";
+            bukaModal("Error", "Gagal terhubung ke Google Sheets.", "alert");
+        }
     });
 }
 
@@ -892,6 +895,11 @@ function tambahOrderan() {
         return;
     }
 
+    const spinner = document.getElementById("spin-tambah");
+    const txt = document.getElementById("txt-tambah");
+    spinner.style.display = "block";
+    txt.innerText = "MENYIMPAN...";
+
     let payload = {
         action: "tambah",
         nama: nama,
@@ -907,8 +915,9 @@ function tambahOrderan() {
         body: JSON.stringify(payload)
     })
     .then(() => {
-        bukaModal("Berhasil", "Orderan berhasil ditambahkan ke sistem!", "alert");
-        
+        spinner.style.display = "none";
+        txt.innerText = "💾 Simpan & Masukkan";
+
         antrean.push({ nama, alamat, maps, kec, tersimpan: true });
         renderAntrean();
 
@@ -919,7 +928,8 @@ function tambahOrderan() {
         document.getElementById('inputNama').focus();
     })
     .catch(err => {
-        console.error("Gagal menyimpan ke server:", err);
+        spinner.style.display = "none";
+        txt.innerText = "💾 Simpan & Masukkan";
         bukaModal("Error", "Gagal terhubung ke server Google Sheets.", "alert");
     });
 }
@@ -981,7 +991,7 @@ function bagiRute() {
 
     hasilPembagianGlobal = driverData;
 
-    let htmlOutput = "<h3 style='margin-top: 35px; font-size: 16px; font-weight: 800; color: var(--text-main);'>📦 Hasil Pembagian Tugas Driver</h3>";
+    let htmlOutput = "<h3 style='margin-top: 24px; font-size: 15px; font-weight: 800; color: var(--text-main);'>📦 Hasil Pembagian Tugas Driver</h3>";
     
     for (let driver in driverData) {
         let orders = driverData[driver];
@@ -1004,14 +1014,14 @@ function bagiRute() {
             htmlOutput += `<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding: 20px; font-weight: 600;">Tidak ada kiriman di rute ini.</td></tr>`;
         } else {
             orders.forEach((ord, index) => {
-                let mapsBtn = ord.maps ? `<a href="${ord.maps}" target="_blank" style="background:#22c55e; color:white; padding:6px 10px; border-radius:6px; text-decoration:none; font-size:11px; font-weight:700; display:inline-block;">📍 Buka Maps</a>` : `<span style="color:var(--text-muted); font-size:11px;">-</span>`;
+                let mapsBtn = ord.maps ? `<a href="${ord.maps}" target="_blank" style="background:#22c55e; color:white; padding:5px 8px; border-radius:6px; text-decoration:none; font-size:11px; font-weight:700; display:inline-block;">📍 Maps</a>` : `<span style="color:var(--text-muted); font-size:11px;">-</span>`;
 
                 htmlOutput += `<tr>
                     <td><b>${index + 1}</b></td>
                     <td><b>${ord.nama}</b></td>
-                    <td style="color: var(--text-muted); font-size: 12px;">${ord.alamat}</td>
+                    <td style="color: var(--text-muted); font-size: 11px;">${ord.alamat}</td>
                     <td>${mapsBtn}</td>
-                    <td><span style="background: #f1f5f9; border: 1px solid var(--border); padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;">${ord.kec}</span></td>
+                    <td><span style="background: #f1f5f9; border: 1px solid var(--border); padding: 3px 6px; border-radius: 6px; font-size: 11px; font-weight: 700;">${ord.kec}</span></td>
                 </tr>`;
             });
         }
