@@ -816,22 +816,23 @@ function loadData() {
     let html = "";
     let total = 0, ok = 0, no = 0;
 
-    orders.forEach((row, index) => {
+   orders.forEach((row, index) => {
       const isi = row[0] || "";
       if(!isi) return;
 
       const customer = ambilCustomer(isi);
       
-      // Jika baris tidak mengandung format nama customer yang valid, lewati
-      if(!customer) return; 
+      // 🔴 PENGAMAN UTAMA: Jika baris tidak ada nama customer yang valid, lewati dan jangan render sebagai tombol kirim aktif
+      if(!customer || customer === "-") return; 
 
       total++;
       const key = customer.toLowerCase();
       const wa = ambilWa(isi);
-      const sudah = terkirim[key] === true;
+      
+      // 🔴 PENGAMAN STATUS: Pastikan key tidak kosong dan benar-benar terdaftar di objek terkirim
+      const sudah = key ? (terkirim[key] === true) : false;
 
       if(sudah) ok++; else no++;
-
       html += '<div class="card" data-customer="' + key + '">';
       html += '<div class="data">' + isi + '</div>';
       
