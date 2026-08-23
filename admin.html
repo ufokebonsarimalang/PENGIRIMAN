@@ -32,7 +32,7 @@
         }
 
         .container {
-            max-width: 950px;
+            max-width: 1050px;
             margin: auto;
             background: var(--card-bg);
             padding: 25px;
@@ -90,7 +90,6 @@
             font-weight: 600;
             color: var(--text-main);
             background: #fff;
-            text-transform: uppercase;
         }
 
         input[type="text"]:focus, select:focus {
@@ -162,7 +161,7 @@
 
         /* Tabel Antrean */
         .table-wrapper {
-            max-height: 250px;
+            max-height: 300px;
             overflow-y: auto;
             border: 1.5px solid var(--border);
             border-radius: 12px;
@@ -190,6 +189,7 @@
             border-bottom: 1.5px solid var(--border);
             position: sticky;
             top: 0;
+            z-index: 10;
         }
 
         td { border-bottom: 1px solid #f1f5f9; font-weight: 500; }
@@ -261,7 +261,7 @@
         <h2>Smart Route Dashboard (Admin)</h2>
     </div>
     
-  <!-- Driver Aktif -->
+    <!-- Driver Aktif -->
     <div class="card-box">
         <label>Driver Aktif Hari Ini</label>
         <div class="driver-checkbox-group" id="driverCheckboxes">
@@ -271,11 +271,12 @@
         </div>
     </div>
 
-    <!-- Form Input -->
+    <!-- Form Input Manual -->
     <div class="card-box">
         <label>Input Orderan Tambahan / Manual</label>
-        <input type="text" id="inputNama" placeholder="Nama Toko / Customer" oninput="this.value = this.value.toUpperCase()">
-        <input type="text" id="inputAlamat" placeholder="Alamat Lengkap" oninput="this.value = this.value.toUpperCase()">
+        <input type="text" id="inputNama" placeholder="NAMA TOKO / CUSTOMER" oninput="this.value = this.value.toUpperCase()">
+        <input type="text" id="inputAlamat" placeholder="ALAMAT LENGKAP" oninput="this.value = this.value.toUpperCase()">
+        <input type="text" id="inputMaps" placeholder="LINK GOOGLE MAPS / SHARELOK (OPSIONAL)">
         
         <label>Kecamatan Tujuan</label>
         <select id="inputKec">
@@ -337,10 +338,12 @@
             <button class="btn-excel" onclick="downloadExcel()">📈 Unduh Excel</button>
             <button class="btn-reset" onclick="resetSemua()">🗑️ Bersihkan Semua Data</button>
         </div>
+    </div>
+
     <h3 id="judulAntrean" style="font-size: 14px; font-weight: 700; margin-top: 20px; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">List Antrean Masuk (<span id="jumlahAntrean">0</span> Orderan)</h3>
     <div id="tabelAntreanBox" class="table-wrapper">
         <table id="tabelAntrean">
-            <tr><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Kecamatan</th><th style="width: 80px; text-align: center;">Aksi</th></tr>
+            <tr><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Link Maps</th><th>Kecamatan</th><th style="width: 80px; text-align: center;">Aksi</th></tr>
         </table>
     </div>
 
@@ -355,7 +358,6 @@ let antrean = JSON.parse(localStorage.getItem('antreanAdmin')) || [];
 let hasilPembagianGlobal = {};
 
 const klaster = {
-    // Blok Barat & Utara
     "SUKUN": {blok: "BARAT & UTARA", urut: 1}, 
     "KLOJEN": {blok: "BARAT & UTARA", urut: 2}, 
     "LOWOKWARU": {blok: "BARAT & UTARA", urut: 3}, 
@@ -367,8 +369,6 @@ const klaster = {
     "PUJON": {blok: "BARAT & UTARA", urut: 9},
     "NGANTANG": {blok: "BARAT & UTARA", urut: 10},
     "KASEMBON": {blok: "BARAT & UTARA", urut: 11},
-    
-    // Blok Timur & Utara Jauh
     "BLIMBING": {blok: "TIMUR & UTARA JAUH", urut: 12}, 
     "KEDUNGKANDANG": {blok: "TIMUR & UTARA JAUH", urut: 13}, 
     "SINGOSARI": {blok: "TIMUR & UTARA JAUH", urut: 14}, 
@@ -382,8 +382,6 @@ const klaster = {
     "TIRTOYUDO": {blok: "TIMUR & UTARA JAUH", urut: 22},
     "AMPELGADING": {blok: "TIMUR & UTARA JAUH", urut: 23},
     "DAMPIT": {blok: "TIMUR & UTARA JAUH", urut: 24},
-    
-    // Blok Selatan
     "WAGIR": {blok: "SELATAN", urut: 25}, 
     "PAKISAJI": {blok: "SELATAN", urut: 26}, 
     "BULULAWANG": {blok: "SELATAN", urut: 27}, 
@@ -403,7 +401,6 @@ const klaster = {
     "KROMENGAN": {blok: "SELATAN", urut: 41}
 };
 
-// Saat halaman dibuka, HANYA tarik data otomatis jika antrean lokal benar-benar kosong
 window.onload = function() {
     if (antrean.length === 0) {
         tarikDataDariSheet(true);
@@ -413,25 +410,27 @@ window.onload = function() {
 };
 
 function renderAntrean() {
-    let html = `<tr><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Kecamatan (Bisa Diubah)</th><th style="width: 80px; text-align: center;">Aksi</th></tr>`;
+    let html = `<tr><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Link Maps / Sharelok</th><th>Kecamatan</th><th style="width: 80px; text-align: center;">Aksi</th></tr>`;
     if (antrean.length === 0) {
-        html += `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding: 25px; font-weight: 600;">Belum ada orderan masuk di antrean.</td></tr>`;
+        html += `<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding: 25px; font-weight: 600;">Belum ada orderan masuk di antrean.</td></tr>`;
     } else {
         antrean.forEach((item, index) => {
-            // Ambil semua kecamatan lengkap secara abjad untuk dropdown tabel
             let opsiKecamatan = Object.keys(klaster).sort();
             
             let dropdownHtml = `<select onchange="updateKecamatanManual(${index}, this.value)" style="margin-bottom:0; padding:6px 10px; font-size:12px;">`;
-            
             opsiKecamatan.forEach(k => {
                 let selected = (item.kec === k) ? "selected" : "";
                 dropdownHtml += `<option value="${k}" ${selected}>${k}</option>`;
             });
             dropdownHtml += `</select>`;
 
+            // Input teks kecil langsung di tabel untuk mengisi atau mengedit link maps orderan dari sheet
+            let mapsInputHtml = `<input type="text" value="${item.maps || ''}" placeholder="Paste Link Maps..." oninput="updateMapsManual(${index}, this.value)" style="margin-bottom:0; padding:6px 10px; font-size:12px; text-transform:none;">`;
+
             html += `<tr>
                 <td><b>${item.nama}</b></td>
                 <td>${item.alamat}</td>
+                <td>${mapsInputHtml}</td>
                 <td>${dropdownHtml}</td>
                 <td style="text-align: center;"><button class="delete-btn" onclick="hapusItem(${index})">Hapus</button></td>
             </tr>`;
@@ -442,9 +441,13 @@ function renderAntrean() {
     localStorage.setItem('antreanAdmin', JSON.stringify(antrean));
 }
 
-// Fungsi untuk menyimpan perubahan kecamatan saat admin mengubah pilihan dropdown manual
 function updateKecamatanManual(index, nilaiBaru) {
     antrean[index].kec = nilaiBaru;
+    localStorage.setItem('antreanAdmin', JSON.stringify(antrean));
+}
+
+function updateMapsManual(index, nilaiBaru) {
+    antrean[index].maps = nilaiBaru;
     localStorage.setItem('antreanAdmin', JSON.stringify(antrean));
 }
 
@@ -457,10 +460,12 @@ function tarikDataDariSheet(isSilent = false) {
         let ordersFromSheet = data.orders || [];
         if (ordersFromSheet.length === 0) return;
 
-        // Catat kecamatan yang sudah di-setting manual oleh admin sebelumnya agar tidak tertimpa
-        let existingMap = {};
+        // Catat mapping data lama (kecamatan dan maps) yang sudah di-setting manual oleh admin agar tidak tertimpa
+        let existingKecMap = {};
+        let existingMapsMap = {};
         antrean.forEach(item => {
-            existingMap[item.nama] = item.kec;
+            existingKecMap[item.nama] = item.kec;
+            existingMapsMap[item.nama] = item.maps;
         });
 
         let newAntrean = [];
@@ -474,18 +479,13 @@ function tarikDataDariSheet(isSilent = false) {
             let alamatCust = ambilPola(isiTeks, /ALAMAT\s*:\s*([^\n]+)/i);
             let alamatFinal = alamatCust ? alamatCust.toUpperCase() : isiTeks;
 
-            // Jika sudah diubah manual oleh admin, pertahankan pilihan manualnya
-            let kecFinal = "SUKUN";
-            if (existingMap[namaFinal]) {
-                kecFinal = existingMap[namaFinal];
-            } else {
-                let kecDeteksi = deteksiKecamatan(alamatFinal);
-                kecFinal = kecDeteksi ? kecDeteksi.toUpperCase() : "SUKUN";
-            }
+            let kecFinal = existingKecMap[namaFinal] || (deteksiKecamatan(alamatFinal) || "SUKUN").toUpperCase();
+            let mapsFinal = existingMapsMap[namaFinal] || ""; // Pertahankan link maps jika sudah diisi
 
             newAntrean.push({
                 nama: namaFinal,
                 alamat: alamatFinal,
+                maps: mapsFinal,
                 kec: kecFinal
             });
         });
@@ -493,7 +493,7 @@ function tarikDataDariSheet(isSilent = false) {
         antrean = newAntrean;
         renderAntrean();
         
-        if (!isSilent) alert("✅ Berhasil! Data antrean ditarik. Pilihan kecamatan manual Anda tetap aman.");
+        if (!isSilent) alert("✅ Berhasil! Data antrean ditarik. Pilihan kecamatan dan link maps Anda tetap aman.");
     })
     .catch(err => {
         console.error("Gagal sinkronisasi sheet:", err);
@@ -518,6 +518,7 @@ function deteksiKecamatan(teks) {
 function tambahOrderan() {
     let nama = document.getElementById('inputNama').value.trim().toUpperCase();
     let alamat = document.getElementById('inputAlamat').value.trim().toUpperCase();
+    let maps = document.getElementById('inputMaps').value.trim();
     let kec = document.getElementById('inputKec').value.toUpperCase();
 
     if(!nama || !alamat || !kec) {
@@ -525,11 +526,12 @@ function tambahOrderan() {
         return;
     }
 
-    antrean.push({ nama, alamat, kec });
+    antrean.push({ nama, alamat, maps, kec });
     renderAntrean();
 
     document.getElementById('inputNama').value = "";
     document.getElementById('inputAlamat').value = "";
+    document.getElementById('inputMaps').value = "";
     document.getElementById('inputKec').value = "";
     document.getElementById('inputNama').focus();
 }
@@ -603,20 +605,24 @@ function bagiRute() {
                 </div>
                 <table>
                     <tr>
-                        <th style="width: 8%">No</th>
-                        <th style="width: 35%">Nama / Toko</th>
-                        <th style="width: 45%">Alamat Lengkap</th>
+                        <th style="width: 5%">No</th>
+                        <th style="width: 30%">Nama / Toko</th>
+                        <th style="width: 38%">Alamat Lengkap</th>
+                        <th style="width: 15%">Maps</th>
                         <th style="width: 12%">Kec</th>
                     </tr>`;
         
         if (orders.length === 0) {
-            htmlOutput += `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding: 15px; font-weight: 600;">Tidak ada kiriman di rute ini.</td></tr>`;
+            htmlOutput += `<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding: 15px; font-weight: 600;">Tidak ada kiriman di rute ini.</td></tr>`;
         } else {
             orders.forEach((ord, index) => {
+                let mapsBtn = ord.maps ? `<a href="${ord.maps}" target="_blank" style="background:#22c55e; color:white; padding:4px 8px; border-radius:4px; text-decoration:none; font-size:11px; font-weight:700; display:inline-block;">📍 Buka Maps</a>` : `<span style="color:var(--text-muted); font-size:11px;">-</span>`;
+
                 htmlOutput += `<tr>
                     <td><b>${index + 1}</b></td>
                     <td><b>${ord.nama}</b></td>
                     <td>${ord.alamat}</td>
+                    <td>${mapsBtn}</td>
                     <td><span style="background: #f1f5f9; border: 1px solid var(--border); padding: 3px 6px; border-radius: 4px; font-size: 11px; font-weight: 700;">${ord.kec}</span></td>
                 </tr>`;
             });
@@ -629,7 +635,7 @@ function bagiRute() {
 
 function cetakPDF() {
     if(Object.keys(hasilPembagianGlobal).length === 0) {
-        alert("⚠️ Klik tombol 'Bagi Rute' terlebih dahulu sebelum mencetak!");
+        alert("⚠️ Klik tombol 'Proses Rute' terlebih dahulu sebelum mencetak!");
         return;
     }
     window.print();
@@ -637,21 +643,22 @@ function cetakPDF() {
 
 function downloadExcel() {
     if(Object.keys(hasilPembagianGlobal).length === 0) {
-        alert("⚠️ Klik tombol 'Bagi Rute' terlebih dahulu sebelum mendownload Excel!");
+        alert("⚠️ Klik tombol 'Proses Rute' terlebih dahulu sebelum mendownload Excel!");
         return;
     }
 
     let csvContent = "\uFEFF";
-    csvContent += "Driver,No,Nama Toko,Alamat Lengkap,Kecamatan\n";
+    csvContent += "Driver,No,Nama Toko,Alamat Lengkap,Link Maps,Kecamatan\n";
 
     for (let driver in hasilPembagianGlobal) {
         let orders = hasilPembagianGlobal[driver];
         orders.forEach((ord, idx) => {
             let cleanNama = `"${(ord.nama || "").replace(/"/g, '""')}"`;
             let cleanAlamat = `"${(ord.alamat || "").replace(/"/g, '""')}"`;
+            let cleanMaps = `"${(ord.maps || "").replace(/"/g, '""')}"`;
             let cleanKec = `"${(ord.kec || "").replace(/"/g, '""')}"`;
             
-            csvContent += `"${driver}",${idx + 1},${cleanNama},${cleanAlamat},${cleanKec}\n`;
+            csvContent += `"${driver}",${idx + 1},${cleanNama},${cleanAlamat},${cleanMaps},${cleanKec}\n`;
         });
     }
 
