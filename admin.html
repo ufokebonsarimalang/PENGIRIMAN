@@ -7,20 +7,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --success: #059669;
-            --success-hover: #047857;
-            --danger: #dc2626;
-            --danger-hover: #b91c1c;
-            --warning: #d97706;
-            --info: #0284c7;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --success: #10b981;
+            --success-hover: #059669;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --warning: #f59e0b;
+            --info: #0ea5e9;
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #0f172a;
-            --text-muted: #475569;
+            --text-muted: #64748b;
             --border: #e2e8f0;
-            --border-focus: #4f46e5;
+            --border-focus: #6366f1;
         }
 
         body {
@@ -28,7 +28,7 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 24px;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -36,9 +36,9 @@
             max-width: 1450px;
             margin: auto;
             background: var(--card-bg);
-            padding: 30px;
+            padding: 32px;
             border-radius: 24px;
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
             border: 1px solid var(--border);
         }
 
@@ -46,8 +46,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 25px;
-            border-bottom: 2px solid var(--border);
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
             padding-bottom: 20px;
         }
 
@@ -58,7 +58,7 @@
         }
 
         .header-title h2 {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 800;
             color: var(--text-main);
             margin: 0;
@@ -66,7 +66,7 @@
         }
 
         .header-title span {
-            font-size: 32px;
+            font-size: 28px;
         }
 
         .badge-live {
@@ -98,11 +98,11 @@
             100% { transform: scale(0.95); opacity: 0.8; }
         }
 
-        /* 💻 LAYOUT GRID UTAMA KHUSUS PC (Sidebar + Main Table) */
+        /* 💻 LAYOUT GRID UTAMA KHUSUS PC */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 380px 1fr;
-            gap: 25px;
+            gap: 24px;
             align-items: start;
         }
 
@@ -121,10 +121,10 @@
 
         .card-box {
             background: #ffffff;
-            padding: 22px;
-            border-radius: 16px;
-            border: 1.5px solid var(--border);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            padding: 24px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
         }
 
         label {
@@ -142,7 +142,7 @@
             padding: 12px 16px;
             margin-bottom: 14px;
             border: 1.5px solid var(--border);
-            border-radius: 12px;
+            border-radius: 14px;
             box-sizing: border-box;
             font-size: 13px;
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -156,7 +156,7 @@
             outline: none;
             border-color: var(--border-focus);
             background: #fff;
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.08);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
         }
 
         /* Checkbox Driver */
@@ -200,13 +200,13 @@
             padding: 13px 16px;
             cursor: pointer;
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 700;
             color: white;
             font-size: 13px;
             transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
             width: 100%;
             display: flex;
             align-items: center;
@@ -216,8 +216,8 @@
 
         button:active { transform: scale(0.98); }
 
-        .btn-add { background: var(--primary); font-size: 14px; }
-        .btn-run { background: var(--success); }
+        .btn-add { background: var(--primary); font-size: 14px; box-shadow: 0 6px 16px rgba(99, 102, 241, 0.25); }
+        .btn-run { background: var(--success); box-shadow: 0 6px 16px rgba(16, 185, 129, 0.25); }
         .btn-sheet { background: var(--info); color: #fff; }
         .btn-print { background: var(--warning); color: #fff; }
         .btn-excel { background: #0891b2; color: #fff; }
@@ -245,12 +245,12 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Tabel Antrean PC - Lebar Kolom Diatur Luas */
+        /* Tabel Antrean PC */
         .table-wrapper {
             max-height: 520px;
             overflow-y: auto;
-            border: 1.5px solid var(--border);
-            border-radius: 14px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
             background: white;
         }
 
@@ -258,7 +258,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
-            min-width: 900px; /* Menjaga tabel tetap lega di layar besar */
+            min-width: 900px;
         }
 
         th, td {
@@ -273,7 +273,7 @@
             font-weight: 700;
             font-size: 11px;
             text-transform: uppercase;
-            border-bottom: 2px solid var(--border);
+            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 10;
@@ -283,36 +283,37 @@
         td { border-bottom: 1px solid var(--border); font-weight: 500; }
         tr:hover { background-color: #f8fafc; }
 
-        /* Pengaturan Lebar Kolom Tabel Spesifik */
         .col-status { width: 120px; }
         .col-nama { width: 160px; }
         .col-alamat { width: 260px; }
-        .col-maps { width: 220px; }      /* 🟢 Diperlebar agar tidak kepotong */
-        .col-kec { width: 180px; }       /* 🟢 Diperlebar agar dropdown kecamatan muat penuh */
+        .col-maps { width: 220px; }
+        .col-kec { width: 180px; }
         .col-aksi { width: 170px; text-align: center; }
 
         .delete-btn {
             background: #fee2e2;
             color: var(--danger);
             border: none;
-            padding: 7px 12px;
-            border-radius: 8px;
+            padding: 8px 12px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 12px;
             font-weight: 700;
             width: auto;
+            box-shadow: none;
         }
 
         .save-row-btn {
             background: var(--success);
             color: white;
             border: none;
-            padding: 7px 14px;
-            border-radius: 8px;
+            padding: 8px 14px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 12px;
             font-weight: 700;
             width: auto;
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
         }
 
         .save-row-btn.saved, .save-row-btn:disabled {
@@ -326,11 +327,11 @@
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(4px);
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(6px);
             display: flex; justify-content: center; align-items: center;
             z-index: 9999; opacity: 0; pointer-events: none;
-            transition: opacity 0.2s ease;
+            transition: opacity 0.25s ease;
         }
 
         .modal-overlay.aktif {
@@ -339,9 +340,9 @@
 
         .modal-content {
             background: #fff; padding: 28px 24px;
-            border-radius: 20px; width: 320px; text-align: center;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
-            transform: scale(0.85); transition: transform 0.2s ease;
+            border-radius: 24px; width: 320px; text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transform: scale(0.85); transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .modal-overlay.aktif .modal-content {
@@ -353,7 +354,7 @@
         }
 
         .modal-text {
-            font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 22px;
+            font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 24px;
         }
 
         .modal-buttons {
@@ -361,21 +362,21 @@
         }
 
         .btn-modal {
-            padding: 11px 18px; border: none; border-radius: 12px;
+            padding: 12px 18px; border: none; border-radius: 12px;
             font-weight: 700; cursor: pointer; font-size: 13px; width: auto; flex: 1;
         }
 
         .btn-batal { background: #f1f5f9; color: var(--text-muted); }
-        .btn-oke { background: var(--primary); color: #fff; }
+        .btn-oke { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25); }
 
         /* Kartu Hasil Pembagian Per Driver */
         .driver-card {
-            margin-top: 25px;
+            margin-top: 24px;
             background: white;
-            border: 1.5px solid var(--border);
-            border-radius: 16px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.03);
         }
 
         .driver-header {
@@ -398,11 +399,9 @@
         }
 
         @media screen and (max-width: 1024px) {
-            body { padding: 10px; }
-            .container { padding: 16px; border-radius: 16px; }
-            .dashboard-grid { grid-template-columns: 1fr; gap: 15px; }
-            .btn-group { grid-template-columns: 1fr 1fr; }
-            .btn-reset { grid-column: span 2; }
+            body { padding: 12px; }
+            .container { padding: 18px; border-radius: 16px; }
+            .dashboard-grid { grid-template-columns: 1fr; gap: 20px; }
             .header-title { flex-direction: column; align-items: flex-start; gap: 12px; }
         }
 
@@ -516,8 +515,8 @@
         <!-- KOLOM KANAN: Tabel Antrean Luas & Rapi -->
         <div class="main-panel">
             <div class="card-box">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-                    <h3 id="judulAntrean" style="font-size: 15px; font-weight: 800; margin: 0; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">List Antrean Masuk (<span id="jumlahAntrean">0</span> Orderan)</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3 id="judulAntrean" style="font-size: 14px; font-weight: 800; margin: 0; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">List Antrean Masuk (<span id="jumlahAntrean">0</span> Orderan)</h3>
                 </div>
                 
                 <div class="table-wrapper">
@@ -660,7 +659,6 @@ function renderAntrean() {
             let rawNama = (item.nama || "").toLowerCase().trim().replace(/[^a-z0-9]/g, '');
             let isTerkirim = false;
             
-            // Cek apakah ada nama di statusTerkirimGlobal yang cocok dengan nama customer ini
             for (let savedName in statusTerkirimGlobal) {
                 let cleanSaved = savedName.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
                 if (rawNama.includes(cleanSaved) || cleanSaved.includes(rawNama)) {
@@ -771,17 +769,16 @@ function simpanBarisKeServer(index) {
         bukaModal("Koneksi Error", "Gagal terhubung ke Google Sheets.", "alert");
     });
 }
+
 function parseDataMentah(text) {
     if (!text) return { nama: "", alamat: "" };
     
-    // 🟢 Gunakan pola pencocokan nama yang sama persis dengan Web Driver
     let m = text.match(/CUSTOMER\s*:\s*([^📍📦🛒🚚📝💰📱👤\n]+)/i);
     if (!m) {
         m = text.match(/CUSTOMER\s*:\s*([^\n]+)/i);
     }
     let nama = m ? m[1].trim() : "";
 
-    // Ekstraksi alamat
     let matchAlamat = text.match(/ALAMAT\s*:\s*([^📱🛒🚚📝💰📦\n]+)/i);
     let alamat = matchAlamat ? matchAlamat[1].trim() : text;
     if (matchAlamat) {
@@ -802,7 +799,6 @@ function tarikDataDariSheet(isSilent = false) {
     .then(data => {
         let ordersFromSheet = data.orders || [];
         
-        // 🟢 Normalisasi key status terkirim agar hilangkan spasi (sama persis dengan di Driver)
         let rawTerkirim = data.terkirim || {};
         statusTerkirimGlobal = {};
         for (let k in rawTerkirim) {
@@ -863,6 +859,7 @@ function tarikDataDariSheet(isSilent = false) {
         if (!isSilent) bukaModal("Error", "Gagal terhubung ke Google Sheets.", "alert");
     });
 }
+
 function deteksiKecamatan(teks) {
     for (let kec in klaster) {
         if (teks.toUpperCase().includes(kec)) {
