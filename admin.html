@@ -661,18 +661,15 @@ function simpanBarisKeServer(index) {
 }
 
 function tarikDataDariSheet(isSilent = false) {
-    if (!isSilent) bukaModal("Sinkronisasi", "Sedang menyinkronkan data & status dari server...", "alert");
+    if (!isSilent) bukaModal("Sinkronisasi", "Sedang menyinkronkan data sama persis dengan Web Driver...", "alert");
 
     fetch(API_URL)
-    .then(r => {
-        if (!r.ok) throw new Error("Network response was not ok");
-        return r.json();
-    })
+    .then(r => r.json())
     .then(data => {
         let ordersFromSheet = data.orders || [];
         statusTerkirimGlobal = data.terkirim || {}; 
 
-        if (ordersFromSheet.length <= 1) { // Hanya header atau kosong
+        if (ordersFromSheet.length <= 1) {
             if (!isSilent) bukaModal("Info", "Sheet 'TEST RUTE' masih kosong.", "alert");
             return;
         }
@@ -686,43 +683,23 @@ function tarikDataDariSheet(isSilent = false) {
 
         let newAntrean = [];
 
-        // Mulai dari i = 1 untuk melewati baris header (baris 1)
+        // Membaca baris data per kolom agar sinkron 100% dengan Web Driver (Kolom A, B, C, E)
         for (let i = 1; i < ordersFromSheet.length; i++) {
             let row = ordersFromSheet[i];
             
-            // Ambil langsung dari kolom jika sudah terpisah rapi, atau parsing jika berupa teks mentah
-            let kolomA = (row[0] || "").toString().trim();
-            let kolomB = (row[1] || "").toString().trim();
-            let kolomC = (row[2] || "").toString().trim();
-            let kolomE = (row[4] || "").toString().trim();
+            let nama = (row[0] || "").toString().trim().toUpperCase();   // Kolom A: Nama
+            let alamat = (row[1] || "").toString().trim().toUpperCase(); // Kolom B: Alamat
+            let kecSheet = (row[2] || "").toString().trim().toUpperCase(); // Kolom C: Kecamatan
+            let mapsSheet = (row[4] || "").toString().trim();              // Kolom E: Link Maps
 
-            if (!kolomA && !kolomB) continue; // Lewati baris kosong
+            if (!nama && !alamat) continue; // Lewati baris kosong
 
-            let namaFinal = "";
-            let alamatFinal = "";
-
-            // Cek apakah Kolom A berbentuk format teks mentah berantakan atau nama toko biasa
-            if (kolomA.includes("CUSTOMER:")) {
-                let namaCust = ambilPola(kolomA, /CUSTOMER\s*:\s*([^\n]+)/i);
-                namaFinal = namaCust ? namaCust.toUpperCase() : "CUSTOMER " + i;
-                
-                let alamatCust = ambilPola(kolomA, /ALAMAT\s*:\s*([^\n]+)/i);
-                alamatFinal = alamatCust ? alamatCust.toUpperCase() : kolomA;
-            } else {
-                // Format sudah bersih per kolom (Hasil input Web Driver / Admin)
-                namaFinal = kolomA.toUpperCase();
-                alamatFinal = kolomB.toUpperCase();
-            }
-
-            let kecSheet = kolomC;
-            let kecFinal = existingKecMap[namaFinal] || kecSheet || (deteksiKecamatan(alamatFinal) || "SUKUN").toUpperCase();
-            
-            let mapsSheet = kolomE;
-            let mapsFinal = existingMapsMap[namaFinal] || mapsSheet || "";
+            let kecFinal = existingKecMap[nama] || kecSheet || (deteksiKecamatan(alamat) || "SUKUN").toUpperCase();
+            let mapsFinal = existingMapsMap[nama] || mapsSheet || "";
 
             newAntrean.push({
-                nama: namaFinal,
-                alamat: alamatFinal,
+                nama: nama,
+                alamat: alamat,
                 maps: mapsFinal,
                 kec: kecFinal,
                 tersimpan: true
@@ -732,17 +709,12 @@ function tarikDataDariSheet(isSilent = false) {
         antrean = newAntrean;
         renderAntrean();
         
-        if (!isSilent) bukaModal("Sukses", "Data otomatis dari server berhasil ditarik ke antrean!", "alert");
+        if (!isSilent) bukaModal("Sukses", "Data berhasil disinkronkan sama persis dengan Web Driver!", "alert");
     })
     .catch(err => {
         console.error("Gagal sinkronisasi sheet:", err);
         if (!isSilent) bukaModal("Error", "Gagal terhubung ke Google Sheets.", "alert");
     });
-}
-
-function ambilPola(text, pola) {
-    let m = text.match(pola);
-    return m ? m[1].trim() : "";
 }
 
 function deteksiKecamatan(teks) {
