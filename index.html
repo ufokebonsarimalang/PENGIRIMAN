@@ -231,6 +231,27 @@ font-weight:600;
 color: #1e293b;
 }
 
+/* TOMBOL MAPS DI DRIVER */
+.btn-maps-driver {
+display: block;
+width: 100%;
+background: #2563eb;
+color: white;
+text-align: center;
+padding: 10px;
+border-radius: 10px;
+text-decoration: none;
+font-weight: 700;
+font-size: 13px;
+box-sizing: border-box;
+box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+margin-top: 10px;
+margin-bottom: 8px;
+}
+.btn-maps-driver:active {
+background: #1d4ed8;
+}
+
 /* UPLOAD FOTO COMPONENT */
 .foto-upload-card {
 margin-top: 8px;
@@ -825,11 +846,9 @@ function loadData() {
       html += '<div class="card" data-customer="' + key + '">';
       html += '<div class="data">' + isi + '</div>';
       
-      // 🟢 TAMBAHKAN TOMBOL GOOGLE MAPS JIKA LINK-NYA ADA
+      // 🟢 TAMPILKAN TOMBOL GOOGLE MAPS DI HP DRIVER JIKA ADA LINKNYA
       if (linkMaps) {
-          html += '<div style="margin-top: 10px;">';
-          html += '<a href="' + linkMaps + '" target="_blank" style="display: block; width: 100%; background: #2563eb; color: white; text-align: center; padding: 10px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 13px; box-sizing: border-box; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);">📍 Buka Google Maps</a>';
-          html += '</div>';
+          html += '<a href="' + linkMaps + '" target="_blank" class="btn-maps-driver">📍 Buka Google Maps</a>';
       }
       
       if(!sudah) {
