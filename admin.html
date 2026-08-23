@@ -800,7 +800,14 @@ function tarikDataDariSheet(isSilent = false) {
     .then(r => r.json())
     .then(data => {
         let ordersFromSheet = data.orders || [];
-        statusTerkirimGlobal = data.terkirim || {}; 
+        
+        // 🟢 Normalisasi key status terkirim agar hilangkan spasi (sama persis dengan di Driver)
+        let rawTerkirim = data.terkirim || {};
+        statusTerkirimGlobal = {};
+        for (let k in rawTerkirim) {
+            let cleanKey = k.toLowerCase().trim().replace(/\s+/g, '');
+            statusTerkirimGlobal[cleanKey] = true;
+        }
 
         if (ordersFromSheet.length === 0) {
             if (!isSilent) bukaModal("Info", "Sheet 'PDF BESOK' masih kosong.", "alert");
@@ -855,7 +862,6 @@ function tarikDataDariSheet(isSilent = false) {
         if (!isSilent) bukaModal("Error", "Gagal terhubung ke Google Sheets.", "alert");
     });
 }
-
 function deteksiKecamatan(teks) {
     for (let kec in klaster) {
         if (teks.toUpperCase().includes(kec)) {
