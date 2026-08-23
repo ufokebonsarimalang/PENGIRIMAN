@@ -667,8 +667,43 @@ function ambilCustomer(text) {
     return m ? m[1].trim() : "";
 }
 
+// 🟢 Fungsi cerdas untuk mengekstrak data spesifik dari teks mentah server
+function parseDataMentah(text) {
+    // 1. Ambil nama customer setelah "CUSTOMER :"
+    let matchCust = text.match(/CUSTOMER\s*:\s*([^📍📦🛒🚚📝💰📱👤]+)/i);
+    let nama = matchCust ? matchCust[1].trim() : "";
+
+    // Jika gagal pakai pola di atas, ambil manual
+    if (!nama) {
+        let parts = text.split("CUSTOMER :");
+        if (parts.length > 1) {
+            nama = parts[1].split("📍")[0].split("📱")[0].split("ALAMAT")[0].trim();
+        }
+    }
+
+    // 2. Ambil alamat setelah "ALAMAT :" sampai sebelum emoji/label berikutnya (seperti WA, Barang, dll)
+    let matchAlamat = text.match(/ALAMAT\s*:\s*([^📱🛒🚚📝💰📦]+)/i);
+    let alamat = matchAlamat ? matchAlamat[1].trim() : text;
+
+    if (matchAlamat) {
+        // Bersihkan jika ada sisa label di ujung alamat
+        alamat = alamat.replace(/WA\s*1\s*:.*/i, "").trim();
+    } else {
+        // Fallback jika format regex meleset
+        let partsAlamat = text.split("ALAMAT :");
+        if (partsAlamat.length > 1) {
+            alamat = partsAlamat[1].split("📱")[0].split("🛒")[0].split("🚚")[0].split("📝")[0].trim();
+        }
+    }
+
+    return {
+        nama: (nama || "CUSTOMER").toUpperCase(),
+        alamat: (alamat || text).toUpperCase()
+    };
+}
+
 function tarikDataDariSheet(isSilent = false) {
-    if (!isSilent) bukaModal("Sinkronisasi", "Sedang menyinkronkan data dengan Web Driver...", "alert");
+    if (!isSilent) bukaModal("Sinkronisasi", "Sedang merapikan & menyinkronkan data...", "alert");
 
     fetch(API_URL)
     .then(r => r.json())
@@ -694,16 +729,21 @@ function tarikDataDariSheet(isSilent = false) {
             let isi = row[0] || "";
             if (!isi) return;
 
-            let customer = ambilCustomer(isi);
-            if (!customer || customer === "-") return;
+            // 🟢 Ekstraksi bersih: Hanya ambil Nama dan Alamat murni
+            let parsed = parseDataMentah(isi);
+            if (!parsed.nama || parsed.nama === "-") return;
 
-            let namaFinal = customer.toUpperCase();
-            let alamatFinal = isi.toUpperCase();
+            let namaFinal = parsed.nama;
+            let alamatFinal = parsed.alamat;
             
-            // Mengambil Link Maps dari Kolom E (index 4) seperti di Web Driver
-            let mapsSheet = row[4] || ""; 
-            let kecSheet = row[2] || "";
+            // Ambil Link Maps (Utamakan dari Kolom E / index 4, atau ekstrak otomatis dari teks jika kolom E kosong)
+            let mapsSheet = row[4] || "";
+            if (!mapsSheet) {
+                let matchMaps = isi.match(/(https?:\/\/[^\s]+maps[^\s]*)/i);
+                mapsSheet = matchMaps ? matchMaps[0] : "";
+            }
 
+            let kecSheet = row[2] || "";
             let kecFinal = existingKecMap[namaFinal] || kecSheet || (deteksiKecamatan(alamatFinal) || "SUKUN").toUpperCase();
             let mapsFinal = existingMapsMap[namaFinal] || mapsSheet || "";
 
@@ -719,7 +759,7 @@ function tarikDataDariSheet(isSilent = false) {
         antrean = newAntrean;
         renderAntrean();
         
-        if (!isSilent) bukaModal("Sukses", "Data berhasil ditarik dan sinkron 100% dengan Web Driver!", "alert");
+        if (!isSilent) bukaModal("Sukses", "Data berhasil dirapikan dan disinkronkan!", "alert");
     })
     .catch(err => {
         console.error("Gagal sinkronisasi sheet:", err);
