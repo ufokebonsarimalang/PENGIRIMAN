@@ -33,7 +33,7 @@
         }
 
         .container {
-            max-width: 1350px;
+            max-width: 1450px;
             margin: auto;
             background: var(--card-bg);
             padding: 30px;
@@ -98,10 +98,10 @@
             100% { transform: scale(0.95); opacity: 0.8; }
         }
 
-        /* 💻 LAYOUT GRID UTAMA KHUSUS PC (2 Kolom) */
+        /* 💻 LAYOUT GRID UTAMA KHUSUS PC (Sidebar + Main Table) */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 420px 1fr;
+            grid-template-columns: 380px 1fr;
             gap: 25px;
             align-items: start;
         }
@@ -116,6 +116,7 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+            overflow-x: auto;
         }
 
         .card-box {
@@ -124,11 +125,6 @@
             border-radius: 16px;
             border: 1.5px solid var(--border);
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            transition: all 0.2s ease;
-        }
-
-        .card-box:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
         }
 
         label {
@@ -184,12 +180,6 @@
             gap: 8px;
             text-transform: none;
             letter-spacing: normal;
-            transition: all 0.2s;
-        }
-
-        .driver-checkbox-group label:hover {
-            border-color: var(--primary);
-            background: #eef2ff;
         }
 
         .driver-checkbox-group input {
@@ -227,14 +217,11 @@
         button:active { transform: scale(0.98); }
 
         .btn-add { background: var(--primary); font-size: 14px; }
-        .btn-add:hover { background: var(--primary-hover); }
         .btn-run { background: var(--success); }
-        .btn-run:hover { background: var(--success-hover); }
         .btn-sheet { background: var(--info); color: #fff; }
         .btn-print { background: var(--warning); color: #fff; }
         .btn-excel { background: #0891b2; color: #fff; }
         .btn-reset { background: var(--danger); grid-column: span 2; }
-        .btn-reset:hover { background: var(--danger-hover); }
 
         /* SPINNER LOADING */
         .btn-isi {
@@ -258,9 +245,9 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Tabel Antrean PC */
+        /* Tabel Antrean PC - Lebar Kolom Diatur Luas */
         .table-wrapper {
-            max-height: 480px;
+            max-height: 520px;
             overflow-y: auto;
             border: 1.5px solid var(--border);
             border-radius: 14px;
@@ -271,6 +258,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
+            min-width: 900px; /* Menjaga tabel tetap lega di layar besar */
         }
 
         th, td {
@@ -295,6 +283,14 @@
         td { border-bottom: 1px solid var(--border); font-weight: 500; }
         tr:hover { background-color: #f8fafc; }
 
+        /* Pengaturan Lebar Kolom Tabel Spesifik */
+        .col-status { width: 120px; }
+        .col-nama { width: 160px; }
+        .col-alamat { width: 260px; }
+        .col-maps { width: 220px; }      /* 🟢 Diperlebar agar tidak kepotong */
+        .col-kec { width: 180px; }       /* 🟢 Diperlebar agar dropdown kecamatan muat penuh */
+        .col-aksi { width: 170px; text-align: center; }
+
         .delete-btn {
             background: #fee2e2;
             color: var(--danger);
@@ -305,9 +301,7 @@
             font-size: 12px;
             font-weight: 700;
             width: auto;
-            transition: background 0.2s;
         }
-        .delete-btn:hover { background: #fecaca; }
 
         .save-row-btn {
             background: var(--success);
@@ -319,9 +313,7 @@
             font-size: 12px;
             font-weight: 700;
             width: auto;
-            transition: background 0.2s;
         }
-        .save-row-btn:hover { background: var(--success-hover); }
 
         .save-row-btn.saved, .save-row-btn:disabled {
             background: #cbd5e1 !important;
@@ -403,10 +395,8 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 700;
-            letter-spacing: 0.3px;
         }
 
-        /* 📱 RESPONSIF KHUSUS HP (Otomatis menyesuaikan jika dibuka di layar kecil) */
         @media screen and (max-width: 1024px) {
             body { padding: 10px; }
             .container { padding: 16px; border-radius: 16px; }
@@ -414,7 +404,6 @@
             .btn-group { grid-template-columns: 1fr 1fr; }
             .btn-reset { grid-column: span 2; }
             .header-title { flex-direction: column; align-items: flex-start; gap: 12px; }
-            th, td { padding: 10px 12px; font-size: 12px; }
         }
 
         @media print {
@@ -437,12 +426,10 @@
         <div class="badge-live">Live Sync Ready</div>
     </div>
     
-    <!-- DASHBOARD GRID UTAMA (2 Kolom di PC, 1 Kolom di HP) -->
     <div class="dashboard-grid">
         
-        <!-- KOLOM KIRI: Form Input & Kontrol (Sidebar) -->
+        <!-- KOLOM KIRI: Form Input & Kontrol -->
         <div class="sidebar-panel">
-            <!-- Driver Aktif -->
             <div class="card-box">
                 <label>Driver Aktif Hari Ini</label>
                 <div class="driver-checkbox-group" id="driverCheckboxes">
@@ -452,7 +439,6 @@
                 </div>
             </div>
 
-            <!-- Form Input Manual -->
             <div class="card-box" style="border: 2px solid var(--primary);">
                 <label style="color: var(--primary); font-size: 12px; margin-bottom: 12px;">➕ Tambah Orderan Manual</label>
                 
@@ -515,7 +501,6 @@
                 <button class="btn-add" onclick="tambahOrderan()" style="margin-top: 6px;">💾 Simpan & Masukkan</button>
             </div>
 
-            <!-- Kontrol Aksi Data -->
             <div class="card-box">
                 <label>Aksi & Kontrol Data</label>
                 <div class="btn-group">
@@ -528,7 +513,7 @@
             </div>
         </div>
 
-        <!-- KOLOM KANAN: Tabel Antrean & Hasil Pembagian -->
+        <!-- KOLOM KANAN: Tabel Antrean Luas & Rapi -->
         <div class="main-panel">
             <div class="card-box">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
@@ -537,7 +522,14 @@
                 
                 <div class="table-wrapper">
                     <table id="tabelAntrean">
-                        <tr><th>Status Kirim</th><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Link Maps</th><th>Kecamatan</th><th style="width: 150px; text-align: center;">Aksi</th></tr>
+                        <tr>
+                            <th class="col-status">Status Kirim</th>
+                            <th class="col-nama">Nama / Toko</th>
+                            <th class="col-alamat">Alamat Lengkap</th>
+                            <th class="col-maps">Link Maps</th>
+                            <th class="col-kec">Kecamatan</th>
+                            <th class="col-aksi">Aksi</th>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -641,7 +633,14 @@ function eksekusiKonfirmasi() {
 }
 
 function renderAntrean() {
-    let html = `<tr><th>Status Kirim</th><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Link Maps</th><th>Kecamatan</th><th style="width: 150px; text-align: center;">Aksi</th></tr>`;
+    let html = `<tr>
+        <th class="col-status">Status Kirim</th>
+        <th class="col-nama">Nama / Toko</th>
+        <th class="col-alamat">Alamat Lengkap</th>
+        <th class="col-maps">Link Maps</th>
+        <th class="col-kec">Kecamatan</th>
+        <th class="col-aksi">Aksi</th>
+    </tr>`;
     
     if (antrean.length === 0) {
         html += `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding: 35px; font-weight: 600;">Belum ada orderan masuk di antrean. Silakan klik Sinkron Sheet.</td></tr>`;
@@ -649,14 +648,14 @@ function renderAntrean() {
         antrean.forEach((item, index) => {
             let opsiKecamatan = Object.keys(klaster).sort();
             
-            let dropdownHtml = `<select id="kec-${index}" onchange="tandaiBelumSimpan(${index})" style="margin-bottom:0; padding:8px 12px; font-size:12px;">`;
+            let dropdownHtml = `<select id="kec-${index}" onchange="tandaiBelumSimpan(${index})" style="margin-bottom:0; padding:10px 14px; font-size:13px; width:100%;">`;
             opsiKecamatan.forEach(k => {
                 let selected = (item.kec === k) ? "selected" : "";
                 dropdownHtml += `<option value="${k}" ${selected}>${k}</option>`;
             });
             dropdownHtml += `</select>`;
 
-            let mapsInputHtml = `<input type="text" id="maps-${index}" value="${item.maps || ''}" placeholder="Paste Link Maps..." oninput="tandaiBelumSimpan(${index})" style="margin-bottom:0; padding:8px 12px; font-size:12px; text-transform:none;">`;
+            let mapsInputHtml = `<input type="text" id="maps-${index}" value="${item.maps || ''}" placeholder="Paste Link Maps..." oninput="tandaiBelumSimpan(${index})" style="margin-bottom:0; padding:10px 14px; font-size:13px; width:100%; text-transform:none;">`;
 
             let keyNama = (item.nama || "").toLowerCase().trim();
             let isTerkirim = statusTerkirimGlobal[keyNama] === true;
@@ -683,12 +682,12 @@ function renderAntrean() {
             `;
 
             html += `<tr>
-                <td style="white-space: nowrap;">${statusBadge}</td>
-                <td><b>${item.nama}</b></td>
-                <td style="color: var(--text-muted); font-size: 12px;">${item.alamat}</td>
-                <td>${mapsInputHtml}</td>
-                <td>${dropdownHtml}</td>
-                <td style="text-align: center;">${aksiHtml}</td>
+                <td class="col-status" style="white-space: nowrap;">${statusBadge}</td>
+                <td class="col-nama"><b>${item.nama}</b></td>
+                <td class="col-alamat" style="color: var(--text-muted); font-size: 12px;">${item.alamat}</td>
+                <td class="col-maps">${mapsInputHtml}</td>
+                <td class="col-kec">${dropdownHtml}</td>
+                <td class="col-aksi">${aksiHtml}</td>
             </tr>`;
         });
     }
