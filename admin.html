@@ -330,15 +330,13 @@
         </select>
 
         <div class="btn-group">
-            <button class="btn-add" onclick="tambahOrderan()">+ Tambah</button>
-            <button class="btn-sheet" onclick="tarikDataDariSheet()">📥 Ambil dari Sheet</button>
-            <button class="btn-run" onclick="bagiRute()">🚀 Bagi Rute</button>
-            <button class="btn-print" onclick="cetakPDF()">🖨️ Cetak</button>
-            <button class="btn-excel" onclick="downloadExcel()">📊 Excel</button>
-            <button class="btn-reset" onclick="resetSemua()">Reset Semua Data</button>
+            <button class="btn-add" onclick="tambahOrderan()">✨ Tambah Manual</button>
+            <button class="btn-sheet" onclick="tarikDataDariSheet()">🔄 Sinkron Sheet</button>
+            <button class="btn-run" onclick="bagiRute()">⚡ Proses Rute</button>
+            <button class="btn-print" onclick="cetakPDF()">📄 Cetak Dokumen</button>
+            <button class="btn-excel" onclick="downloadExcel()">📈 Unduh Excel</button>
+            <button class="btn-reset" onclick="resetSemua()">🗑️ Bersihkan Semua Data</button>
         </div>
-    </div>
-
     <h3 id="judulAntrean" style="font-size: 14px; font-weight: 700; margin-top: 20px; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">List Antrean Masuk (<span id="jumlahAntrean">0</span> Orderan)</h3>
     <div id="tabelAntreanBox" class="table-wrapper">
         <table id="tabelAntrean">
