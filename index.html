@@ -816,9 +816,11 @@ function loadData() {
     let html = "";
     let total = 0, ok = 0, no = 0;
 
-    orders.forEach((row, index) => {
-      const isi = row[0] || "";
-      if(!isi) return;
+   orders.forEach((row, index) => {
+    if (index === 0) return; // 👈 TAMBAHKAN BARIS INI
+    
+    const isi = row[0] || "";
+    if(!isi) return;
 
       total++;
       const customer = ambilCustomer(isi);
