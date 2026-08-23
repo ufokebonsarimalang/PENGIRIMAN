@@ -347,8 +347,9 @@ function renderAntrean() {
         html += `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding: 25px; font-weight: 600;">Belum ada orderan masuk di antrean.</td></tr>`;
     } else {
         antrean.forEach((item, index) => {
-            // Daftar pilihan kecamatan untuk dropdown manual
-            let opsiKecamatan = ["SUKUN", "KLOJEN", "LOWOKWARU", "BLIMBING", "KEDUNGKANDANG", "SINGOSARI", "LAWANG", "PAKIS", "WAGIR", "PAKISAJI", "BULULAWANG", "KEPANJEN"];
+            // 🟢 OTOMATIS AMBIL SEMUA KECAMATAN DARI OBJEK KLASTER
+            let opsiKecamatan = Object.keys(klaster).sort();
+            
             let dropdownHtml = `<select onchange="updateKecamatanManual(${index}, this.value)" style="margin-bottom:0; padding:6px 10px; font-size:12px;">`;
             
             opsiKecamatan.forEach(k => {
