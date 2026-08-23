@@ -494,7 +494,6 @@ font-weight: 700; cursor: pointer; font-size: 13px; width: auto; flex: 1;
     
     <label class="step-label">2. Ambil Foto Bukti Pengiriman:</label>
     <div class="foto-upload-card" id="foto-card-manual">
-      <!-- Dihapus capture="environment" agar driver bisa pilih Galeri/Kamera -->
       <input type="file" id="input-foto-manual" class="foto-input-hidden" accept="image/*" onchange="previewFoto('manual')">
       
       <div class="foto-placeholder-btn" id="placeholder-manual" onclick="triggerKamera('manual')">
@@ -536,7 +535,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbzH4e2dQErvrU5m_1Q-s66g
 
 let fungsiCallbackKonfirmasi = null;
 
-// Cek otomatis jika driver sudah pernah login
 window.onload = function() {
   const driverAktif = localStorage.getItem("driver");
   if(driverAktif) {
@@ -573,7 +571,6 @@ function eksekusiKonfirmasi() {
   tutupModal();
 }
 
-/* LOGIN */
 function login() {
   const user = document.getElementById("user").value;
   const pass = document.getElementById("pass").value;
@@ -615,7 +612,6 @@ function login() {
   });
 }
 
-/* LOGOUT */
 function logout() {
   bukaModal("Konfirmasi Logout", "Apakah Anda yakin ingin keluar dari akun driver ini?", "confirm", () => {
     localStorage.removeItem("driver");
@@ -633,15 +629,13 @@ function ambilWa(text) {
   return wa || [];
 }
 
-/* PREVIEW & KAMERA */
 function triggerKamera(idx) {
-  // Jika ini adalah kartu manual (susulan), wajibkan isi nama customer terlebih dahulu!
   if (idx === 'manual') {
     const customerName = document.getElementById('manualCustomer').value.trim();
     if (!customerName) {
       bukaModal("Data Kurang", "Harap masukkan Nama Customer / No. INVOICE terlebih dahulu sebelum memilih foto dari galeri!", "alert");
       document.getElementById('manualCustomer').focus();
-      return; // Batalkan buka galeri/kamera jika nama masih kosong
+      return;
     }
   }
 
@@ -649,13 +643,11 @@ function triggerKamera(idx) {
 }
 
 function previewFoto(idx) {
-  // Validasi ganda pengaman
   if (idx === 'manual') {
     const customerName = document.getElementById('manualCustomer').value.trim();
     if (!customerName) {
       bukaModal("Data Kurang", "Harap masukkan Nama Customer / No. INVOICE terlebih dahulu!", "alert");
       document.getElementById('manualCustomer').focus();
-      // Reset input file agar bersih kembali
       document.getElementById('input-foto-manual').value = "";
       return;
     }
@@ -678,7 +670,7 @@ function previewFoto(idx) {
     reader.readAsDataURL(fileInput.files[0]);
   }
 }
-/* UPLOAD MANUAL / SUSULAN */
+
 function kirimStatusManual() {
   const customerName = document.getElementById('manualCustomer').value.trim();
   const fileInput = document.getElementById('input-foto-manual');
@@ -696,7 +688,6 @@ function kirimStatusManual() {
   prosesUpload(customerName, "", "manual", "SUSULAN");
 }
 
-/* KIRIM STATUS BIASA */
 function kirimStatus(customer, wa, idx) {
   const fileInput = document.getElementById('input-foto-' + idx);
 
@@ -715,7 +706,6 @@ function kirimStatus(customer, wa, idx) {
   );
 }
 
-/* PROSES UPLOAD REUSABLE */
 function prosesUpload(customer, wa, idx, jenis) {
   const driver = localStorage.getItem("driver") || "DRIVER";
   const fileInput = document.getElementById('input-foto-' + idx);
@@ -736,7 +726,7 @@ function prosesUpload(customer, wa, idx, jenis) {
     img.src = e.target.result;
     img.onload = function() {
       const canvas = document.createElement('canvas');
-      const max_size = 800; // Kompresi gambar agar ringan
+      const max_size = 800;
       let width = img.width;
       let height = img.height;
 
@@ -805,7 +795,6 @@ function prosesUpload(customer, wa, idx, jenis) {
   reader.readAsDataURL(file);
 }
 
-/* LOAD DATA DARI SHEET */
 function loadData() {
   fetch(API_URL)
   .then(r => r.json())
@@ -816,25 +805,32 @@ function loadData() {
     let html = "";
     let total = 0, ok = 0, no = 0;
 
-   orders.forEach((row, index) => {
+    orders.forEach((row, index) => {
       const isi = row[0] || "";
       if(!isi) return;
 
       const customer = ambilCustomer(isi);
-      
-      // 🔴 PENGAMAN UTAMA: Jika baris tidak ada nama customer yang valid, lewati dan jangan render sebagai tombol kirim aktif
       if(!customer || customer === "-") return; 
+
+      // 🟢 AMBIL LINK MAPS DARI KOLOM E (index 4 di Google Sheet TEST RUTE)
+      const linkMaps = row[4] || "";
 
       total++;
       const key = customer.toLowerCase();
       const wa = ambilWa(isi);
       
-      // 🔴 PENGAMAN STATUS: Pastikan key tidak kosong dan benar-benar terdaftar di objek terkirim
       const sudah = key ? (terkirim[key] === true) : false;
 
       if(sudah) ok++; else no++;
       html += '<div class="card" data-customer="' + key + '">';
       html += '<div class="data">' + isi + '</div>';
+      
+      // 🟢 TAMBAHKAN TOMBOL GOOGLE MAPS JIKA LINK-NYA ADA
+      if (linkMaps) {
+          html += '<div style="margin-top: 10px;">';
+          html += '<a href="' + linkMaps + '" target="_blank" style="display: block; width: 100%; background: #2563eb; color: white; text-align: center; padding: 10px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 13px; box-sizing: border-box; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);">📍 Buka Google Maps</a>';
+          html += '</div>';
+      }
       
       if(!sudah) {
         html += '<div class="foto-upload-card" id="foto-card-' + index + '">';
