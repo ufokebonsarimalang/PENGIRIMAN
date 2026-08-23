@@ -816,24 +816,16 @@ function loadData() {
     let html = "";
     let total = 0, ok = 0, no = 0;
 
-  orders.forEach((row, index) => {
+    orders.forEach((row, index) => {
       const isi = row[0] || "";
       if(!isi) return;
 
       const customer = ambilCustomer(isi);
-      // 🔴 TAMBAHKAN BARIS INI: Jika baris tidak ada tulisan CUSTOMER:, abaikan agar tidak error
+      
+      // Jika baris tidak mengandung format nama customer yang valid, lewati
       if(!customer) return; 
 
       total++;
-      const key = customer.toLowerCase();
-      const wa = ambilWa(isi);
-      const sudah = terkirim[key] === true;
-    
-    const isi = row[0] || "";
-    if(!isi) return;
-
-      total++;
-      const customer = ambilCustomer(isi);
       const key = customer.toLowerCase();
       const wa = ambilWa(isi);
       const sudah = terkirim[key] === true;
@@ -845,7 +837,6 @@ function loadData() {
       
       if(!sudah) {
         html += '<div class="foto-upload-card" id="foto-card-' + index + '">';
-        // Dihapus capture="environment" agar driver bisa pilih Galeri/Kamera
         html += '<input type="file" id="input-foto-' + index + '" class="foto-input-hidden" accept="image/*" onchange="previewFoto(' + index + ')">';
         
         html += '<div class="foto-placeholder-btn" id="placeholder-' + index + '" onclick="triggerKamera(' + index + ')">';
