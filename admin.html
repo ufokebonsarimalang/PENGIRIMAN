@@ -159,6 +159,28 @@
         .btn-excel { background: #0891b2; color: #fff; }
         .btn-reset { background: var(--danger); grid-column: span 3; }
 
+        /* SPINNER LOADING */
+        .btn-isi {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .spinner {
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: putar 0.6s linear infinite;
+            display: none;
+        }
+
+        @keyframes putar {
+            to { transform: rotate(360deg); }
+        }
+
         /* Tabel Antrean */
         .table-wrapper {
             max-height: 350px;
@@ -219,6 +241,57 @@
             font-weight: 700;
             width: auto;
         }
+
+        .save-row-btn:disabled {
+            background: #94a3b8 !important;
+            cursor: not-allowed;
+        }
+
+        /* MODAL MODERN */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999; opacity: 0; pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .modal-overlay.aktif {
+            opacity: 1; pointer-events: auto;
+        }
+
+        .modal-content {
+            background: #fff; padding: 24px 20px;
+            border-radius: 18px; width: 290px; text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            transform: scale(0.85); transition: transform 0.2s ease;
+        }
+
+        .modal-overlay.aktif .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            font-size: 18px; font-weight: 800; margin-bottom: 8px; color: #0f172a;
+        }
+
+        .modal-text {
+            font-size: 13px; color: #475569; line-height: 1.4; margin-bottom: 20px;
+        }
+
+        .modal-buttons {
+            display: flex; gap: 10px; justify-content: center;
+        }
+
+        .btn-modal {
+            padding: 10px 16px; border: none; border-radius: 10px;
+            font-weight: 700; cursor: pointer; font-size: 13px; width: auto; flex: 1;
+        }
+
+        .btn-batal { background: #f1f5f9; color: #475569; }
+        .btn-oke { background: var(--primary); color: #fff; }
 
         /* Kartu Hasil Pembagian Per Driver */
         .driver-card {
@@ -369,12 +442,22 @@
     <div id="hasilPembagian"></div>
 </div>
 
+<!-- POPUP MODAL MODERN -->
+<div id="customModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-title" id="mTitle">Notifikasi</div>
+    <div class="modal-text" id="mText">Isi pesan di sini...</div>
+    <div class="modal-buttons" id="mButtons"></div>
+  </div>
+</div>
+
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbzH4e2dQErvrU5m_1Q-s66gxG68JaKFae2foTcOrTUHiZT42sqY0xYHV4Cv04_Dowgi/exec";  
 
 let antrean = JSON.parse(localStorage.getItem('antreanAdmin')) || [];
 let statusTerkirimGlobal = {}; 
 let hasilPembagianGlobal = {};
+let fungsiCallbackKonfirmasi = null;
 
 const klaster = {
     "SUKUN": {blok: "BARAT & UTARA", urut: 1}, 
@@ -424,6 +507,33 @@ window.onload = function() {
     tarikDataDariSheet(true); 
 };
 
+function bukaModal(judul, pesan, jenis, callback = null) {
+  document.getElementById("mTitle").innerText = judul;
+  document.getElementById("mText").innerText = pesan;
+  
+  const containerTombol = document.getElementById("mButtons");
+  containerTombol.innerHTML = "";
+
+  if (jenis === "alert") {
+    containerTombol.innerHTML = '<button type="button" class="btn-modal btn-oke" onclick="tutupModal()">TUTUP</button>';
+  } else if (jenis === "confirm") {
+    fungsiCallbackKonfirmasi = callback;
+    containerTombol.innerHTML = '<button type="button" class="btn-batal btn-modal" onclick="tutupModal()">BATAL</button><button type="button" class="btn-oke btn-modal" onclick="eksekusiKonfirmasi()">YA, YAKIN</button>';
+  }
+
+  document.getElementById("customModal").classList.add("aktif");
+}
+
+function tutupModal() {
+  document.getElementById("customModal").classList.remove("aktif");
+  fungsiCallbackKonfirmasi = null;
+}
+
+function eksekusiKonfirmasi() {
+  if (fungsiCallbackKonfirmasi) fungsiCallbackKonfirmasi();
+  tutupModal();
+}
+
 function renderAntrean() {
     let html = `<tr><th>Status Kirim</th><th>Nama / Toko</th><th>Alamat Lengkap</th><th>Link Maps</th><th>Kecamatan</th><th style="width: 140px; text-align: center;">Aksi</th></tr>`;
     
@@ -449,10 +559,15 @@ function renderAntrean() {
                 `<span style="background:#ecfdf5; color:#059669; border:1px solid #10b981; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:800; display:inline-block;">✓ TERKIRIM</span>` : 
                 `<span style="background:#fef2f2; color:#dc2626; border:1px solid #f87171; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:700; display:inline-block;">⏳ BELUM</span>`;
 
-            // 🟢 TOMBOL SIMPAN & HAPUS PER BARIS
+            // 🟢 TOMBOL SIMPAN DENGAN SPINNER & HAPUS PER BARIS
             let aksiHtml = `
                 <div style="display: flex; gap: 4px; justify-content: center;">
-                    <button class="save-row-btn" onclick="simpanBarisKeServer(${index})">💾 Simpan</button>
+                    <button class="save-row-btn" id="btn-save-${index}" onclick="simpanBarisKeServer(${index})">
+                        <div class="btn-isi">
+                            <span id="txt-save-${index}">💾 Simpan</span>
+                            <div class="spinner" id="spin-save-${index}"></div>
+                        </div>
+                    </button>
                     <button class="delete-btn" onclick="hapusItem(${index})">Hapus</button>
                 </div>
             `;
@@ -472,12 +587,20 @@ function renderAntrean() {
     localStorage.setItem('antreanAdmin', JSON.stringify(antrean));
 }
 
-// 🟢 FUNGSI MENGIRIM PERUBAHAN BARIS KE GOOGLE SHEETS
+// 🟢 FUNGSI SIMPAN BARIS DENGAN ANIMASI SPINNER & MODAL
 function simpanBarisKeServer(index) {
     let item = antrean[index];
     
     let mapsBaru = document.getElementById(`maps-${index}`).value.trim();
     let kecBaru = document.getElementById(`kec-${index}`).value;
+
+    const btn = document.getElementById(`btn-save-${index}`);
+    const spinner = document.getElementById(`spin-save-${index}`);
+    const txt = document.getElementById(`txt-save-${index}`);
+
+    btn.disabled = true;
+    spinner.style.display = "block";
+    txt.innerText = "MENYIMPAN...";
 
     antrean[index].maps = mapsBaru;
     antrean[index].kec = kecBaru;
@@ -497,17 +620,23 @@ function simpanBarisKeServer(index) {
         body: JSON.stringify(payload)
     })
     .then(() => {
-        alert("✅ Data untuk \"" + item.nama + "\" (Kecamatan & Link Maps) berhasil disimpan permanen ke Google Sheets!");
+        bukaModal("Berhasil!", "Data untuk \"" + item.nama + "\" (Kecamatan & Link Maps) berhasil disimpan permanen ke Google Sheets!", "alert");
+        btn.disabled = false;
+        spinner.style.display = "none";
+        txt.innerText = "💾 Simpan";
         renderAntrean();
     })
     .catch(err => {
         console.error("Gagal menyimpan ke server:", err);
-        alert("❌ Gagal terhubung ke Google Sheets.");
+        bukaModal("Koneksi Error", "Gagal terhubung ke Google Sheets.", "alert");
+        btn.disabled = false;
+        spinner.style.display = "none";
+        txt.innerText = "💾 Simpan";
     });
 }
 
 function tarikDataDariSheet(isSilent = false) {
-    if (!isSilent) alert("⏳ Sedang menyinkronkan data & status dari server...");
+    if (!isSilent) bukaModal("Sinkronisasi", "Sedang menyinkronkan data & status dari server...", "alert");
 
     fetch(API_URL)
     .then(r => r.json())
@@ -535,7 +664,6 @@ function tarikDataDariSheet(isSilent = false) {
             let alamatCust = ambilPola(isiTeks, /ALAMAT\s*:\s*([^\n]+)/i);
             let alamatFinal = alamatCust ? alamatCust.toUpperCase() : isiTeks;
 
-            // Sesuai index admin: Kolom C (index 2) untuk Kecamatan, Kolom D (index 3) untuk Link Maps
             let kecSheet = row[2] || "";
             let kecFinal = existingKecMap[namaFinal] || kecSheet || (deteksiKecamatan(alamatFinal) || "SUKUN").toUpperCase();
             
@@ -553,11 +681,11 @@ function tarikDataDariSheet(isSilent = false) {
         antrean = newAntrean;
         renderAntrean();
         
-        if (!isSilent) alert("✅ Berhasil! Data antrean & status pengiriman driver telah diperbarui.");
+        if (!isSilent) bukaModal("Sukses", "Data antrean & status pengiriman driver telah diperbarui.", "alert");
     })
     .catch(err => {
         console.error("Gagal sinkronisasi sheet:", err);
-        if (!isSilent) alert("❌ Gagal terhubung ke Google Sheets.");
+        if (!isSilent) bukaModal("Error", "Gagal terhubung ke Google Sheets.", "alert");
     });
 }
 
@@ -582,7 +710,7 @@ function tambahOrderan() {
     let kec = document.getElementById('inputKec').value.toUpperCase();
 
     if(!nama || !alamat || !kec) {
-        alert("⚠️ Mohon isi Nama, Alamat, dan pilih Kecamatan dengan lengkap!");
+        bukaModal("Data Kurang", "Mohon isi Nama, Alamat, dan pilih Kecamatan dengan lengkap!", "alert");
         return;
     }
 
@@ -601,7 +729,7 @@ function tambahOrderan() {
         body: JSON.stringify(payload)
     })
     .then(() => {
-        alert("✅ Orderan berhasil dikirim dan tersimpan online di Google Sheets!");
+        bukaModal("Berhasil", "Orderan berhasil dikirim dan tersimpan online di Google Sheets!", "alert");
         
         antrean.push({ nama, alamat, maps, kec });
         renderAntrean();
@@ -614,7 +742,7 @@ function tambahOrderan() {
     })
     .catch(err => {
         console.error("Gagal menyimpan ke server:", err);
-        alert("❌ Gagal terhubung ke server Google Sheets.");
+        bukaModal("Error", "Gagal terhubung ke server Google Sheets.", "alert");
     });
 }
 
@@ -624,13 +752,13 @@ function hapusItem(index) {
 }
 
 function resetSemua() {
-    if(confirm("Hapus seluruh list antrean?")) {
+    bukaModal("Konfirmasi Reset", "Apakah Anda yakin ingin menghapus seluruh list antrean?", "confirm", () => {
         antrean = [];
         localStorage.removeItem('antreanAdmin');
         renderAntrean();
         document.getElementById('hasilPembagian').innerHTML = "";
         hasilPembagianGlobal = {};
-    }
+    });
 }
 
 function getActiveDrivers() {
@@ -644,11 +772,11 @@ function bagiRute() {
     let drivers = getActiveDrivers();
 
     if(drivers.length === 0) {
-        alert("⚠️ Centang minimal 1 Driver yang aktif bertugas!");
+        bukaModal("Peringatan", "Centang minimal 1 Driver yang aktif bertugas!", "alert");
         return;
     }
     if(antrean.length === 0) {
-        alert("⚠️ List antrean masih kosong!");
+        bukaModal("Peringatan", "List antrean masih kosong!", "alert");
         return;
     }
 
@@ -717,7 +845,7 @@ function bagiRute() {
 
 function cetakPDF() {
     if(Object.keys(hasilPembagianGlobal).length === 0) {
-        alert("⚠️ Klik tombol 'Proses Rute' terlebih dahulu sebelum mencetak!");
+        bukaModal("Peringatan", "Klik tombol 'Proses Rute' terlebih dahulu sebelum mencetak!", "alert");
         return;
     }
     window.print();
@@ -725,7 +853,7 @@ function cetakPDF() {
 
 function downloadExcel() {
     if(Object.keys(hasilPembagianGlobal).length === 0) {
-        alert("⚠️ Klik tombol 'Proses Rute' terlebih dahulu sebelum mendownload Excel!");
+        bukaModal("Peringatan", "Klik tombol 'Proses Rute' terlebih dahulu sebelum mendownload Excel!", "alert");
         return;
     }
 
